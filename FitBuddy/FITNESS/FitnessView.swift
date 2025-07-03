@@ -147,7 +147,7 @@ struct FitnessGallery: View {
     @ViewBuilder
     func CardView(category: Category) -> some View {
         if selectedCategory?.id == category.id {
-            RoundedRectangle(cornerRadius: 0).fill(Color.clear)
+//            RoundedRectangle(cornerRadius: 0).fill(Color.clear)
         } else {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.3)) {
