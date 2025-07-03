@@ -7,8 +7,29 @@
 
 import Foundation
 
+struct DescriptionAndInstructionString {
+    let description: String
+    let instruction: [String]
+}
+struct ImageAndVideoString {
+    let image: [(String, String)]
+    let video: [String]
+}
 
+struct CompletedExerciseInstruction {
+    let dumbbellCurl = DescriptionAndInstructionString(description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
+                                                       instruction: ["Đứng thẳng, hai chân rộng bằng vai, mũi chân hơi hướng ra ngoài.",
+                                                                     "Giữ lưng thẳng, ngực nâng cao và siết cơ bụng.",
+                                                                     "Từ từ gập gối và đẩy hông ra sau như ngồi xuống ghế.",
+                                                                     "Hạ người đến khi đùi song song mặt đất hoặc mức bạn thấy thoải mái.",
+                                                                     "Giữ đầu gối thẳng hàng với mũi chân, không vượt quá.",
+                                                                     "Dừng lại ngắn ở đáy, rồi đẩy gót chân để đứng dậy."])
+}
 
+struct CompletedExerciseImageVideoInstruction {
+    let dumbbellCurl = ImageAndVideoString(image: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
+                                           video: ["TestingVideo"])
+}
 
 struct CompletedExerciseAdjustment {
     let dumbbellCurl = FitnessExerciseAdjustment(
@@ -41,14 +62,7 @@ struct Category {
     let id: UUID = UUID()
     let name: String
     let description: String
-    let instruction: [String] = [
-        "Đứng thẳng, hai chân rộng bằng vai, mũi chân hơi hướng ra ngoài.",
-        "Giữ lưng thẳng, ngực nâng cao và siết cơ bụng.",
-        "Từ từ gập gối và đẩy hông ra sau như ngồi xuống ghế.",
-        "Hạ người đến khi đùi song song mặt đất hoặc mức bạn thấy thoải mái.",
-        "Giữ đầu gối thẳng hàng với mũi chân, không vượt quá.",
-        "Dừng lại ngắn ở đáy, rồi đẩy gót chân để đứng dậy."
-    ]
+    let instruction: [String]
     let images: [(String, String)]
     let videos: [String]
     let detailedFaceTraking: Bool
@@ -57,6 +71,7 @@ struct Category {
     
     init(name: String,
          description: String,
+         instruction: [String],
          images: [(String, String)],
          videos: [String],
          detailedFaceTraking: Bool = false,
@@ -64,6 +79,7 @@ struct Category {
          exerciseAdjustment: FitnessExerciseAdjustment) {
         self.name = name
         self.description = description
+        self.instruction = instruction
         self.images = images
         self.videos = videos
         self.detailedFaceTraking = detailedFaceTraking
@@ -76,45 +92,28 @@ struct Category {
 struct ExerciseCategory {
     let categories: [Category] = [
         Category(name: "Squat",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
+                 description: CompletedExerciseInstruction().dumbbellCurl.description,
+                 instruction: CompletedExerciseInstruction().dumbbellCurl.instruction,
+                 images: CompletedExerciseImageVideoInstruction().dumbbellCurl.image,
+                 videos: CompletedExerciseImageVideoInstruction().dumbbellCurl.video,
                  exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
         
         Category(name: "Jumping Jack",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
+                 description: CompletedExerciseInstruction().dumbbellCurl.description,
+                 instruction: CompletedExerciseInstruction().dumbbellCurl.instruction,
+                 images: CompletedExerciseImageVideoInstruction().dumbbellCurl.image,
+                 videos: CompletedExerciseImageVideoInstruction().dumbbellCurl.video,
                  exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
         
         Category(name: "walking lunge",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
+                 description: CompletedExerciseInstruction().dumbbellCurl.description,
+                 instruction: CompletedExerciseInstruction().dumbbellCurl.instruction,
+                 images: CompletedExerciseImageVideoInstruction().dumbbellCurl.image,
+                 videos: CompletedExerciseImageVideoInstruction().dumbbellCurl.video,
                  exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
         
-        Category(name: "lateral raise",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
-                 exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
         
-        Category(name: "overhead dubbell press",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
-                 exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
-        
-        Category(name: "push up",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
-                 exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
-        
-        Category(name: "sit up",
-                 description: "The squat is a powerful lower-body exercise that targets the quadriceps, hamstrings, glutes, and core. It mimics everyday movements like sitting and standing, making it both functional and effective. To perform a squat, stand with feet shoulder-width apart, engage your core, and lower your hips as if sitting back into a chair. Keep your chest up, knees aligned with your toes, and return to standing by pressing through your heels. Squats can be done with body weight or added resistance like dumbbells or barbells. Regular squatting builds strength, improves mobility, and enhances balance and stability.",
-                 images: [("FirstIMG", "SecondIMG"), ("SecondIMG", "FirstIMG")],
-                 videos: ["TestingVideo"],
-                 exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl),
     ]
 }
+
+

@@ -15,7 +15,7 @@ struct RepPickerView: View {
     var body: some View {
         VStack {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     if exercisePerformance.targetCount == nil {
                         showRepSheet = true
                     } else {

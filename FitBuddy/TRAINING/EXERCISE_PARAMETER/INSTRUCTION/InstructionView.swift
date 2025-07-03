@@ -38,7 +38,7 @@ struct CategoryInstructionVideoView: View {
     var body: some View {
         VStack {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     showInstructionVideos.toggle()
                 }
             }) {
@@ -112,7 +112,7 @@ struct CategoryInstructionView: View {
     var body: some View {
         VStack {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     showDescription.toggle()
                 }
             }) {
@@ -140,6 +140,7 @@ struct CategoryInstructionView: View {
                     VStack {
                         ForEach(instructions, id: \.self) {instruction in
                             Text(instruction)
+                                .foregroundColor(.black)
                                 .font(.system(size: 20, weight: .regular, design: .rounded))
                                 .multilineTextAlignment(.center)
                             Divider()
@@ -166,7 +167,7 @@ struct CategoryDescriptionView: View {
     var body: some View {
         VStack {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     showDescription.toggle()
                 }
             }) {
@@ -192,6 +193,7 @@ struct CategoryDescriptionView: View {
             if showDescription {
                 ScrollView {
                     Text(description)
+                        .foregroundColor(.black)
                         .font(.system(size: 20, weight: .regular, design: .rounded))
                         .multilineTextAlignment(.leading)
                         .minimumScaleFactor(0.5)

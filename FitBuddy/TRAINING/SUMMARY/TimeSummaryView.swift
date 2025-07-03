@@ -27,7 +27,7 @@ struct TimeSummaryView: View {
     var body: some View {
         VStack(spacing: 20) {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     showDetail.toggle()
                 }
             }) {

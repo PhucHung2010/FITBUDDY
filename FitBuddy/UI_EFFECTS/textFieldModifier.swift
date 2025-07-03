@@ -18,7 +18,7 @@ struct customViewModifier: ViewModifier {
         content
             .padding()
             .background(
-                BlurView(style: .systemUltraThinMaterialLight)
+                BlurView(style: .systemUltraThinMaterial)
             )
             .cornerRadius(roundedCornes)
             .padding(3)

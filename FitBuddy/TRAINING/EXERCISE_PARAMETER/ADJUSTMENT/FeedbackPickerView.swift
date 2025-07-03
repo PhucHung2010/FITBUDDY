@@ -17,7 +17,7 @@ struct FeedbackPickerView: View {
     var body: some View {
         VStack(spacing: 15) {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     exercisePerformance.feedback.toggle()
                 }
             }) {

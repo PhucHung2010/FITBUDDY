@@ -17,7 +17,7 @@ struct FitnessView: View {
 }
 
 struct FitnessGallery: View {
-    @EnvironmentObject var WideViewController: WideViewController
+    @EnvironmentObject var wideViewController: WideViewController
     
     @ObservedObject var exercisePerformance = FitnessExercisePerformance()
     let exerciseCategory = ExerciseCategory()
@@ -71,7 +71,9 @@ struct FitnessGallery: View {
                     .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: .Orange, roundedCornes: 20))
                     .padding(.horizontal)
                     
-                    Abstract()
+                    if showAbstract {
+                        Abstract()
+                    }
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
@@ -150,9 +152,9 @@ struct FitnessGallery: View {
             RoundedRectangle(cornerRadius: 0).fill(Color.clear)
         } else {
             Button(action: {
-                withAnimation(.easeInOut(duration: 0.3)) {
+                withAnimation(.easeOut(duration: 0.3)) {
                     selectedCategory = category
-                    WideViewController.SHOW_TAB_BAR = false
+                    wideViewController.SHOW_TAB_BAR = false
                 }
             }) {
                 RoundedRectangle(cornerRadius: 20)

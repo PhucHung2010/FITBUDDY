@@ -17,7 +17,7 @@ struct TimePickerView: View {
     var body: some View {
         VStack() {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                     if exercisePerformance.targetTime == nil {
                         showTimeSheet.toggle()
                     } else {
@@ -70,7 +70,7 @@ struct TimePickerView: View {
                     
                     
                     Button(action: {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                             showTimeSheet = false
                             exercisePerformance.targetTime = selectedMinute * 60 + selectedSecond
                         }
@@ -96,7 +96,7 @@ struct TimePickerView: View {
             
             if exercisePerformance.targetTime != nil {
                 Button(action: {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                         showTimeSheet = true
                         exercisePerformance.targetTime = nil
                     }

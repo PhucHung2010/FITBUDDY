@@ -35,7 +35,7 @@ struct ExerciseParameterSettingView: View {
                                 category = nil
                                 wideViewController.SHOW_TAB_BAR = true
                             }
-                            
+                
                         }) {
                             HStack {
                                 Image(systemName: "arrow.left")
@@ -59,7 +59,7 @@ struct ExerciseParameterSettingView: View {
                         if let category = category {
                             VStack(spacing: 10) {
                                 Button(action: {
-                                    withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                                    withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                         showImage.toggle()
                                     }
                                 }) {
@@ -98,7 +98,7 @@ struct ExerciseParameterSettingView: View {
                         
                         VStack {
                             Button(action: {
-                                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                     showInstruction.toggle()
                                 }
                             }) {
@@ -136,7 +136,7 @@ struct ExerciseParameterSettingView: View {
                         
                         VStack {
                             Button(action: {
-                                withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
+                                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                                     showAdjustment.toggle()
                                     if let adjustment = category?.exerciseAdjustment {
                                         exercisePerformance.controller = adjustment
@@ -198,7 +198,6 @@ struct ExerciseParameterSettingView: View {
                 }   
             }
         }
-//        .environmentObject(wideViewController)
     }
 }
 

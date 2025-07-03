@@ -14,7 +14,7 @@ class WideViewController: ObservableObject {
 }
 
 struct WideTabView: View {
-    @StateObject var tabbarController = WideViewController()
+    @StateObject var wideViewController = WideViewController()
     
     @State private var activeTab: Tab = .Fitness
     @State private var beforeChangeThemeTab: Tab = .Home
@@ -59,13 +59,13 @@ struct WideTabView: View {
             
             CustomTabBar()
         }
-        .environmentObject(tabbarController)
+        .environmentObject(wideViewController)
     }
     
     
     @ViewBuilder
     func CustomTabBar() -> some View {
-        if tabbarController.SHOW_TAB_BAR {
+        if wideViewController.SHOW_TAB_BAR {
             HStack(alignment: .bottom, spacing: UIScreen.main.bounds.width / 12) {
                 ForEach(Tab.allCases, id: \.rawValue) {
                     TabItem(
