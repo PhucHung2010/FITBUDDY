@@ -32,11 +32,11 @@ struct WideTabView: View {
                      })
                     
                     
-//                HealthInsuranceView()
-//                    .tag(Tab.HealthInsurace)
-//                    .background(TabBarAccessor { tabBar in
-//                        tabBar.isHidden = true
-//                     })
+                HealthInsuranceView()
+                    .tag(Tab.HealthInsurace)
+                    .background(TabBarAccessor { tabBar in
+                        tabBar.isHidden = true
+                     })
                 
                 HomeView()
                     .tag(Tab.Home)
