@@ -11,9 +11,7 @@ struct LoginScreen: View {
     var body: some View {
         VStack {
             Text("Hello, World!")
-            Button("Sign in your google") {
-                
-            }
+        
         }
     }
 }
