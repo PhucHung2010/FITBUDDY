@@ -1,0 +1,677 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E81A5D472E14EF1400B21CC8 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81A5D462E14EF1400B21CC8 /* LoginScreen.swift */; };
+		E81FBEBB2E0D2FBC00723991 /* TrainingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEBA2E0D2FBC00723991 /* TrainingView.swift */; };
+		E81FBEBD2E0D324500723991 /* textFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEBC2E0D324500723991 /* textFieldModifier.swift */; };
+		E81FBEC12E0D484C00723991 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEC02E0D484C00723991 /* SummaryView.swift */; };
+		E82172192E0A3FF500AAF7BF /* FeedbackPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82172182E0A3FF500AAF7BF /* FeedbackPickerView.swift */; };
+		E821721B2E0A413E00AAF7BF /* TimePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E821721A2E0A413E00AAF7BF /* TimePickerView.swift */; };
+		E83196382DFE7AEC004D9ADD /* FitnessExerciesAdjustment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83196372DFE7AEC004D9ADD /* FitnessExerciesAdjustment.swift */; };
+		E831963A2DFE7B4C004D9ADD /* FitnessExerciesPerformance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83196392DFE7B4C004D9ADD /* FitnessExerciesPerformance.swift */; };
+		E831963C2DFE7F30004D9ADD /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E831963B2DFE7F30004D9ADD /* BlurView.swift */; };
+		E83196402DFEA374004D9ADD /* ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E831963F2DFEA374004D9ADD /* ButtonStyle.swift */; };
+		E8398ECE2E0A63CE00655B4F /* InstructionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8398ECD2E0A63CE00655B4F /* InstructionView.swift */; };
+		E85100262E09093F00171F6A /* RepPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85100252E09093F00171F6A /* RepPickerView.swift */; };
+		E864A0692E122C9A003DD174 /* RepSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E864A0682E122C9A003DD174 /* RepSummaryView.swift */; };
+		E864A06B2E122CF2003DD174 /* TimeSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E864A06A2E122CF2003DD174 /* TimeSummaryView.swift */; };
+		E86699AE2E124AD200C361FA /* FeedbackSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86699AD2E124AD200C361FA /* FeedbackSummaryView.swift */; };
+		E86A9A002DEEA2A10008EF0E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A99FF2DEEA2A10008EF0E /* HomeView.swift */; };
+		E86A9A032DEEA9E20008EF0E /* ExerciseParameterSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A9A022DEEA9E20008EF0E /* ExerciseParameterSettingView.swift */; };
+		E86A9A062DEEE0E20008EF0E /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A9A052DEEE0E20008EF0E /* RankingView.swift */; };
+		E86A9A092DEEE11E0008EF0E /* AppSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86A9A082DEEE11E0008EF0E /* AppSettingView.swift */; };
+		E8728A782E0A4DCA00AE6239 /* AdjustmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8728A772E0A4DCA00AE6239 /* AdjustmentView.swift */; };
+		E88C266A2E0A930700400EE7 /* JustifiedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88C26692E0A930700400EE7 /* JustifiedText.swift */; };
+		E88C266C2E0A9A1500400EE7 /* TestingVideo.MOV in Resources */ = {isa = PBXBuildFile; fileRef = E88C266B2E0A9A1400400EE7 /* TestingVideo.MOV */; };
+		E895DA5F2E03C14E00EA912D /* CustomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E895DA5E2E03C14E00EA912D /* CustomSheet.swift */; };
+		E8AC77D32E0BA01E00C5BC16 /* PreviewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AC77D22E0BA01E00C5BC16 /* PreviewImage.swift */; };
+		E8ADFCF52E02B1C800777C55 /* ExerciseCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8ADFCF42E02B1C800777C55 /* ExerciseCategory.swift */; };
+		E8EEFAF32DEDE8F100C263BC /* WideTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF22DEDE8F100C263BC /* WideTabView.swift */; };
+		E8EEFAF62DEDE93500C263BC /* PoseDetectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF52DEDE93500C263BC /* PoseDetectionView.swift */; };
+		E8EEFAFA2DEDEBB500C263BC /* HealthInsuranceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF92DEDEBB500C263BC /* HealthInsuranceView.swift */; };
+		E8EEFAFC2DEDEC0800C263BC /* FitnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAFB2DEDEC0800C263BC /* FitnessView.swift */; };
+		E8EEFAFE2DEDF10700C263BC /* PositionKeyForTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAFD2DEDF10700C263BC /* PositionKeyForTab.swift */; };
+		E8EEFB002DEDF25600C263BC /* appBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAFF2DEDF25600C263BC /* appBackground.swift */; };
+		E8EEFB022DEE03B700C263BC /* TabbarFactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFB012DEE03B700C263BC /* TabbarFactor.swift */; };
+		E8FDEFC02DED6C06007190E3 /* FitBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FDEFBF2DED6C06007190E3 /* FitBuddyApp.swift */; };
+		E8FDEFC22DED6C06007190E3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FDEFC12DED6C06007190E3 /* ContentView.swift */; };
+		E8FDEFC42DED6C08007190E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8FDEFC32DED6C08007190E3 /* Assets.xcassets */; };
+		E8FDEFC72DED6C08007190E3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E8FDEFC62DED6C08007190E3 /* Preview Assets.xcassets */; };
+		E8FDEFDE2DED8B8D007190E3 /* QuickPoseCamera in Frameworks */ = {isa = PBXBuildFile; productRef = E8FDEFDD2DED8B8D007190E3 /* QuickPoseCamera */; };
+		E8FDEFE02DED8B8D007190E3 /* QuickPoseCore in Frameworks */ = {isa = PBXBuildFile; productRef = E8FDEFDF2DED8B8D007190E3 /* QuickPoseCore */; };
+		E8FDEFE22DED8B8D007190E3 /* QuickPoseMP in Frameworks */ = {isa = PBXBuildFile; productRef = E8FDEFE12DED8B8D007190E3 /* QuickPoseMP */; };
+		E8FDEFE42DED8B8D007190E3 /* QuickPoseSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = E8FDEFE32DED8B8D007190E3 /* QuickPoseSwiftUI */; };
+		E8FEEA652E01AE4F00D35066 /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FEEA642E01AE4F00D35066 /* StatusBarView.swift */; };
+		E8FF18C22E093E320097F03C /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8FF18C12E093E320097F03C /* Slider.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E81A5D462E14EF1400B21CC8 /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
+		E81FBEBA2E0D2FBC00723991 /* TrainingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingView.swift; sourceTree = "<group>"; };
+		E81FBEBC2E0D324500723991 /* textFieldModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = textFieldModifier.swift; sourceTree = "<group>"; };
+		E81FBEC02E0D484C00723991 /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
+		E82172182E0A3FF500AAF7BF /* FeedbackPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackPickerView.swift; sourceTree = "<group>"; };
+		E821721A2E0A413E00AAF7BF /* TimePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerView.swift; sourceTree = "<group>"; };
+		E83196372DFE7AEC004D9ADD /* FitnessExerciesAdjustment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitnessExerciesAdjustment.swift; sourceTree = "<group>"; };
+		E83196392DFE7B4C004D9ADD /* FitnessExerciesPerformance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitnessExerciesPerformance.swift; sourceTree = "<group>"; };
+		E831963B2DFE7F30004D9ADD /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
+		E831963F2DFEA374004D9ADD /* ButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyle.swift; sourceTree = "<group>"; };
+		E8398ECD2E0A63CE00655B4F /* InstructionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionView.swift; sourceTree = "<group>"; };
+		E85100252E09093F00171F6A /* RepPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepPickerView.swift; sourceTree = "<group>"; };
+		E864A0682E122C9A003DD174 /* RepSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepSummaryView.swift; sourceTree = "<group>"; };
+		E864A06A2E122CF2003DD174 /* TimeSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSummaryView.swift; sourceTree = "<group>"; };
+		E86699AD2E124AD200C361FA /* FeedbackSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSummaryView.swift; sourceTree = "<group>"; };
+		E86A99FF2DEEA2A10008EF0E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		E86A9A022DEEA9E20008EF0E /* ExerciseParameterSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseParameterSettingView.swift; sourceTree = "<group>"; };
+		E86A9A052DEEE0E20008EF0E /* RankingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
+		E86A9A082DEEE11E0008EF0E /* AppSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingView.swift; sourceTree = "<group>"; };
+		E8728A772E0A4DCA00AE6239 /* AdjustmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdjustmentView.swift; sourceTree = "<group>"; };
+		E88C26692E0A930700400EE7 /* JustifiedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustifiedText.swift; sourceTree = "<group>"; };
+		E88C266B2E0A9A1400400EE7 /* TestingVideo.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = TestingVideo.MOV; sourceTree = "<group>"; };
+		E895DA5E2E03C14E00EA912D /* CustomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSheet.swift; sourceTree = "<group>"; };
+		E8AC77D22E0BA01E00C5BC16 /* PreviewImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewImage.swift; sourceTree = "<group>"; };
+		E8ADFCF42E02B1C800777C55 /* ExerciseCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseCategory.swift; sourceTree = "<group>"; };
+		E8EEFAF22DEDE8F100C263BC /* WideTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WideTabView.swift; sourceTree = "<group>"; };
+		E8EEFAF52DEDE93500C263BC /* PoseDetectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseDetectionView.swift; sourceTree = "<group>"; };
+		E8EEFAF92DEDEBB500C263BC /* HealthInsuranceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInsuranceView.swift; sourceTree = "<group>"; };
+		E8EEFAFB2DEDEC0800C263BC /* FitnessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitnessView.swift; sourceTree = "<group>"; };
+		E8EEFAFD2DEDF10700C263BC /* PositionKeyForTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositionKeyForTab.swift; sourceTree = "<group>"; };
+		E8EEFAFF2DEDF25600C263BC /* appBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = appBackground.swift; sourceTree = "<group>"; };
+		E8EEFB012DEE03B700C263BC /* TabbarFactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabbarFactor.swift; sourceTree = "<group>"; };
+		E8FDEFBC2DED6C06007190E3 /* FitBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8FDEFBF2DED6C06007190E3 /* FitBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitBuddyApp.swift; sourceTree = "<group>"; };
+		E8FDEFC12DED6C06007190E3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E8FDEFC32DED6C08007190E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E8FDEFC62DED6C08007190E3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E8FDEFE52DED8D43007190E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E8FEEA642E01AE4F00D35066 /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
+		E8FF18C12E093E320097F03C /* Slider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E8FDEFB92DED6C06007190E3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8FDEFE02DED8B8D007190E3 /* QuickPoseCore in Frameworks */,
+				E8FDEFE22DED8B8D007190E3 /* QuickPoseMP in Frameworks */,
+				E8FDEFDE2DED8B8D007190E3 /* QuickPoseCamera in Frameworks */,
+				E8FDEFE42DED8B8D007190E3 /* QuickPoseSwiftUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E81A5D432E14E65B00B21CC8 /* LOGIN */ = {
+			isa = PBXGroup;
+			children = (
+				E81A5D462E14EF1400B21CC8 /* LoginScreen.swift */,
+			);
+			path = LOGIN;
+			sourceTree = "<group>";
+		};
+		E81FBEBF2E0D3C5700723991 /* SUMMARY */ = {
+			isa = PBXGroup;
+			children = (
+				E81FBEC02E0D484C00723991 /* SummaryView.swift */,
+				E864A0682E122C9A003DD174 /* RepSummaryView.swift */,
+				E864A06A2E122CF2003DD174 /* TimeSummaryView.swift */,
+				E86699AD2E124AD200C361FA /* FeedbackSummaryView.swift */,
+			);
+			path = SUMMARY;
+			sourceTree = "<group>";
+		};
+		E831963E2DFEA357004D9ADD /* UI_EFFECTS */ = {
+			isa = PBXGroup;
+			children = (
+				E8EEFAFF2DEDF25600C263BC /* appBackground.swift */,
+				E831963B2DFE7F30004D9ADD /* BlurView.swift */,
+				E831963F2DFEA374004D9ADD /* ButtonStyle.swift */,
+				E8EEFAFD2DEDF10700C263BC /* PositionKeyForTab.swift */,
+				E8EEFB012DEE03B700C263BC /* TabbarFactor.swift */,
+				E895DA5E2E03C14E00EA912D /* CustomSheet.swift */,
+				E8FF18C12E093E320097F03C /* Slider.swift */,
+				E88C26692E0A930700400EE7 /* JustifiedText.swift */,
+				E81FBEBC2E0D324500723991 /* textFieldModifier.swift */,
+			);
+			path = UI_EFFECTS;
+			sourceTree = "<group>";
+		};
+		E8398ECA2E0A5B1900655B4F /* EXERCISE_PARAMETER */ = {
+			isa = PBXGroup;
+			children = (
+				E86A9A022DEEA9E20008EF0E /* ExerciseParameterSettingView.swift */,
+				E8AC77D12E0B9FF900C5BC16 /* PREVIEW_IMAGE */,
+				E8398ECC2E0A5B7A00655B4F /* INSTRUCTION */,
+				E8398ECB2E0A5B5D00655B4F /* ADJUSTMENT */,
+			);
+			path = EXERCISE_PARAMETER;
+			sourceTree = "<group>";
+		};
+		E8398ECB2E0A5B5D00655B4F /* ADJUSTMENT */ = {
+			isa = PBXGroup;
+			children = (
+				E8728A772E0A4DCA00AE6239 /* AdjustmentView.swift */,
+				E82172182E0A3FF500AAF7BF /* FeedbackPickerView.swift */,
+				E85100252E09093F00171F6A /* RepPickerView.swift */,
+				E821721A2E0A413E00AAF7BF /* TimePickerView.swift */,
+			);
+			path = ADJUSTMENT;
+			sourceTree = "<group>";
+		};
+		E8398ECC2E0A5B7A00655B4F /* INSTRUCTION */ = {
+			isa = PBXGroup;
+			children = (
+				E8398ECD2E0A63CE00655B4F /* InstructionView.swift */,
+			);
+			path = INSTRUCTION;
+			sourceTree = "<group>";
+		};
+		E86A99FE2DEEA2890008EF0E /* HOME_VIEW */ = {
+			isa = PBXGroup;
+			children = (
+				E86A99FF2DEEA2A10008EF0E /* HomeView.swift */,
+			);
+			path = HOME_VIEW;
+			sourceTree = "<group>";
+		};
+		E86A9A012DEEA9A70008EF0E /* TRAINING */ = {
+			isa = PBXGroup;
+			children = (
+				E81FBEBA2E0D2FBC00723991 /* TrainingView.swift */,
+				E8398ECA2E0A5B1900655B4F /* EXERCISE_PARAMETER */,
+				E8EEFAF42DEDE91300C263BC /* POSE_DETECTION */,
+				E81FBEBF2E0D3C5700723991 /* SUMMARY */,
+			);
+			path = TRAINING;
+			sourceTree = "<group>";
+		};
+		E86A9A042DEEE0D00008EF0E /* RANKING */ = {
+			isa = PBXGroup;
+			children = (
+				E86A9A052DEEE0E20008EF0E /* RankingView.swift */,
+			);
+			path = RANKING;
+			sourceTree = "<group>";
+		};
+		E86A9A072DEEE1080008EF0E /* APP_SETTING */ = {
+			isa = PBXGroup;
+			children = (
+				E86A9A082DEEE11E0008EF0E /* AppSettingView.swift */,
+			);
+			path = APP_SETTING;
+			sourceTree = "<group>";
+		};
+		E88C266D2E0A9A5A00400EE7 /* VIDEO */ = {
+			isa = PBXGroup;
+			children = (
+				E88C266B2E0A9A1400400EE7 /* TestingVideo.MOV */,
+			);
+			path = VIDEO;
+			sourceTree = "<group>";
+		};
+		E8AC77D12E0B9FF900C5BC16 /* PREVIEW_IMAGE */ = {
+			isa = PBXGroup;
+			children = (
+				E8AC77D22E0BA01E00C5BC16 /* PreviewImage.swift */,
+			);
+			path = PREVIEW_IMAGE;
+			sourceTree = "<group>";
+		};
+		E8ADFCF32E02B19300777C55 /* EXERCISE_CATEGORY */ = {
+			isa = PBXGroup;
+			children = (
+				E8ADFCF42E02B1C800777C55 /* ExerciseCategory.swift */,
+			);
+			path = EXERCISE_CATEGORY;
+			sourceTree = "<group>";
+		};
+		E8EEFAF12DEDE8D800C263BC /* TAB */ = {
+			isa = PBXGroup;
+			children = (
+				E8EEFAF22DEDE8F100C263BC /* WideTabView.swift */,
+			);
+			path = TAB;
+			sourceTree = "<group>";
+		};
+		E8EEFAF42DEDE91300C263BC /* POSE_DETECTION */ = {
+			isa = PBXGroup;
+			children = (
+				E8EEFAF52DEDE93500C263BC /* PoseDetectionView.swift */,
+				E8FEEA642E01AE4F00D35066 /* StatusBarView.swift */,
+				E83196392DFE7B4C004D9ADD /* FitnessExerciesPerformance.swift */,
+				E83196372DFE7AEC004D9ADD /* FitnessExerciesAdjustment.swift */,
+			);
+			path = POSE_DETECTION;
+			sourceTree = "<group>";
+		};
+		E8EEFAF72DEDEB5F00C263BC /* FITNESS */ = {
+			isa = PBXGroup;
+			children = (
+				E8EEFAFB2DEDEC0800C263BC /* FitnessView.swift */,
+			);
+			path = FITNESS;
+			sourceTree = "<group>";
+		};
+		E8EEFAF82DEDEB8C00C263BC /* HEALTH_INSURANCE */ = {
+			isa = PBXGroup;
+			children = (
+				E8EEFAF92DEDEBB500C263BC /* HealthInsuranceView.swift */,
+			);
+			path = HEALTH_INSURANCE;
+			sourceTree = "<group>";
+		};
+		E8FDEFB32DED6C06007190E3 = {
+			isa = PBXGroup;
+			children = (
+				E8FDEFBE2DED6C06007190E3 /* FitBuddy */,
+				E8FDEFBD2DED6C06007190E3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E8FDEFBD2DED6C06007190E3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E8FDEFBC2DED6C06007190E3 /* FitBuddy.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E8FDEFBE2DED6C06007190E3 /* FitBuddy */ = {
+			isa = PBXGroup;
+			children = (
+				E8FDEFE52DED8D43007190E3 /* Info.plist */,
+				E8FDEFBF2DED6C06007190E3 /* FitBuddyApp.swift */,
+				E8FDEFC12DED6C06007190E3 /* ContentView.swift */,
+				E81A5D432E14E65B00B21CC8 /* LOGIN */,
+				E8EEFAF12DEDE8D800C263BC /* TAB */,
+				E86A9A072DEEE1080008EF0E /* APP_SETTING */,
+				E86A9A042DEEE0D00008EF0E /* RANKING */,
+				E86A99FE2DEEA2890008EF0E /* HOME_VIEW */,
+				E8EEFAF82DEDEB8C00C263BC /* HEALTH_INSURANCE */,
+				E8EEFAF72DEDEB5F00C263BC /* FITNESS */,
+				E86A9A012DEEA9A70008EF0E /* TRAINING */,
+				E8ADFCF32E02B19300777C55 /* EXERCISE_CATEGORY */,
+				E831963E2DFEA357004D9ADD /* UI_EFFECTS */,
+				E8FDEFC32DED6C08007190E3 /* Assets.xcassets */,
+				E88C266D2E0A9A5A00400EE7 /* VIDEO */,
+				E8FDEFC52DED6C08007190E3 /* Preview Content */,
+			);
+			path = FitBuddy;
+			sourceTree = "<group>";
+		};
+		E8FDEFC52DED6C08007190E3 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E8FDEFC62DED6C08007190E3 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E8FDEFBB2DED6C06007190E3 /* FitBuddy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E8FDEFCA2DED6C08007190E3 /* Build configuration list for PBXNativeTarget "FitBuddy" */;
+			buildPhases = (
+				E8FDEFB82DED6C06007190E3 /* Sources */,
+				E8FDEFB92DED6C06007190E3 /* Frameworks */,
+				E8FDEFBA2DED6C06007190E3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FitBuddy;
+			packageProductDependencies = (
+				E8FDEFDD2DED8B8D007190E3 /* QuickPoseCamera */,
+				E8FDEFDF2DED8B8D007190E3 /* QuickPoseCore */,
+				E8FDEFE12DED8B8D007190E3 /* QuickPoseMP */,
+				E8FDEFE32DED8B8D007190E3 /* QuickPoseSwiftUI */,
+			);
+			productName = FitBuddy;
+			productReference = E8FDEFBC2DED6C06007190E3 /* FitBuddy.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E8FDEFB42DED6C06007190E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					E8FDEFBB2DED6C06007190E3 = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = E8FDEFB72DED6C06007190E3 /* Build configuration list for PBXProject "FitBuddy" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E8FDEFB32DED6C06007190E3;
+			packageReferences = (
+				E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */,
+			);
+			productRefGroup = E8FDEFBD2DED6C06007190E3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E8FDEFBB2DED6C06007190E3 /* FitBuddy */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E8FDEFBA2DED6C06007190E3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8FDEFC72DED6C08007190E3 /* Preview Assets.xcassets in Resources */,
+				E8FDEFC42DED6C08007190E3 /* Assets.xcassets in Resources */,
+				E88C266C2E0A9A1500400EE7 /* TestingVideo.MOV in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E8FDEFB82DED6C06007190E3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E895DA5F2E03C14E00EA912D /* CustomSheet.swift in Sources */,
+				E88C266A2E0A930700400EE7 /* JustifiedText.swift in Sources */,
+				E8AC77D32E0BA01E00C5BC16 /* PreviewImage.swift in Sources */,
+				E8FDEFC22DED6C06007190E3 /* ContentView.swift in Sources */,
+				E86A9A062DEEE0E20008EF0E /* RankingView.swift in Sources */,
+				E831963A2DFE7B4C004D9ADD /* FitnessExerciesPerformance.swift in Sources */,
+				E8EEFAFA2DEDEBB500C263BC /* HealthInsuranceView.swift in Sources */,
+				E86A9A032DEEA9E20008EF0E /* ExerciseParameterSettingView.swift in Sources */,
+				E864A06B2E122CF2003DD174 /* TimeSummaryView.swift in Sources */,
+				E8EEFAFE2DEDF10700C263BC /* PositionKeyForTab.swift in Sources */,
+				E86A9A002DEEA2A10008EF0E /* HomeView.swift in Sources */,
+				E8EEFAF32DEDE8F100C263BC /* WideTabView.swift in Sources */,
+				E8FDEFC02DED6C06007190E3 /* FitBuddyApp.swift in Sources */,
+				E8FF18C22E093E320097F03C /* Slider.swift in Sources */,
+				E8FEEA652E01AE4F00D35066 /* StatusBarView.swift in Sources */,
+				E81FBEBD2E0D324500723991 /* textFieldModifier.swift in Sources */,
+				E81FBEC12E0D484C00723991 /* SummaryView.swift in Sources */,
+				E8ADFCF52E02B1C800777C55 /* ExerciseCategory.swift in Sources */,
+				E8EEFB022DEE03B700C263BC /* TabbarFactor.swift in Sources */,
+				E86A9A092DEEE11E0008EF0E /* AppSettingView.swift in Sources */,
+				E8398ECE2E0A63CE00655B4F /* InstructionView.swift in Sources */,
+				E86699AE2E124AD200C361FA /* FeedbackSummaryView.swift in Sources */,
+				E81FBEBB2E0D2FBC00723991 /* TrainingView.swift in Sources */,
+				E8EEFAF62DEDE93500C263BC /* PoseDetectionView.swift in Sources */,
+				E831963C2DFE7F30004D9ADD /* BlurView.swift in Sources */,
+				E8EEFAFC2DEDEC0800C263BC /* FitnessView.swift in Sources */,
+				E85100262E09093F00171F6A /* RepPickerView.swift in Sources */,
+				E821721B2E0A413E00AAF7BF /* TimePickerView.swift in Sources */,
+				E81A5D472E14EF1400B21CC8 /* LoginScreen.swift in Sources */,
+				E83196402DFEA374004D9ADD /* ButtonStyle.swift in Sources */,
+				E8728A782E0A4DCA00AE6239 /* AdjustmentView.swift in Sources */,
+				E83196382DFE7AEC004D9ADD /* FitnessExerciesAdjustment.swift in Sources */,
+				E82172192E0A3FF500AAF7BF /* FeedbackPickerView.swift in Sources */,
+				E8EEFB002DEDF25600C263BC /* appBackground.swift in Sources */,
+				E864A0692E122C9A003DD174 /* RepSummaryView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E8FDEFC82DED6C08007190E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = VH53443848;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E8FDEFC92DED6C08007190E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = VH53443848;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E8FDEFCB2DED6C08007190E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FitBuddy/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitBuddy/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow this app to use your camera for detection";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hung.FitBuddy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E8FDEFCC2DED6C08007190E3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"FitBuddy/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FitBuddy/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow this app to use your camera for detection";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hung.FitBuddy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E8FDEFB72DED6C06007190E3 /* Build configuration list for PBXProject "FitBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8FDEFC82DED6C08007190E3 /* Debug */,
+				E8FDEFC92DED6C08007190E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E8FDEFCA2DED6C08007190E3 /* Build configuration list for PBXNativeTarget "FitBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E8FDEFCB2DED6C08007190E3 /* Debug */,
+				E8FDEFCC2DED6C08007190E3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/quickpose/quickpose-ios-sdk";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E8FDEFDD2DED8B8D007190E3 /* QuickPoseCamera */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */;
+			productName = QuickPoseCamera;
+		};
+		E8FDEFDF2DED8B8D007190E3 /* QuickPoseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */;
+			productName = QuickPoseCore;
+		};
+		E8FDEFE12DED8B8D007190E3 /* QuickPoseMP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */;
+			productName = QuickPoseMP;
+		};
+		E8FDEFE32DED8B8D007190E3 /* QuickPoseSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E8FDEFDC2DED8B8D007190E3 /* XCRemoteSwiftPackageReference "quickpose-ios-sdk" */;
+			productName = QuickPoseSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E8FDEFB42DED6C06007190E3 /* Project object */;
+}
