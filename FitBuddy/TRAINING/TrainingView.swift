@@ -6,40 +6,37 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct TrainingView: View {
     @Binding var category: Category?
     @ObservedObject var exercisePerformance: FitnessExercisePerformance
     var body: some View {
         ZStack {
-            AppBackground().ignoresSafeArea()
-            
-            ExerciseParameterSettingView(category: $category,
-                                         exercisePerformance: exercisePerformance)
-            .transition(.move(edge: .trailing))
-        
-            PoseDetectionView(exercisePerformance: exercisePerformance)
-                .transition(.move(edge: .trailing))
-                
-            SummaryView(exercisePerformance: exercisePerformance)
-                .transition(.move(edge: .trailing))
+            if exercisePerformance.exerciseStatus == .setting {
+                ExerciseParameterSettingView(category: $category,
+                                             exercisePerformance: exercisePerformance)
+                .transition(.move(edge: .leading))
+            }
+            else if exercisePerformance.exerciseStatus == .traning {
+                PoseDetectionView(exercisePerformance: exercisePerformance)
+                    .transition(.asymmetric(insertion: .opacity, removal: .move(edge: .leading)))
+            }
+            else if exercisePerformance.exerciseStatus == .summary {
+                SummaryView(category: category, exercisePerformance: exercisePerformance)
+                    .transition(.move(edge: .trailing))
+            }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: exercisePerformance.exerciseStarted)
-        .animation(.spring(response: 0.4, dampingFraction: 0.7), value: exercisePerformance.exerciseEnded)
-    }
-}
-
-struct trainingview: View {
-    @State var category = ExerciseCategory().categories.first
-    var body: some View {
-        TrainingView(category: $category,
-                     exercisePerformance: FitnessExercisePerformance())
+        .animation(.spring(response: 0.4, dampingFraction: 1), value: exercisePerformance.exerciseStatus)
     }
 }
 
 struct TrainingView_Previews: PreviewProvider {
-    @State var category = ExerciseCategory().categories.first
     static var previews: some View {
-        trainingview()
+        @State var category = FitnessExerciseCategory().categories.first
+        TrainingView(category: $category,
+                     exercisePerformance: FitnessExercisePerformance())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(AppThemeController())
     }
 }

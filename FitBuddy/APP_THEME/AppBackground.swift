@@ -1,9 +1,14 @@
 import SwiftUI
 
 struct AppBackground: View {
+    @EnvironmentObject var theme: AppThemeController
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.darkOffWhite, .darkOffWhite2], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+            if theme.appTheme == .light {
+                LinearGradient(colors: [.darkOffWhite, .darkOffWhite2], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+            } else {
+                LinearGradient(colors: [.darkStart, .darkEnd], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+            }
         }
     }
 }
@@ -132,5 +137,6 @@ extension Color {
 struct CurvedBackground_Previews: PreviewProvider {
     static var previews: some View {
         AppBackground()
+            .environmentObject(AppThemeController())
     }
 }

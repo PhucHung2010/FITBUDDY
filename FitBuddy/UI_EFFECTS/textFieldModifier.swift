@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct customViewModifier: ViewModifier {
+    @EnvironmentObject var theme: AppThemeController
     var startColor: Color
     var endColor: Color
     var textColor: Color
@@ -17,8 +18,9 @@ struct customViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding()
+            .frame(height: 40)
             .background(
-                BlurView(style: .systemUltraThinMaterial)
+                BlurView(style: theme.main.ultraThinMaterial)
             )
             .cornerRadius(roundedCornes)
             .padding(3)
@@ -30,5 +32,14 @@ struct customViewModifier: ViewModifier {
             .shadow(color: .black.opacity(0.2),
                     radius: 2,
                     x: -1, y: -1)
+    }
+}
+
+
+struct customViewModifier_Previews: PreviewProvider {
+    static var previews: some View {
+        FitnessView()
+            .environmentObject(TabViewController())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

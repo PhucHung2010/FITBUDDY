@@ -5,21 +5,15 @@ import SwiftUI
 
 enum Tab: String, CaseIterable {
     case Fitness
-    case HealthInsurace
     case Home
-    case Ranking
     case Setting
     
     var systemImage: String {
         switch self {
         case .Fitness:
             return "dumbbell.fill"
-        case .HealthInsurace:
-            return "heart.fill"
         case .Home:
             return "house"
-        case .Ranking:
-            return "medal.fill"
         case .Setting:
             return "slider.horizontal.3"
         }

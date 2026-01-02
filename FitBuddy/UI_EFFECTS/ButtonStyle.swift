@@ -38,7 +38,7 @@ struct ScaledButtonStyle_OffColorText: ButtonStyle {
             .foregroundColor(configuration.isPressed ? originColor : offColor)
             .lineLimit(1)
             .shadow(radius: 3)
-            .frame(width: 100, height: 45)
+            .frame(width: 100, height: 50)
             .background {
                 if configuration.isPressed {
                     offColor
@@ -60,6 +60,7 @@ struct ScaledButtonStyle_OffColorText: ButtonStyle {
 
 
 struct PickerButton: View {
+    @EnvironmentObject var theme: AppThemeController
     let title: Int
     let systemImage: String?
     
@@ -77,7 +78,7 @@ struct PickerButton: View {
             if let systemImage = systemImage {
                 Image(systemName: systemImage)
                     .font(.system(size: 40, weight: .black, design: .default))
-                    .foregroundColor(.lightOffWhite)
+                    .foregroundColor(theme.main.mainColor)
                     .shadow(radius: 3)
                     .background {
                         Color.Orange
@@ -92,7 +93,7 @@ struct PickerButton: View {
                     .shadow(radius: 3)
                     .frame(width: UIScreen.main.bounds.width / 4, height: 50)
                     .background {
-                        BlurView(style: .systemUltraThinMaterialLight)
+                        BlurView(style: theme.main.ultraThinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                     }
@@ -104,6 +105,7 @@ struct PickerButton: View {
 
 
 struct NumpadButton: View {
+    @EnvironmentObject var theme: AppThemeController
     let title: String
     let systemImage: String?
     let action: () -> Void
@@ -119,7 +121,7 @@ struct NumpadButton: View {
             if let systemImage = systemImage {
                 Image(systemName: "\(systemImage)")
                     .font(.system(size: 40, weight: .black, design: .default))
-                    .foregroundColor(.lightOffWhite)
+                    .foregroundColor(theme.main.mainColor)
                     .shadow(radius: 3)
                     .background {
                         Color.Orange
@@ -134,7 +136,7 @@ struct NumpadButton: View {
                     .foregroundColor(.Orange)
                     .shadow(radius: 3)
                     .background {
-                        BlurView(style: .systemUltraThinMaterialLight)
+                        BlurView(style: theme.main.ultraThinMaterial)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .shadow(radius: 6)
                             .frame(width: UIScreen.main.bounds.width / 4, height: 50)

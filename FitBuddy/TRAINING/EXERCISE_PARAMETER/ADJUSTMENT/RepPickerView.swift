@@ -7,15 +7,28 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 struct RepPickerView: View {
+    @EnvironmentObject var theme: AppThemeController
+    var category: Category?
     @ObservedObject var exercisePerformance: FitnessExercisePerformance
+    
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    @State var targetParameter: TargetExerciseParameterStorage?
     @State var showRepSheet: Bool = false
+    
+    init(category: Category?,
+         exercisePerformance: FitnessExercisePerformance) {
+        self.category = category
+        self.exercisePerformance = exercisePerformance
+    }
     
     var body: some View {
         VStack {
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
+                withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
                     if exercisePerformance.targetCount == nil {
                         showRepSheet = true
                     } else {
@@ -23,58 +36,80 @@ struct RepPickerView: View {
                     }
                 }
             }) {
-                Text("REP")
-                    .font(.system(size: 30, weight: .black))
-                    .foregroundColor((exercisePerformance.targetCount == nil) ? Color.Orange : Color.lightOffWhite)
-                    .shadow(radius: 3)
-                    .frame(width: UIScreen.main.bounds.width - 100, height: 50)
-                    .background {
-                        if !(exercisePerformance.targetCount == nil) {
-                            Color.Orange
-                                .clipShape(RoundedRectangle(cornerRadius: 30))
-                                .shadow(radius: 6)
-                        } else {
-                            Color.lightOffWhite
-                                .clipShape(RoundedRectangle(cornerRadius: 30))
-                                .shadow(radius: 6)
-                        }
+                HStack {
+                    Image(systemName: "repeat")
+                    Text("Rep")
+                }
+                .font(.system(size: 25, weight: .heavy))
+                .foregroundColor((exercisePerformance.targetCount == nil) ? Color.Orange : Color.lightOffWhite)
+                .shadow(radius: 3)
+                .frame(height: 40)
+                .frame(maxWidth: .infinity)
+                .background {
+                    if !(exercisePerformance.targetCount == nil) {
+                        Color.Orange
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .shadow(radius: 6)
+                    } else {
+                        BlurView(style: theme.main.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .shadow(radius: 6)
                     }
+                }
             }
             .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
             .customHeightSheet(showSheet: $showRepSheet, sheetHeight: 400) {
                 RepSettingView(input: $exercisePerformance.targetCount, showRepSheet: $showRepSheet)
+                    .environmentObject(AppThemeController())
             } onEnd: {}
+
             
-            if let targetCount = exercisePerformance.targetCount {
+            if exercisePerformance.targetCount != nil {
                 Button(action: {
                     showRepSheet = true
                 }) {
-                    Text("\(targetCount)")
-                        .font(.system(size: 30, weight: .heavy))
+                    Text("\(exercisePerformance.targetCount ?? 0)")
+                        .font(.system(size: 25, weight: .heavy))
                         .foregroundColor(Color.Orange)
                         .shadow(radius: 3)
-                        .frame(width: UIScreen.main.bounds.width - 100, height: 50)
+                        .frame(height: 40)
+                        .frame(maxWidth: .infinity)
                         .background {
-                            BlurView(style: .systemUltraThinMaterialLight)
+                            BlurView(style: theme.main.ultraThinMaterial)
                                 .clipShape(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 6)
                         }
                         .minimumScaleFactor(0.2)
                 }
                 .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
-                .transition(.offset(y: -30).combined(with: .scale.combined(with: .opacity)))
+                .transition(.scale)
             }
         }
-        .padding(5)
-        .background {
-            BlurView(style: .systemMaterialLight)
-                .clipShape(RoundedRectangle(cornerRadius: 30))
+        .mask(RoundedRectangle(cornerRadius: 20))
+        .background (BlurRoundedBackground(cornerRadius: 20, shadowRadius: 2))
+        .animation(.interactiveSpring(response: 0.5, dampingFraction: 1), value: exercisePerformance.targetCount)
+        // Set up targetParameter and save viewContext
+        .onAppear {
+            if !self.exercisePerformance.keepAvailable {
+                self.targetParameter = TargetExerciseParameterStorage.loadTargetParameter(for: self.category?.name ?? "", in: viewContext)
+                if Int(targetParameter?.targetCount ?? -1) == -1 {
+                    self.exercisePerformance.targetCount = nil
+                } else {
+                    self.exercisePerformance.targetCount = Int(targetParameter?.targetCount ?? -1)
+                }
+            }
         }
-        .animation(.interactiveSpring(response: 0.5, dampingFraction: 0.6), value: exercisePerformance.targetCount)
+        .onDisappear {
+            targetParameter?.targetCount = Int32(exercisePerformance.targetCount ?? -1)
+            try? viewContext.save()
+        }
     }
 }
 
+
+
 struct RepSettingView: View {
+    @EnvironmentObject var theme: AppThemeController
     @Binding var input: Int?
     @Binding var showRepSheet: Bool
     @State private var showNumpad = false
@@ -83,7 +118,7 @@ struct RepSettingView: View {
     
     var body: some View {
         ZStack {
-            BlurView(style: .systemUltraThinMaterialLight).ignoresSafeArea()
+            BlurView(style: theme.main.ultraThinMaterial).ignoresSafeArea()
             
             if !showNumpad {
                 AvailablePicker(input: $input,
@@ -97,7 +132,8 @@ struct RepSettingView: View {
             }
 
         }
-        .animation(.interactiveSpring(response: 0.5, dampingFraction: 0.7), value: showNumpad)
+        .environmentObject(AppThemeController())
+        .animation(.interactiveSpring(response: 0.5, dampingFraction: 1), value: showNumpad)
         .frame(width: UIScreen.main.bounds.width - 40, height: 400)
         .clipShape(RoundedRectangle(cornerRadius: 30))
         .shadow(radius: 8, x: 10, y: 15)
@@ -133,11 +169,6 @@ struct AvailablePicker: View {
                 .onTapGesture {
                     showNumpad = true
                 }
-                .onLongPressGesture(minimumDuration: 2, pressing: {isPressing in
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
-                        isPressingOnPlus = isPressing
-                    }
-                }, perform: {})
                 
                 ForEach(availablePickers, id: \.self) { availablePicker in
                     PickerButton(title: availablePicker)
@@ -147,7 +178,7 @@ struct AvailablePicker: View {
                         input = availablePicker
                         showRepSheet = false
                     }
-                    .onLongPressGesture(minimumDuration: 2, pressing: { isPressing in
+                    .onLongPressGesture(minimumDuration: 1.5, pressing: { isPressing in
                         isPressingOnText = isPressing
                         if isPressing {beingPressedOn = availablePicker}
                         else {beingPressedOn = nil}
@@ -171,6 +202,7 @@ struct AvailablePicker: View {
 }
 
 struct NumpadSheet: View {
+    @EnvironmentObject var theme: AppThemeController
     @Binding var input: Int?
     @State var numberString: String = ""
     @Binding var showRepSheet: Bool
@@ -183,7 +215,7 @@ struct NumpadSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
-                BlurView(style: .systemUltraThinMaterialLight)
+                BlurView(style: theme.main.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .shadow(radius: 7)
                 Text(numberString)
@@ -213,15 +245,17 @@ struct NumpadSheet: View {
                 NumpadButton(title: "checkmark", systemImage: "checkmark") {
                     showRepSheet = false
                     if let validInput = input {
-                        availablePicker.append(validInput)
-                        encodeAvailablePickerArray(availablePicker)
+                        if !availablePicker.contains(validInput) {
+                            availablePicker.append(validInput)
+                            encodeAvailablePickerArray(availablePicker)
+                        }
                     }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
         .onChange(of: numberString) { newValue in
-            if newValue.count > 6 || newValue.first == "0" {
+            if newValue.count > 4 || newValue.first == "0" {
                 input = nil
                 numberString = ""
             }
@@ -243,6 +277,9 @@ struct NumpadSheet: View {
 
 struct RepPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        RepPickerView(exercisePerformance: FitnessExercisePerformance())
+        @State var category: Category?
+        RepPickerView(category: category, exercisePerformance: FitnessExercisePerformance())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(AppThemeController())
     }
 }

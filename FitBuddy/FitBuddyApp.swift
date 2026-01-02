@@ -4,18 +4,34 @@
 //
 //  Created by Hung Nguyen on 02/06/2025.
 //
-
+import Foundation
 import SwiftUI
-import AVFoundation
-
+import FirebaseAuth
+import GoogleSignIn
+import Firebase
 
 @main
 struct FitBuddyApp: App {
-//    @State private var cameraPermissionGranted = false
+    @StateObject var userController = UserController()
     var body: some Scene {
         WindowGroup {
+            ContentView()
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
+                }
+                .onAppear {
+                    FirebaseApp.configure()
+                    userController.restorePreviousSignIn()
+                }
+                .environmentObject(userController)
+                .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+        }
+    }
+}
+
+
+
 //            if cameraPermissionGranted {
-                ContentView()
 //                    .onAppear {
 //                        AVCaptureDevice.requestAccess(for: .video) { accessGranted in
 //                            DispatchQueue.main.async {
@@ -24,6 +40,3 @@ struct FitBuddyApp: App {
 //                        }
 //                    }
 //            }
-        }
-    }
-}

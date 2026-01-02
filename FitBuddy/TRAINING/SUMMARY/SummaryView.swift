@@ -8,19 +8,19 @@
 import SwiftUI
 
 struct SummaryView: View {
+    @EnvironmentObject var theme: AppThemeController
+    let category: Category?
     @ObservedObject var exercisePerformance: FitnessExercisePerformance
     let screenWidth = UIScreen.main.bounds.width - 40
-
-    init(exercisePerformance: FitnessExercisePerformance) {
-        self._exercisePerformance = ObservedObject(wrappedValue: exercisePerformance)
-    }
+    @Environment(\.managedObjectContext) var viewContext
 
     var body: some View {
-        if exercisePerformance.exerciseStarted && exercisePerformance.exerciseEnded {
-            ZStack {
-                AppBackground().ignoresSafeArea()
-                VStack(spacing: 10) {
-                    TitleText
+        ZStack {
+            AppBackground().ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                TitleText
+                
                     RepSummaryView(screenWidth: screenWidth,
                                totalCorrect: CGFloat(exercisePerformance.totalCorrect),
                                totalIncorrect: CGFloat(exercisePerformance.totalIncorrect),
@@ -28,40 +28,49 @@ struct SummaryView: View {
                     TimeSummaryView(screenWidth: screenWidth,
                                 totalTime: CGFloat(exercisePerformance.totalTime),
                                 targetTime: exercisePerformance.targetTime)
-                    .padding(.top, 10)
                     FeedbackSummaryView(screenWidth: screenWidth,
                                     feedbackText: exercisePerformance.feedbackText,
                                     totalCorrect: exercisePerformance.totalCorrect,
                                     totalCount: exercisePerformance.totalCorrect + exercisePerformance.totalIncorrect)
-                    .padding(.top, 10)
                     DoneButton
-                }
+                
             }
+        }
+        .onAppear {
+            _ = {
+                let obj = SummaryExerciseParameterStorage(context: viewContext)
+                obj.dateAdded = Date()
+                obj.categoryName = category?.name
+                
+                obj.totalCorrect = Int32(exercisePerformance.totalCorrect)
+                obj.totalIncorrect = Int32(exercisePerformance.totalIncorrect)
+                obj.targetCount = Int32(exercisePerformance.targetCount ?? -1)
+                
+                obj.totalTime = Int32(exercisePerformance.totalTime)
+                obj.targetTime = Int32(exercisePerformance.targetTime ?? -1)
+                
+                obj.feedbackText = SummaryExerciseParameterStorage.encodeFeedbackStrings(exercisePerformance.feedbackText ?? [""])
+                
+                
+                return obj
+            }()
+            try? viewContext.save()
         }
     }
     
     var TitleText: some View {
-        Text("Summary")
-            .foregroundColor(.lightOffWhite)
-            .font(.system(size: 35, weight: .heavy, design: .default))
-            .padding(.horizontal)
-            .background(
-                Color.Orange.opacity(0.8)
-                    .clipShape(RoundedRectangle(cornerRadius: 30))
-            )
+        AppHeadingView(title: "Summary")
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal)
-            .shadow(radius: 3)
+            .padding(.leading, 30)
     }
     
     var DoneButton: some View {
         Button(action: {
-            exercisePerformance.exerciseStarted = false
-            exercisePerformance.exerciseEnded = false
+            exercisePerformance.reinitialize()
         }) {}
             .buttonStyle(ScaledButtonStyle_OffColorText(text: "Done",
                                                         originColor: .Orange,
-                                                        offColor: .lightOffWhite,
+                                                        offColor: theme.main.mainColor,
                                                         textFont: 30,
                                                         scaleRadius: 0.7,
                                                         animationDuration: 0.2))
@@ -72,6 +81,9 @@ struct SummaryView: View {
 
 struct SummaryView_Previews: PreviewProvider {
     static var previews: some View {
-        SummaryView(exercisePerformance: FitnessExercisePerformance())
+        @State var category = FitnessExerciseCategory().categories.first
+        SummaryView(category: category, exercisePerformance: FitnessExercisePerformance())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(AppThemeController())
     }
 }

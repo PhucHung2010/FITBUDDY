@@ -46,46 +46,55 @@ struct StatusBarView: View {
     @ViewBuilder
     func counterSection(screenWidth: Double) -> some View {
         HStack() {
-            if let targetCount = controller.targetCount {
-                Text("\(controller.totalCorrect) | \(targetCount)")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundColor(.black)
-                    .shadow(color: .black.opacity(0.4), radius: 2, x: 2, y: 2)
-                    .shadow(color: .white.opacity(0.6), radius: 1, x: -1.5, y: -1.5)
-                    .frame(width: 100, height: 45)
-                    .padding(.horizontal, 1)
-                    .background(
-                        BlurView(style: .systemUltraThinMaterialLight)
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .shadow(radius: 6)
-                    )
-                    .minimumScaleFactor(0.3)
-                    .lineLimit(1)
+            VStack(spacing: 0) {
+                Text("\(controller.totalCorrect)")
+//                Divider().frame(height: 1).background(Color.darkGray)
+//                Text("\(controller.totalIncorrect)")
+                if let targetCount = controller.targetCount {
+                    Divider().frame(height: 1).background(Color.darkGray)
+                    Text("\(targetCount)")
+                }
             }
+            .font(.system(size: 34, weight: .bold, design: .rounded))
+            .foregroundColor(.black)
+            .shadow(color: .black.opacity(0.4), radius: 2, x: 2, y: 2)
+            .shadow(color: .white.opacity(0.6), radius: 1, x: -1.5, y: -1.5)
+            .frame(width: 100, height: 50)
+            .background(
+                BlurView(style: .systemUltraThinMaterialLight)
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .shadow(radius: 6)
+            )
+            .minimumScaleFactor(0.3)
+            .lineLimit(1)
+            
 
 
-            if let targetTime = controller.targetTime {
-                Text("\(controller.totalTime) | \(targetTime)")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundColor(.black)
-                    .shadow(color: .black.opacity(0.4), radius: 2, x: 2, y: 2)
-                    .shadow(color: .white.opacity(0.6), radius: 1, x: -1.5, y: -1.5)
-                    .frame(width: 100, height: 45)
-                    .padding(.horizontal, 1)
-                    .background(
-                        BlurView(style: .systemUltraThinMaterialLight)
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .shadow(radius: 6)
-                    )
-                    .minimumScaleFactor(0.3)
-                    .lineLimit(1)
+            VStack(spacing: 0) {
+                Text("\(Int(controller.totalTime) / 60):\(String(format: "%02d", Int(controller.totalTime) % 60))")
+
+                if let targetTime = controller.targetTime {
+                    Divider().frame(height: 1).background(Color.darkGray)
+                    Text("\(Int(targetTime) / 60):\(String(format: "%02d", Int(targetTime) % 60))")
+                }
             }
+            .font(.system(size: 34, weight: .bold, design: .rounded))
+            .foregroundColor(.black)
+            .shadow(color: .black.opacity(0.4), radius: 2, x: 2, y: 2)
+            .shadow(color: .white.opacity(0.6), radius: 1, x: -1.5, y: -1.5)
+            .frame(width: 100, height: 50)
+            .background(
+                BlurView(style: .systemUltraThinMaterialLight)
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .shadow(radius: 6)
+            )
+            .minimumScaleFactor(0.3)
+            .lineLimit(1)
 
 
             Button(action: {
-                withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
-                    controller.exerciseEnded = true
-                    controller.quickPose.stop()
+                Task {
+                    controller.exerciseStatus = .summary
                 }
             }) {}
                 .buttonStyle(ScaledButtonStyle_OffColorText(text: "Finish", originColor: .green.opacity(0.8), offColor: .offWhite, textFont: 30, scaleRadius: 0.7, animationDuration: 0.2))
@@ -94,6 +103,18 @@ struct StatusBarView: View {
         .padding(.bottom, 5)
     }
 
+    
+
+    @State private var userScrolled = false
+    private var dynamicHeight: CGFloat {
+       guard let last = controller.feedbackText?.last else { return 50 }
+       
+       if last.isEmpty {
+           return 0
+       } else {
+           return 50
+       }
+   }
     @ViewBuilder
     func feedbackScrollSection(screenWidth: Double) -> some View {
         ScrollViewReader { proxy in
@@ -120,12 +141,13 @@ struct StatusBarView: View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 10))
-        .frame(height: 50)
+        .frame(height: dynamicHeight)
+        .animation(.easeInOut(duration: 0.15), value: dynamicHeight)
     }
 }
 
-//struct StatusBar_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StatusBar()
-//    }
-//}
+struct StatusBar_Previews: PreviewProvider {
+    static var previews: some View {
+        StatusBarView(controller: FitnessExercisePerformance())
+    }
+}

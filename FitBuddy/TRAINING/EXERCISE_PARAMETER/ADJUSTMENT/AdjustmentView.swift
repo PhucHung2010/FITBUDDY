@@ -6,25 +6,31 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct AdjustmentView: View {
+    @Binding var category: Category?
     @ObservedObject var exercisePerformance: FitnessExercisePerformance
-    @State var showRepPickerView: Bool = false
-    @State var showTimePickerView: Bool = false
-    @State var showFeedbackPickerView: Bool = false
     var body: some View {
         VStack() {
-            RepPickerView(exercisePerformance: exercisePerformance)
-            TimePickerView(exercisePerformance: exercisePerformance)
-            FeedbackPickerView(exercisePerformance: exercisePerformance)
+            HStack {
+                RepPickerView(category: category, exercisePerformance: exercisePerformance)
+                TimePickerView(category: category, exercisePerformance: exercisePerformance)
+            }
+            .frame(width: UIScreen.main.bounds.width - 100)
+            FeedbackPickerView(category: category, exercisePerformance: exercisePerformance)
+            CameraOptionView(category: category, exercisePerformance: exercisePerformance)
+            ArcSizePickerView(category: category, exercisePerformance: exercisePerformance)
         }
-        .frame(width: UIScreen.main.bounds.width - 40)
-        .transition(.offset(y: -300).combined(with: .scale.combined(with: .opacity)))
+        .transition(.scale)
     }
 }
 
 struct AdjustmentView_Previews: PreviewProvider {
     static var previews: some View {
-        AdjustmentView(exercisePerformance: FitnessExercisePerformance())
+        @State var category: Category?
+        AdjustmentView(category: $category, exercisePerformance: FitnessExercisePerformance())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
+

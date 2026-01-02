@@ -9,34 +9,34 @@ import SwiftUI
 import Foundation
 import UIKit
 
-class WideViewController: ObservableObject {
-    @Published var SHOW_TAB_BAR: Bool = true
+class TabViewController: ObservableObject {
+    @Published var showTabBar: Bool = true
+    @Published var activeTab: Tab = .Fitness
 }
 
 struct WideTabView: View {
-    @StateObject var wideViewController = WideViewController()
+    @StateObject var tabViewController = TabViewController()
+    @StateObject var theme = AppThemeController()
+    @EnvironmentObject var userController: UserController
     
-    @State private var activeTab: Tab = .Fitness
-    @State private var beforeChangeThemeTab: Tab = .Home
     @Namespace private var animation
     @State private var tabShapePosition: CGPoint = .zero
     @State var uiTabarController: UITabBarController?
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            TabView(selection: $activeTab) {
+            TabView(selection: $tabViewController.activeTab) {
                 FitnessView()
                     .tag(Tab.Fitness)
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
                      })
                     
-                    
-                HealthInsuranceView()
-                    .tag(Tab.HealthInsurace)
-                    .background(TabBarAccessor { tabBar in
-                        tabBar.isHidden = true
-                     })
+//                HealthInsuranceView()
+//                    .tag(Tab.HealthInsurace)
+//                    .background(TabBarAccessor { tabBar in
+//                        tabBar.isHidden = true
+//                     })
                 
                 HomeView()
                     .tag(Tab.Home)
@@ -44,11 +44,11 @@ struct WideTabView: View {
                         tabBar.isHidden = true
                      })
                 
-                RankingView()
-                    .tag(Tab.Ranking)
-                    .background(TabBarAccessor { tabBar in
-                        tabBar.isHidden = true
-                     })
+//                RankingView()
+//                    .tag(Tab.Ranking)
+//                    .background(TabBarAccessor { tabBar in
+//                        tabBar.isHidden = true
+//                     })
                 
                 AppSettingView()
                     .tag(Tab.Setting)
@@ -56,35 +56,36 @@ struct WideTabView: View {
                         tabBar.isHidden = true
                      })
             }
-            
             CustomTabBar()
         }
-        .environmentObject(wideViewController)
+        .environmentObject(tabViewController)
+        .environmentObject(theme)
     }
     
     
     @ViewBuilder
     func CustomTabBar() -> some View {
-        if wideViewController.SHOW_TAB_BAR {
-            HStack(alignment: .bottom, spacing: UIScreen.main.bounds.width / 12) {
+        if tabViewController.showTabBar {
+            HStack(alignment: .bottom, spacing: (UIScreen.main.bounds.width) / 12.5) {
                 ForEach(Tab.allCases, id: \.rawValue) {
                     TabItem(
                         tint: Color.Orange,
-                        activeTint: Color.offWhite,
+                        activeTint: theme.main.tabbar,
                         inactiveTint: Color.Orange,
                         tab: $0,
                         animation: animation,
-                        activeTab: $activeTab,
+                        activeTab: $tabViewController.activeTab,
                         position: $tabShapePosition
                     )
                 }
             }
             .background(content: {
-                TabShape(midpoint: tabShapePosition.x - 16)
-                    .foregroundColor(.offWhite)
-                    .frame(width: UIScreen.main.bounds.width - 32, height: 40)
-                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: 2, y: 10)
-                    .shadow(color: Color.black.opacity(0.08), radius: 4, x: -2, y: 10)
+                TabShape(midpoint: tabShapePosition.x - 75)
+                    .foregroundColor(theme.main.tabbar)
+                    .frame(width: UIScreen.main.bounds.width - 150, height: 40)
+                    .frame(height: 40)
+                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: 2, y: 12)
+                    .shadow(color: Color.black.opacity(0.06), radius: 3, x: -2, y: 12)
             })
             .transition(.move(edge: .bottom))
         }
@@ -104,75 +105,47 @@ struct TabItem: View {
     @State private var tabPosition: CGPoint = .zero
     
     var body: some View {
-        Image(systemName: tab.systemImage)
-            .font(.system(size: 25, weight: .medium))
-            .foregroundColor(activeTab == tab ? activeTint : inactiveTint)
-            .scaleEffect(activeTab == tab ? 1.3 : 1)
-            .background {
-                if activeTab == tab {
-                    Circle()
-                        .fill(tint)
-                        .matchedGeometryEffect(id: "ACTIVETAB", in: animation)
-                        .frame(width: 50, height: 50)
+        VStack(spacing: 0) {
+            Image(systemName: tab.systemImage)
+                .font(.system(size: 25, weight: .medium))
+                .foregroundColor(activeTab == tab ? activeTint : inactiveTint)
+                .scaleEffect(activeTab == tab ? 1.25 : 1)
+                .shadow(radius: 1)
+                .background {
+                    if activeTab == tab {
+                        Circle()
+                            .fill(tint)
+                            .matchedGeometryEffect(id: "ACTIVETAB", in: animation)
+                            .frame(width: 48, height: 48)
+                            .shadow(radius: 3)
+                    }
                 }
-            }
-            .frame(height: 50)
-            .offset(y: activeTab == tab ? -10 : 0)
-            .onTapGesture {
-                withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.7)) {
-                    position.x = tabPosition.x
-                    activeTab = tab
+                .frame(height: 48)
+                .offset(y: activeTab == tab ? -10 : 0)
+                .onTapGesture {
+                    withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 1)) {
+                        position.x = tabPosition.x
+                        activeTab = tab
+                    }
                 }
-            }
-            .viewPosition(completion:  {rect in
-                tabPosition.x = rect.midX
-                if activeTab == tab {
-                    position.x = rect.midX
-                }
-            })
-    }
-}
-
-struct TabShape: Shape {
-    var midpoint: CGFloat
-    var animatableData: CGFloat {
-        get {
-            midpoint
-        } set {
-            midpoint = newValue
-        }
-    }
-    
-    func path(in rect: CGRect) -> Path {
-        return Path { path in
-            path.addPath(RoundedRectangle(cornerRadius: 10).path(in: rect))
-
+                .viewPosition(completion:  {rect in
+                    tabPosition.x = rect.midX
+                    if activeTab == tab {
+                        position.x = rect.midX
+                    }
+                })
             
-            path.move(to: .init(x: midpoint - 32, y: 0))
-            
-            let to = CGPoint(x: midpoint, y: -20)
-            let control1 = CGPoint(x: midpoint - 25, y: 0)
-            let control2 = CGPoint(x: midpoint - 25, y: -19)
-
-            path.addCurve(to: to, control1: control1, control2: control2)
-            
-            let to1 = CGPoint(x: midpoint + 32, y: 0)
-            let control3 = CGPoint(x: midpoint + 25, y: -19)
-            let control4 = CGPoint(x: midpoint + 25, y: 0)
-            
-            path.addCurve(to: to1, control1: control3, control2: control4)
+//            Text(tab.rawValue)
         }
     }
 }
 
-
-
-
-
-
-struct TabView_Previews: PreviewProvider {
+struct WideTabView_Previews: PreviewProvider {
     static var previews: some View {
         WideTabView()
+            .environmentObject(AppThemeController())
+            .environmentObject(TabViewController())
+            .environmentObject(UserController())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
-    

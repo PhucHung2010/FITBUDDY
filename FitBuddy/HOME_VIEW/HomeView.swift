@@ -9,26 +9,53 @@ import SwiftUI
 import AudioToolbox
 
 struct HomeView: View {
+    @EnvironmentObject var theme: AppThemeController
+    @State var selectedDate = Date.now.startOfDay
+    @State var selectedCategory: Category?
+    @StateObject var exercisePerformance: FitnessExercisePerformance = FitnessExercisePerformance()
+    @Namespace private var animation
+    
     var body: some View {
         ZStack {
-            AppBackground()
-            Image(systemName: "house").ignoresSafeArea().font(.system(size: 200))
-            Button(action: {playTing()}) {
-                Text("TAP ME")
-                    .font(.system(size: 50))
+            if selectedCategory == nil {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        AppHeadingView(title: "FitBuddy")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.leading, 30)
+                        CalendarView(selectedDate: $selectedDate)
+                        RoutineView(selectedDate: $selectedDate,
+                                    selectedCategory: $selectedCategory,
+                                    exercisePerformance: exercisePerformance)
+                        .padding(.bottom, 20)
+                        ArchiveBox()
+                        
+                        Spacer().frame(height: 100)
+                    }
+                }
+                .onAppear {
+                    exercisePerformance.keepAvailable = true
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .foregroundColor(.orange)
+            else if selectedCategory != nil {
+                TrainingView(category: $selectedCategory,
+                             exercisePerformance: exercisePerformance)
+                    .transition(.move(edge: .trailing))
+            }
         }
-    }
-    
-    func playTing() {
-        AudioServicesPlaySystemSound(1113)
+        .background {
+            AppBackground()
+        }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+            .environmentObject(TabViewController())
+            .environmentObject(AppThemeController())
+            
+            .environmentObject(UserController())
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
