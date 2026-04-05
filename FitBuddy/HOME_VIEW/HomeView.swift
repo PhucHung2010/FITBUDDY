@@ -14,7 +14,7 @@ struct HomeView: View {
     @State var selectedCategory: Category?
     @StateObject var exercisePerformance: FitnessExercisePerformance = FitnessExercisePerformance()
     @Namespace private var animation
-    
+    // ap test
     var body: some View {
         ZStack {
             if selectedCategory == nil {
