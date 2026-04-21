@@ -41,13 +41,13 @@ struct RepPickerView: View {
                     Text("Rep")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((exercisePerformance.targetCount == nil) ? Color.Orange : Color.lightOffWhite)
+                .foregroundColor((exercisePerformance.targetCount == nil) ? theme.main.accent : Color.lightOffWhite)
                 .shadow(radius: 3)
                 .frame(height: 40)
                 .frame(maxWidth: .infinity)
                 .background {
                     if !(exercisePerformance.targetCount == nil) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                     } else {
@@ -68,9 +68,9 @@ struct RepPickerView: View {
                 Button(action: {
                     showRepSheet = true
                 }) {
-                    Text("\(exercisePerformance.targetCount ?? 0)")
-                        .font(.system(size: 25, weight: .heavy))
-                        .foregroundColor(Color.Orange)
+                    Image(systemName: "hand.tap.fill")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(theme.main.accent)
                         .shadow(radius: 3)
                         .frame(height: 40)
                         .frame(maxWidth: .infinity)

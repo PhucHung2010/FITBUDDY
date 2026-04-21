@@ -64,9 +64,7 @@ struct ContestView: View {
                             ContestCard(contest: contest, theme: theme) {
                                 selectedContest = contest
                             } onJoin: {
-                                Task {
-                                    await authManager.joinContest(contestId: contest.id)
-                                }
+                                selectedContest = contest
                             }
                         }
                         .padding(.horizontal, 16)
@@ -76,7 +74,7 @@ struct ContestView: View {
             }
         }
         .sheet(item: $selectedContest) { contest in
-            ContestDetailView(contest: contest)
+            ContestStatusView(contest: contest)
         }
         .task {
             await authManager.fetchContests()

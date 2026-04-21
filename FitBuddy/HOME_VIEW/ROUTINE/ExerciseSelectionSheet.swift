@@ -54,7 +54,7 @@ struct ExerciseSelectionSheet: View {
             Spacer().frame(height: 10)
             
             TextField("", text: $searchTerm, prompt: Text("Search Exercises").foregroundColor(theme.main.text))
-                .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: .Orange, roundedCornes: 20))
+                .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: theme.main.accent, roundedCornes: 20))
                 .focused($isTextFieldFocused)
                 .onChange(of: isTextFieldFocused) { isFocused in
                     if isFocused {
@@ -77,7 +77,7 @@ struct ExerciseSelectionSheet: View {
                         VStack(alignment: .leading, spacing: 10) {
                             Text(group.displayName)
                                 .font(.system(size: 25, weight: .bold, design: .rounded))
-                                .foregroundColor(.Orange)
+                                .foregroundColor(theme.main.accent)
                                 .padding(.horizontal)
                                 .background {
                                     BlurRoundedBackground(cornerRadius: 20, style: theme.main.ultraThinMaterial)
@@ -117,7 +117,7 @@ struct ExerciseSelectionSheet: View {
                                                     .frame(height: 40)
                                                     .frame(maxWidth: .infinity)
                                                     .background {
-                                                        Color.Orange
+                                                        theme.main.accent
                                                             .clipShape(RoundedRectangle(cornerRadius: 40))
                                                             .shadow(radius: 6)
                                                     }
@@ -129,7 +129,7 @@ struct ExerciseSelectionSheet: View {
                                 .overlay {
                                     if selectedCategoryId.contains(category.id) || isOccupied == category.id{
                                         RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.Orange, lineWidth: 5)
+                                            .stroke(theme.main.accent, lineWidth: 5)
                                             .transition(.opacity)
                                     }
                                 }
@@ -189,7 +189,7 @@ struct ExerciseSelectionSheet: View {
                         VStack {
                             Text(category.name)
                                 .font(.system(size: 20, weight: .heavy, design: .rounded))
-                                .foregroundStyle(.linearGradient(colors: [.Orange, .Orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .foregroundStyle(.linearGradient(colors: [theme.main.accent, theme.main.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
                                 .multilineTextAlignment(.center)
                                 .padding(.trailing, 5)
                                 .lineLimit(2)

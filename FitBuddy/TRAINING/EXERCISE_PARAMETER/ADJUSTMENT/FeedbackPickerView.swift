@@ -39,12 +39,12 @@ struct FeedbackPickerView: View {
                     Text("Feedback")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((exercisePerformance.feedback == false) ? Color.Orange : Color.lightOffWhite)
+                .foregroundColor((exercisePerformance.feedback == false) ? theme.main.accent : Color.lightOffWhite)
                 .shadow(radius: 3)
                 .frame(width: UIScreen.main.bounds.width - 100, height: 40)
                 .background {
                     if !(exercisePerformance.feedback == false) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                     } else {
@@ -79,7 +79,7 @@ struct FeedbackPickerView: View {
                     
                     Image(systemName: "speaker.wave.1")
                         .font(.system(size: 25, weight: .bold))
-                        .foregroundColor(.Orange)
+                        .foregroundColor(theme.main.accent)
                 }
                 .transition(.scale)
                 .padding(.top, 10)

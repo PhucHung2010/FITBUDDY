@@ -58,12 +58,12 @@ struct AngleBlurOptionView: View {
                         Text("Angle Blur")
                     }
                     .font(.system(size: 25, weight: .heavy))
-                    .foregroundColor(!showAngleBlurOption ? Color.Orange : Color.lightOffWhite)
+                    .foregroundColor(!showAngleBlurOption ? theme.main.accent : Color.lightOffWhite)
                     .shadow(radius: 3)
                     .frame(width: UIScreen.main.bounds.width - 100, height: 40)
                     .background {
                         if showAngleBlurOption {
-                            Color.Orange
+                            theme.main.accent
                                 .clipShape(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 6)
                         } else {

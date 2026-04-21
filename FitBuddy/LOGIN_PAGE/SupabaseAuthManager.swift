@@ -21,6 +21,7 @@ class SupabaseAuthManager: ObservableObject {
     @Published var isAuthenticated: Bool = false
     @Published var currentUser: User? = nil
     @Published var currentUserProfile: UserModel? = nil
+    @Published var userBadges: [BadgeModel] = []
     @Published var errorMessage: String? = nil
     @Published var isLoading: Bool = false
 
@@ -39,6 +40,7 @@ class SupabaseAuthManager: ObservableObject {
                 self.isAuthenticated = true
             }
             await fetchProfile(userId: session.user.id)
+            await fetchBadges(userId: session.user.id)
         } catch {
             await MainActor.run {
                 self.isAuthenticated = false
@@ -108,6 +110,7 @@ class SupabaseAuthManager: ObservableObject {
                 }
                 
                 await fetchProfile(userId: session.user.id)
+                await fetchBadges(userId: session.user.id)
             } catch {
                 await MainActor.run {
                     self.errorMessage = error.localizedDescription
@@ -152,6 +155,25 @@ class SupabaseAuthManager: ObservableObject {
         } catch {
             // Profile might not exist yet, or error fetching
             print("Failed to fetch profile: \(error)")
+        }
+    }
+    
+    // MARK: - API Badge Methods
+    
+    func fetchBadges(userId: UUID) async {
+        do {
+            let badges: [BadgeModel] = try await supabase
+                .from("user_badges")
+                .select()
+                .eq("user_id", value: userId.uuidString)
+                .execute()
+                .value
+            
+            await MainActor.run {
+                self.userBadges = badges
+            }
+        } catch {
+            print("Failed to fetch badges: \(error)")
         }
     }
     
@@ -249,18 +271,22 @@ class SupabaseAuthManager: ObservableObject {
                 .execute()
                 .value
             
+            print("✅ Fetched \(fetched.count) contests")
+            
             // For each contest, get participant count and check if current user joined
             for i in fetched.indices {
-                let countResult: [ContestParticipant] = try await supabase
+                // Only select minimal fields to avoid decoding issues
+                let participants: [[String: String]] = try await supabase
                     .from("contest_participants")
-                    .select()
+                    .select("id, user_id")
                     .eq("contest_id", value: fetched[i].id)
                     .execute()
                     .value
-                fetched[i].participantCount = countResult.count
+                
+                fetched[i].participantCount = participants.count
                 
                 if let userId = currentUser?.id {
-                    fetched[i].isJoined = countResult.contains { $0.userId == userId.uuidString }
+                    fetched[i].isJoined = participants.contains { $0["user_id"] == userId.uuidString }
                 }
             }
             
@@ -269,6 +295,7 @@ class SupabaseAuthManager: ObservableObject {
             }
         } catch {
             print("❌ Failed to fetch contests: \(error)")
+            print("❌ Error details: \(String(describing: error))")
         }
     }
     
@@ -322,7 +349,7 @@ class SupabaseAuthManager: ObservableObject {
         do {
             let entries: [LeaderboardEntry] = try await supabase
                 .from("contest_participants")
-                .select("*, profiles(name, username, avatar_url)")
+                .select("id, contest_id, user_id, accuracy, time_seconds, completed, profiles(name, username, avatar_url)")
                 .eq("contest_id", value: contestId)
                 .eq("completed", value: true)
                 .order("accuracy", ascending: false)
@@ -330,11 +357,14 @@ class SupabaseAuthManager: ObservableObject {
                 .execute()
                 .value
             
+            print("✅ Fetched \(entries.count) leaderboard entries")
+            
             await MainActor.run {
                 self.leaderboard = entries
             }
         } catch {
             print("❌ Failed to fetch leaderboard: \(error)")
+            print("❌ Leaderboard error details: \(String(describing: error))")
         }
     }
     

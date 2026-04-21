@@ -36,13 +36,13 @@ struct TimePickerView: View {
                     Text("Time")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((exercisePerformance.targetTime == nil) ? Color.Orange : Color.lightOffWhite)
+                .foregroundColor((exercisePerformance.targetTime == nil) ? theme.main.accent : Color.lightOffWhite)
                 .shadow(radius: 3)
                 .frame(height: 40)
                 .frame(maxWidth: .infinity)
                 .background {
                     if !(exercisePerformance.targetTime == nil) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                     } else {
@@ -61,7 +61,7 @@ struct TimePickerView: View {
                             ForEach(0..<60) { minute in
                                 Text("\(minute)")
                                     .font(.system(size: 25, weight: .heavy))
-                                    .foregroundColor(.Orange)
+                                    .foregroundColor(theme.main.accent)
                             }
                         }
                         .pickerStyle(.wheel)
@@ -71,7 +71,7 @@ struct TimePickerView: View {
                             ForEach(0..<60) { second in
                                 Text("\(second)")
                                     .font(.system(size: 25, weight: .heavy))
-                                    .foregroundColor(.Orange)
+                                    .foregroundColor(theme.main.accent)
                             }
                         }
                         .pickerStyle(.wheel)
@@ -96,7 +96,7 @@ struct TimePickerView: View {
                             .frame(height: 40)
                             .frame(maxWidth: .infinity)
                             .background {
-                                Color.Orange
+                                theme.main.accent
                                     .clipShape(RoundedRectangle(cornerRadius: 40))
                                     .shadow(radius: 6)
                             }
@@ -115,7 +115,7 @@ struct TimePickerView: View {
                 }) {
                     Text("\(selectedMinute):\(selectedSecond)")
                         .font(.system(size: 25, weight: .heavy))
-                        .foregroundColor(Color.Orange)
+                        .foregroundColor(theme.main.accent)
                         .shadow(radius: 3)
                         .frame(height: 40)
                         .frame(maxWidth: .infinity)

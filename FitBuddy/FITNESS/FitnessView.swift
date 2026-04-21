@@ -126,7 +126,7 @@ struct FitnessGallery: View {
                     }
 
             }
-            .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: .Orange, roundedCornes: 20))
+            .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: theme.main.accent, roundedCornes: 20))
             .padding(.horizontal)
             
             if showAbstract {
@@ -168,7 +168,7 @@ struct FitnessGallery: View {
                                     Divider()
                                 }
                                 .background(
-                                    searchTerm == category.name ? Color.Orange : Color.white.opacity(0.00001)
+                                    searchTerm == category.name ? theme.main.accent : Color.white.opacity(0.00001)
                                 )
                             }
                             .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
@@ -230,7 +230,7 @@ struct FitnessGallery: View {
                                 
                                 Text(category.name)
                                     .font(.system(size: 22, weight: .heavy, design: .rounded))
-                                    .foregroundStyle(.linearGradient(colors: [.Orange, .Orange], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                    .foregroundStyle(.linearGradient(colors: [theme.main.accent, theme.main.accent], startPoint: .topLeading, endPoint: .bottomTrailing))
                                     .multilineTextAlignment(.center)
                                     .frame(width: (UIScreen.main.bounds.width - 30) / 2.5)
                                     .minimumScaleFactor(0.5)

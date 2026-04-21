@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CustomSlider: View {
     
+    @EnvironmentObject var theme: AppThemeController
     @Binding private var sliderValue: Float
     @State private var draftSliderValue: Float
     @State private var isDragging = false
@@ -36,7 +37,7 @@ struct CustomSlider: View {
                 .frame(width: (sliderWidth), height: 25)
                 .overlay() {
                     RoundedRectangle(cornerRadius: 30)
-                        .fill(Color.Orange)
+                        .fill(theme.main.accent)
                         .frame(width: CGFloat(CGFloat(draftSliderValue) / sliderLimit) * (sliderWidth), height: 25)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     RoundedRectangle(cornerRadius: 45)

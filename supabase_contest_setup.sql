@@ -73,4 +73,33 @@ VALUES
 ('Curl Master', 'Perfect your bicep curls. 15 reps, highest accuracy wins!', 'Dumbbell Curl', 15, 'easy', 100, 'dumbbell.fill', '#2196F3', now(), now() + interval '14 days'),
 ('Push-Up Beast', 'Show your chest strength. 25 push-ups with monitored form accuracy.', 'Push-Up', 25, 'hard', 250, 'flame.fill', '#FF5722', now(), now() + interval '7 days'),
 ('Jumping Jack Sprint', 'Cardio blast! Complete 30 jumping jacks at top accuracy.', 'Jumping Jack', 30, 'easy', 80, 'bolt.fill', '#FFC107', now(), now() + interval '7 days'),
-('Core Crusher', 'Sit-up showdown! 20 sit-ups with the best form wins.', 'Sit-Up', 20, 'medium', 120, 'figure.core.training', '#9C27B0', now(), now() + interval '14 days');
+('Core Crusher', 'Sit-up showdown! 20 sit-ups with the best form wins.', 'Sit-Up', 20, 'medium', 120, 'figure.core.training', '#9C27B0', now(), now() + interval '14 days'),
+-- Fast-tracked past contest to test the badge UI
+('Retro Squat Challenge', 'A contest from last week. Do you have what it takes?', 'Squat', 5, 'easy', 50, 'clock.fill', '#607D8B', now() - interval '7 days', now() - interval '1 days');
+
+
+-- ============================================
+-- STEP 5: Create user_badges View
+-- ============================================
+-- This view dynamically evaluates ended contests and returns the top 3 users as having earned badges.
+CREATE OR REPLACE VIEW user_badges AS
+WITH ranked_participants AS (
+    SELECT 
+        cp.contest_id,
+        cp.user_id,
+        RANK() OVER (PARTITION BY cp.contest_id ORDER BY cp.accuracy DESC NULLS LAST, cp.time_seconds ASC NULLS LAST) as rank
+    FROM contest_participants cp
+    JOIN contests c ON c.id = cp.contest_id
+    WHERE cp.completed = true
+)
+SELECT 
+    rp.contest_id,
+    rp.user_id,
+    c.title AS contest_title,
+    rp.rank
+FROM ranked_participants rp
+JOIN contests c ON c.id = rp.contest_id
+WHERE rp.rank <= 3;
+
+-- Grant public read access
+GRANT SELECT ON user_badges TO public;

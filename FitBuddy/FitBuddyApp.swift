@@ -12,6 +12,7 @@ import GoogleSignIn
 struct FitBuddyApp: App {
     @StateObject var userController = UserController()
     @StateObject var supabaseAuthManager = SupabaseAuthManager()
+    @StateObject var socialManager = SocialManager()
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -20,6 +21,7 @@ struct FitBuddyApp: App {
                 }
                 .environmentObject(userController)
                 .environmentObject(supabaseAuthManager)
+                .environmentObject(socialManager)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }

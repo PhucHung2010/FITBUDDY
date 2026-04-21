@@ -51,12 +51,12 @@ struct CameraOptionView: View {
                         Text("Camera")
                     }
                     .font(.system(size: 25, weight: .heavy))
-                    .foregroundColor(!showCameraOption ? Color.Orange : Color.lightOffWhite)
+                    .foregroundColor(!showCameraOption ? theme.main.accent : Color.lightOffWhite)
                     .shadow(radius: 3)
                     .frame(width: UIScreen.main.bounds.width - 100, height: 40)
                     .background {
                         if showCameraOption {
-                            Color.Orange
+                            theme.main.accent
                                 .clipShape(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 6)
                         } else {
@@ -110,20 +110,20 @@ struct CameraOptionView: View {
                             .font(.system(size: 17, weight: .bold))
                     }
                     Text(cameraOption.rawValue)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 15, weight: .heavy))
                 }
-                .foregroundColor(currentCameraOption == cameraOption ? theme.main.mainColor : .Orange)
+                .foregroundColor(currentCameraOption == cameraOption ? theme.main.accent.opacity(1) == theme.main.mainColor ? .white : theme.main.mainColor : theme.main.accent)
                 .shadow(radius: 2)
                 .scaleEffect(currentCameraOption == cameraOption ? 1.3 : 1)
-                .frame(width: 120, height: 35)
+                .padding(.vertical, 10)
+                .frame(width: (UIScreen.main.bounds.width - 150) / 2)
                 .background {
                     if currentCameraOption == cameraOption {
-                        RoundedRectangle(cornerRadius: 45)
-                            .fill(Color.Orange)
-                            .matchedGeometryEffect(id: "ActiveCameraOption", in: animation)
+                        theme.main.accent
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                             .shadow(radius: 4)
                     } else {
-                        RoundedRectangle(cornerRadius: 45)
+                        RoundedRectangle(cornerRadius: 20)
                             .fill(Color.white.opacity(0.0001))
                     }
                 }
@@ -157,19 +157,19 @@ struct CameraOptionView: View {
             ForEach(FrameRateOption.allCases, id: \.rawValue) { frameRateOption in
                 if currentCameraOption != .front || frameRateOption != FrameRateOption.high {
                     Text("\(Int(frameRateOption.rawValue))")
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(currentFrameRateOption == frameRateOption ? theme.main.mainColor : .Orange)
+                        .font(.system(size: 15, weight: .heavy))
+                        .foregroundColor(currentFrameRateOption == frameRateOption ? theme.main.mainColor : theme.main.accent)
                         .shadow(radius: 2)
                         .scaleEffect(currentFrameRateOption == frameRateOption ? 1.3 : 1)
-                        .frame(width: 80, height: 35)
+                        .padding(.vertical, 10)
+                        .frame(width: (UIScreen.main.bounds.width - 150) / 2)
                         .background {
                             if currentFrameRateOption == frameRateOption {
-                                RoundedRectangle(cornerRadius: 45)
-                                    .fill(Color.Orange)
-                                    .matchedGeometryEffect(id: "ActiveFrameRateOption", in: animation2)
+                                theme.main.accent
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
                                     .shadow(radius: 4)
                             } else {
-                                RoundedRectangle(cornerRadius: 45)
+                                RoundedRectangle(cornerRadius: 20)
                                     .fill(Color.white.opacity(0.0001))
                             }
                         }

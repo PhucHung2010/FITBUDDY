@@ -50,6 +50,18 @@ struct WideTabView: View {
                         tabBar.isHidden = true
                     })
                 
+                UserSearchView()
+                    .tag(Tab.Search)
+                    .background(TabBarAccessor { tabBar in
+                        tabBar.isHidden = true
+                    })
+                
+                ChatListView()
+                    .tag(Tab.Chat)
+                    .background(TabBarAccessor { tabBar in
+                        tabBar.isHidden = true
+                    })
+                
 //                RankingView()
 //                    .tag(Tab.Ranking)
 //                    .background(TabBarAccessor { tabBar in
@@ -75,9 +87,9 @@ struct WideTabView: View {
             HStack(alignment: .bottom, spacing: (UIScreen.main.bounds.width) / 12.5) {
                 ForEach(Tab.allCases, id: \.rawValue) {
                     TabItem(
-                        tint: Color.Orange,
+                        tint: theme.main.accent,
                         activeTint: theme.main.tabbar,
-                        inactiveTint: Color.Orange,
+                        inactiveTint: theme.main.accent,
                         tab: $0,
                         animation: animation,
                         activeTab: $tabViewController.activeTab,
@@ -86,9 +98,9 @@ struct WideTabView: View {
                 }
             }
             .background(content: {
-                TabShape(midpoint: tabShapePosition.x - 75)
+                TabShape(midpoint: tabShapePosition.x - 20)
                     .foregroundColor(theme.main.tabbar)
-                    .frame(width: UIScreen.main.bounds.width - 150, height: 40)
+                    .frame(width: UIScreen.main.bounds.width - 40, height: 40)
                     .frame(height: 40)
                     .shadow(color: Color.black.opacity(0.06), radius: 3, x: 2, y: 12)
                     .shadow(color: Color.black.opacity(0.06), radius: 3, x: -2, y: 12)

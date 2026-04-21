@@ -4,11 +4,21 @@ struct AppBackground: View {
     @EnvironmentObject var theme: AppThemeController
     var body: some View {
         ZStack {
-            if theme.appTheme == .light {
-                LinearGradient(colors: [.darkOffWhite, .darkOffWhite2], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            } else {
-                LinearGradient(colors: [.darkStart, .darkEnd], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            }
+            LinearGradient(colors: backgroundColors, startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+        }
+    }
+    
+    private var backgroundColors: [Color] {
+        switch theme.appTheme {
+        case .light:
+            return [.darkOffWhite, .darkOffWhite2]
+        case .dark:
+            return [.darkStart, .darkEnd]
+        case .cosmic:
+            return [Color(red: 35 / 255, green: 15 / 255, blue: 60 / 255), Color(red: 10 / 255, green: 5 / 255, blue: 25 / 255)]
+        case .sunset:
+            return [Color(red: 65 / 255, green: 10 / 255, blue: 25 / 255), Color(red: 20 / 255, green: 5 / 255, blue: 10 / 255)]
         }
     }
 }

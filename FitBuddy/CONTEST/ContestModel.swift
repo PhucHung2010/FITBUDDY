@@ -20,8 +20,9 @@ struct ContestModel: Codable, Identifiable, Equatable {
     let colorHex: String?
     let startDate: String?
     let endDate: String?
+    let createdAt: String?
     
-    // Computed / local only (not from DB)
+    // Local only (not decoded from DB)
     var participantCount: Int = 0
     var isJoined: Bool = false
     
@@ -37,6 +38,7 @@ struct ContestModel: Codable, Identifiable, Equatable {
         case colorHex = "color_hex"
         case startDate = "start_date"
         case endDate = "end_date"
+        case createdAt = "created_at"
     }
     
     var difficultyColor: String {
@@ -63,13 +65,9 @@ struct ContestParticipant: Codable, Identifiable, Equatable {
     let userId: String
     var accuracy: Double?
     var timeSeconds: Double?
-    var completed: Bool
+    var completed: Bool?
     let joinedAt: String?
     var completedAt: String?
-    
-    // Joined from profiles table for leaderboard display
-    var userName: String?
-    var userAvatar: String?
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -90,9 +88,9 @@ struct LeaderboardEntry: Codable, Identifiable, Equatable {
     let userId: String
     var accuracy: Double?
     var timeSeconds: Double?
-    var completed: Bool
+    var completed: Bool?
     
-    // Profile data (joined)
+    // Profile data (joined via foreign key)
     let profiles: LeaderboardProfile?
     
     enum CodingKeys: String, CodingKey {
@@ -115,5 +113,21 @@ struct LeaderboardProfile: Codable, Equatable {
         case name
         case username
         case avatarUrl = "avatar_url"
+    }
+}
+
+// MARK: - Badge Model (matches 'user_badges' view)
+struct BadgeModel: Codable, Identifiable, Equatable {
+    var id: String { contestId } // UUID represented as String
+    let contestId: String
+    let userId: String
+    let contestTitle: String
+    let rank: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case contestId = "contest_id"
+        case userId = "user_id"
+        case contestTitle = "contest_title"
+        case rank
     }
 }

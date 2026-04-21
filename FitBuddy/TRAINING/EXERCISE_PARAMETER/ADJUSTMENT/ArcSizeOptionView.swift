@@ -40,12 +40,12 @@ struct ArcSizePickerView: View {
                         Text("Arc")
                     }
                     .font(.system(size: 25, weight: .heavy))
-                    .foregroundColor(!showArcOtion ? Color.Orange : Color.lightOffWhite)
+                    .foregroundColor(!showArcOtion ? theme.main.accent : Color.lightOffWhite)
                     .shadow(radius: 3)
                     .frame(width: UIScreen.main.bounds.width - 100, height: 40)
                     .background {
                         if showArcOtion {
-                            Color.Orange
+                            theme.main.accent
                                 .clipShape(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 6)
                         } else {
@@ -87,20 +87,20 @@ struct ArcSizePickerView: View {
             ForEach(ArcSizeOption.allCases, id: \.rawValue) { arcShow in
                 HStack(spacing: 5) {
                     Text(arcShow.rawValue)
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 15, weight: .heavy))
                 }
-                .foregroundColor(currentArcOtion == arcShow ? theme.main.mainColor : .Orange)
+                .foregroundColor(currentArcOtion == arcShow ? theme.main.mainColor : theme.main.accent)
                 .shadow(radius: 2)
                 .scaleEffect(currentArcOtion == arcShow ? 1.3 : 1)
-                .frame(width: 120, height: 35)
+                .padding(.vertical, 10)
+                .frame(width: (UIScreen.main.bounds.width - 150) / 3)
                 .background {
                     if currentArcOtion == arcShow {
-                        RoundedRectangle(cornerRadius: 45)
-                            .fill(Color.Orange)
-                            .matchedGeometryEffect(id: "ActiveCameraOption", in: animation)
+                        theme.main.accent
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                             .shadow(radius: 4)
                     } else {
-                        RoundedRectangle(cornerRadius: 45)
+                        RoundedRectangle(cornerRadius: 20)
                             .fill(Color.white.opacity(0.0001))
                     }
                 }

@@ -83,12 +83,12 @@ struct ExerciseParameterSettingView: View {
                                 Text("INSTRUCTION")
                             }
                             .font(.system(size: 25, weight: .black))
-                            .foregroundColor(showInstruction ? Color.offWhite : Color.Orange)
+                            .foregroundColor(showInstruction ? Color.offWhite : theme.main.accent)
                             .shadow(radius: 2)
                             .frame(width: UIScreen.main.bounds.width - 30, height: 40)
                             .background {
                                 if (showInstruction) {
-                                    Color.Orange
+                                    theme.main.accent
                                         .clipShape(RoundedRectangle(cornerRadius: 30))
                                         .shadow(radius: 3)
                                 } else {
@@ -124,12 +124,12 @@ struct ExerciseParameterSettingView: View {
                                 Text("PROCESS")
                             }
                             .font(.system(size: 25, weight: .black))
-                            .foregroundColor(showHistorySummary ? .lightOffWhite : Color.Orange)
+                            .foregroundColor(showHistorySummary ? .lightOffWhite : theme.main.accent)
                             .shadow(radius: 2)
                             .frame(width: UIScreen.main.bounds.width - 30, height: 40)
                             .background {
                                 if (showHistorySummary) {
-                                    Color.Orange
+                                    theme.main.accent
                                         .clipShape(RoundedRectangle(cornerRadius: 30))
                                         .shadow(radius: 3)
                                 } else {
@@ -182,7 +182,7 @@ struct ExerciseParameterSettingView: View {
                                         .clipShape(RoundedRectangle(cornerRadius: 30))
                                         .shadow(radius: 3)
                                 } else {
-                                    Color.Orange
+                                    theme.main.accent
                                         .clipShape(RoundedRectangle(cornerRadius: 30))
                                         .shadow(radius: 3)
                                 }

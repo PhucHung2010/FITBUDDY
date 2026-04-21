@@ -24,6 +24,7 @@ struct ScaledButtonStyle: ButtonStyle {
 }
 
 struct ScaledButtonStyle_OffColorText: ButtonStyle {
+    @EnvironmentObject var theme: AppThemeController
     var text: String
     var originColor: Color
     var offColor: Color
@@ -33,7 +34,7 @@ struct ScaledButtonStyle_OffColorText: ButtonStyle {
     
     func makeBody(configuration: Self.Configuration) -> some View {
         configuration.label
-            Text("\(text)")
+        Text("\(text)")
             .font(.system(size: textFont, weight: .bold, design: .default))
             .foregroundColor(configuration.isPressed ? originColor : offColor)
             .lineLimit(1)
@@ -70,8 +71,6 @@ struct PickerButton: View {
         self.title = title
         self.systemImage = systemImage
     }
-    
-    
 
     var body: some View {
         Group {
@@ -81,7 +80,7 @@ struct PickerButton: View {
                     .foregroundColor(theme.main.mainColor)
                     .shadow(radius: 3)
                     .background {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                             .frame(width: UIScreen.main.bounds.width / 4, height: 50)
@@ -89,7 +88,7 @@ struct PickerButton: View {
             } else {
                 Text("\(title)")
                     .font(.system(size: 40, weight: .black, design: .default))
-                    .foregroundColor(.Orange)
+                    .foregroundColor(theme.main.accent)
                     .shadow(radius: 3)
                     .frame(width: UIScreen.main.bounds.width / 4, height: 50)
                     .background {
@@ -124,7 +123,7 @@ struct NumpadButton: View {
                     .foregroundColor(theme.main.mainColor)
                     .shadow(radius: 3)
                     .background {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                             .frame(width: UIScreen.main.bounds.width / 4, height: 50)
@@ -133,17 +132,15 @@ struct NumpadButton: View {
             } else {
                 Text(title)
                     .font(.system(size: 50, weight: .black, design: .default))
-                    .foregroundColor(.Orange)
+                    .foregroundColor(theme.main.accent)
                     .shadow(radius: 3)
                     .background {
                         BlurView(style: theme.main.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 6)
                             .frame(width: UIScreen.main.bounds.width / 4, height: 50)
                     }
-                    
             }
-                
         }
         .buttonStyle(ScaledButtonStyle(scaleRadius: 0.8, animationDuration: 0.15))
     }

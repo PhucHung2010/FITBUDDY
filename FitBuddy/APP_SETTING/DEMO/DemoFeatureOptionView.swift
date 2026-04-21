@@ -26,9 +26,8 @@ struct DemoFeatureOptionView: View {
                         Image(systemName: feature.featureSystemImage(for: feature))
                         Text(feature.rawValue)
                     }
-                    .font(.system(size: 25, weight: .heavy))
-                    .foregroundColor(Color.Orange)
-                    .shadow(radius: 3)
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundColor(theme.main.accent)
                     .frame(width: UIScreen.main.bounds.width - 40, height: 40)
                     .background {
                         BlurView(style: theme.main.ultraThinMaterial)

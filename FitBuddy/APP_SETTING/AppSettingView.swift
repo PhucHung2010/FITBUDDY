@@ -162,6 +162,7 @@ struct AppSettingView: View {
             }
         }
         .background(AppBackground())
+        .navigationBarBackButtonHidden(true)
     }
 }
 

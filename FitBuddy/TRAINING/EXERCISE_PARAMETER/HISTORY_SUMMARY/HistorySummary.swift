@@ -77,7 +77,7 @@ struct HistorySummary: View {
                                 VStack(spacing: 15) {
                                     Text(timeUnit)
                                         .font(.system(size: 20, weight: .bold))
-                                        .foregroundColor(.Orange)
+                                        .foregroundColor(theme.main.accent)
                                         .padding(4)
                                         .mask(RoundedRectangle(cornerRadius: 20))
                                         .background (BlurRoundedBackground(cornerRadius: 20, shadowRadius: 2, style: .systemMaterialLight))
@@ -186,14 +186,14 @@ struct HistorySummary: View {
                     Text("\(dateFormatOption)")
                         .font(.system(size: 15, weight: .semibold))
                 }
-                .foregroundColor(currentDateFormatOption == dateFormatOption.rawValue ? theme.main.mainColor : .Orange)
+                .foregroundColor(currentDateFormatOption == dateFormatOption.rawValue ? theme.main.mainColor : theme.main.accent)
                 .shadow(radius: 2)
                 .scaleEffect(currentDateFormatOption == dateFormatOption.rawValue ? 1.3 : 1)
                 .frame(width: 80, height: 30)
                 .background {
                     if currentDateFormatOption == dateFormatOption.rawValue {
                         RoundedRectangle(cornerRadius: 45)
-                            .fill(Color.Orange)
+                            .fill(theme.main.accent)
                             .matchedGeometryEffect(id: "ActiveDateFormatOption", in: animation)
                             .shadow(radius: 4)
                     } else {

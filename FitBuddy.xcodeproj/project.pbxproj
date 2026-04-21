@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0007D84F4162BC7FE4A38D60 /* UserSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94DEC6985EB3D1D19FF3F1E3 /* UserSearchView.swift */; };
 		03E4B85E3690E8E1B1328374 /* ContestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69A8DB9BBC30089CF807019D /* ContestView.swift */; };
+		1270004095FDA3340D3B9EF6 /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7F9B6195E34FA7CE5C04BF3 /* PublicProfileView.swift */; };
 		1547144152FEDAB61FE929AC /* ContestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9D9677912CEBB3BCA0EE23A /* ContestModel.swift */; };
 		328528FEDBDBF0049EE1E6A5 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92B00736976D7C125129B362 /* ProfileEditView.swift */; };
+		3BB1F107EA56CC7707001E3C /* ChatListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A7F5C4C582742B66E4A08E /* ChatListView.swift */; };
 		3C36D43961D40D3CD1A069B6 /* ContestDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA10B9B42EE6C829BE59D232 /* ContestDetailView.swift */; };
 		6C00C56A2E1E14900087C7ED /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C00C5692E1E148C0087C7ED /* AppDelegate.swift */; };
 		6C00C5722E1E152F0087C7ED /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C00C5712E1E152B0087C7ED /* LoginScreen.swift */; };
@@ -33,6 +36,7 @@
 		6CDA0E122E20C8CE00ACC7DF /* ExerciseParameterStorage.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6CDA0E102E20C8CE00ACC7DF /* ExerciseParameterStorage.xcdatamodeld */; };
 		6CDA0E142E20CF7E00ACC7DF /* ExerciseParameterPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDA0E132E20CF7700ACC7DF /* ExerciseParameterPersistenceController.swift */; };
 		6CDB353B2E1F9FA600CE93A5 /* CameraOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDB353A2E1F9F9A00CE93A5 /* CameraOption.swift */; };
+		717F058AF7F2CB8FE08319D3 /* SocialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B83E52F4CCD416FCF24C6C66 /* SocialManager.swift */; };
 		9500A2C62E425B4A00324898 /* ExerciseSelectionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9500A2C52E425B3F00324898 /* ExerciseSelectionSheet.swift */; };
 		9527A1852E2FD03C001C15D7 /* BlurRoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9527A1842E2FD033001C15D7 /* BlurRoundedBackground.swift */; };
 		952CB4652E585B0600ECCD5A /* ArcSizeOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952CB4642E585AFF00ECCD5A /* ArcSizeOptionView.swift */; };
@@ -60,6 +64,8 @@
 		A1B2C3D42F00000000000010 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42F00000000000011 /* LoginView.swift */; };
 		A1B2C3D42F00000000000012 /* SupabaseAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D42F00000000000013 /* SupabaseAuthManager.swift */; };
 		A1B2C3D42F00000000000014 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D42F00000000000002 /* Supabase */; };
+		C8C207501D5A8FBDF3F41B36 /* SocialModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011834182BC8D07314969FED /* SocialModels.swift */; };
+		D7EAB8A936FA6885704FEDFE /* ChatRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6475368D80DEB1D2A3C77306 /* ChatRoomView.swift */; };
 		E81FBEBB2E0D2FBC00723991 /* TrainingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEBA2E0D2FBC00723991 /* TrainingView.swift */; };
 		E81FBEBD2E0D324500723991 /* textFieldModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEBC2E0D324500723991 /* textFieldModifier.swift */; };
 		E81FBEC12E0D484C00723991 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FBEC02E0D484C00723991 /* SummaryView.swift */; };
@@ -84,6 +90,7 @@
 		E895DA5F2E03C14E00EA912D /* CustomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E895DA5E2E03C14E00EA912D /* CustomSheet.swift */; };
 		E8AC77D32E0BA01E00C5BC16 /* PreviewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8AC77D22E0BA01E00C5BC16 /* PreviewImage.swift */; };
 		E8ADFCF52E02B1C800777C55 /* ExerciseCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8ADFCF42E02B1C800777C55 /* ExerciseCategory.swift */; };
+		E8DCE99721AEA73716ACECEC /* ContestStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A86F5442CE66023D07B8756D /* ContestStatusView.swift */; };
 		E8EEFAF32DEDE8F100C263BC /* WideTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF22DEDE8F100C263BC /* WideTabView.swift */; };
 		E8EEFAF62DEDE93500C263BC /* PoseDetectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF52DEDE93500C263BC /* PoseDetectionView.swift */; };
 		E8EEFAFA2DEDEBB500C263BC /* HealthInsuranceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EEFAF92DEDEBB500C263BC /* HealthInsuranceView.swift */; };
@@ -100,6 +107,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		011834182BC8D07314969FED /* SocialModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SocialModels.swift; sourceTree = "<group>"; };
+		6475368D80DEB1D2A3C77306 /* ChatRoomView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatRoomView.swift; sourceTree = "<group>"; };
 		69A8DB9BBC30089CF807019D /* ContestView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContestView.swift; sourceTree = "<group>"; };
 		6C00C5692E1E148C0087C7ED /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C00C5712E1E152B0087C7ED /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
@@ -118,6 +127,7 @@
 		6CDA0E132E20CF7700ACC7DF /* ExerciseParameterPersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseParameterPersistenceController.swift; sourceTree = "<group>"; };
 		6CDB353A2E1F9F9A00CE93A5 /* CameraOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOption.swift; sourceTree = "<group>"; };
 		92B00736976D7C125129B362 /* ProfileEditView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProfileEditView.swift; sourceTree = "<group>"; };
+		94DEC6985EB3D1D19FF3F1E3 /* UserSearchView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UserSearchView.swift; sourceTree = "<group>"; };
 		9500A2C52E425B3F00324898 /* ExerciseSelectionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSelectionSheet.swift; sourceTree = "<group>"; };
 		9527A1842E2FD033001C15D7 /* BlurRoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurRoundedBackground.swift; sourceTree = "<group>"; };
 		952CB4642E585AFF00ECCD5A /* ArcSizeOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcSizeOptionView.swift; sourceTree = "<group>"; };
@@ -144,6 +154,10 @@
 		95F0C6BF2E30E34C004E396F /* Routine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Routine.swift; sourceTree = "<group>"; };
 		A1B2C3D42F00000000000011 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A1B2C3D42F00000000000013 /* SupabaseAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAuthManager.swift; sourceTree = "<group>"; };
+		A86F5442CE66023D07B8756D /* ContestStatusView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContestStatusView.swift; sourceTree = "<group>"; };
+		B7F9B6195E34FA7CE5C04BF3 /* PublicProfileView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
+		B83E52F4CCD416FCF24C6C66 /* SocialManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SocialManager.swift; sourceTree = "<group>"; };
+		C9A7F5C4C582742B66E4A08E /* ChatListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatListView.swift; sourceTree = "<group>"; };
 		CA10B9B42EE6C829BE59D232 /* ContestDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContestDetailView.swift; sourceTree = "<group>"; };
 		E81FBEBA2E0D2FBC00723991 /* TrainingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingView.swift; sourceTree = "<group>"; };
 		E81FBEBC2E0D324500723991 /* textFieldModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = textFieldModifier.swift; sourceTree = "<group>"; };
@@ -205,12 +219,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		026A530A61DD94BD95E6AD0F /* SOCIAL */ = {
+			isa = PBXGroup;
+			children = (
+				011834182BC8D07314969FED /* SocialModels.swift */,
+				B83E52F4CCD416FCF24C6C66 /* SocialManager.swift */,
+				94DEC6985EB3D1D19FF3F1E3 /* UserSearchView.swift */,
+				B7F9B6195E34FA7CE5C04BF3 /* PublicProfileView.swift */,
+				C9A7F5C4C582742B66E4A08E /* ChatListView.swift */,
+				6475368D80DEB1D2A3C77306 /* ChatRoomView.swift */,
+			);
+			name = SOCIAL;
+			path = SOCIAL;
+			sourceTree = "<group>";
+		};
 		63D5FC586C8F679CE3FF438B /* CONTEST */ = {
 			isa = PBXGroup;
 			children = (
 				F9D9677912CEBB3BCA0EE23A /* ContestModel.swift */,
 				69A8DB9BBC30089CF807019D /* ContestView.swift */,
 				CA10B9B42EE6C829BE59D232 /* ContestDetailView.swift */,
+				A86F5442CE66023D07B8756D /* ContestStatusView.swift */,
 			);
 			name = CONTEST;
 			path = CONTEST;
@@ -565,6 +594,7 @@
 				E88C266D2E0A9A5A00400EE7 /* VIDEO */,
 				E8FDEFC52DED6C08007190E3 /* Preview Content */,
 				63D5FC586C8F679CE3FF438B /* CONTEST */,
+				026A530A61DD94BD95E6AD0F /* SOCIAL */,
 			);
 			path = FitBuddy;
 			sourceTree = "<group>";
@@ -742,6 +772,13 @@
 				1547144152FEDAB61FE929AC /* ContestModel.swift in Sources */,
 				03E4B85E3690E8E1B1328374 /* ContestView.swift in Sources */,
 				3C36D43961D40D3CD1A069B6 /* ContestDetailView.swift in Sources */,
+				E8DCE99721AEA73716ACECEC /* ContestStatusView.swift in Sources */,
+				C8C207501D5A8FBDF3F41B36 /* SocialModels.swift in Sources */,
+				717F058AF7F2CB8FE08319D3 /* SocialManager.swift in Sources */,
+				0007D84F4162BC7FE4A38D60 /* UserSearchView.swift in Sources */,
+				1270004095FDA3340D3B9EF6 /* PublicProfileView.swift in Sources */,
+				3BB1F107EA56CC7707001E3C /* ChatListView.swift in Sources */,
+				D7EAB8A936FA6885704FEDFE /* ChatRoomView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -53,12 +53,12 @@ struct CategoryInstructionVideoView: View {
                     Text("Video")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((showInstructionVideos) ? Color.lightOffWhite : Color.Orange)
+                .foregroundColor((showInstructionVideos) ? Color.lightOffWhite : theme.main.accent)
                 .shadow(radius: 3)
                 .frame(width: UIScreen.main.bounds.width - 40, height: 40)
                 .background {
                     if (showInstructionVideos) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 4)
                     } else {
@@ -127,12 +127,12 @@ struct CategoryDescriptionView: View {
                     Text("Description")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((showDescription) ? Color.lightOffWhite : Color.Orange)
+                .foregroundColor((showDescription) ? Color.lightOffWhite : theme.main.accent)
                 .shadow(radius: 3)
                 .frame(width: UIScreen.main.bounds.width - 40, height: 40)
                 .background {
                     if (showDescription) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 4)
                     } else {
@@ -181,12 +181,12 @@ struct CategoryInstructionView: View {
                     Text("Instruction")
                 }
                 .font(.system(size: 25, weight: .heavy))
-                .foregroundColor((showDescription) ? Color.lightOffWhite : Color.Orange)
+                .foregroundColor((showDescription) ? Color.lightOffWhite : theme.main.accent)
                 .shadow(radius: 3)
                 .frame(width: UIScreen.main.bounds.width - 40, height: 40)
                 .background {
                     if (showDescription) {
-                        Color.Orange
+                        theme.main.accent
                             .clipShape(RoundedRectangle(cornerRadius: 30))
                             .shadow(radius: 4)
                     } else {

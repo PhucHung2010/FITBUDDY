@@ -257,13 +257,141 @@ enum Tab: String, CaseIterable {
 
 ---
 
-## 9. Contest System (Mock Data)
+## 9. Contest System (Live — Supabase)
 
-Currently uses local mock data (`MockContests.current`) defined in `ContestModel.swift`. Each `ContestModel` has:
-- `title`, `description`, `dateRange`, `iconSystemName`, `colorHex`
-- `pointsReward`, `participantCount`, `isJoined` (toggle)
+The contest system follows a **Codeforces-style** design: users join contests, complete an exercise task tracked by pose detection, and are ranked by accuracy (DESC) then time (ASC).
 
-> **Future:** To make contests live, create a `contests` table in Supabase and fetch data asynchronously.
+### User Flow
+```
+ContestView (list) → tap card or "Join" → ContestStatusView (sheet)
+  ├── Problem: exercise name, target reps, description, judging criteria
+  ├── My Submission: verdict (Accepted/Pending), accuracy PB, time
+  └── Standings: ranked table with avatar, name, accuracy%, time
+```
+
+### Files
+| File | Purpose |
+|---|---|
+| `CONTEST/ContestModel.swift` | Codable models: `ContestModel`, `ContestParticipant`, `LeaderboardEntry`, `LeaderboardProfile` |
+| `CONTEST/ContestView.swift` | Contest list — fetches from Supabase, shows cards with difficulty, points, participant count |
+| `CONTEST/ContestStatusView.swift` | ★ **Reusable** Codeforces-style contest page — problem statement, user status + PB, standings table |
+| `CONTEST/ContestDetailView.swift` | Legacy detail view (replaced by ContestStatusView) |
+
+### Supabase Tables
+
+#### `contests`
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid PK | auto-generated |
+| `title` | text NOT NULL | |
+| `description` | text | |
+| `exercise_name` | text NOT NULL | Must match a `Category.name` from the app |
+| `target_reps` | int NOT NULL | |
+| `difficulty` | text NOT NULL | `easy`, `medium`, `hard` |
+| `points_reward` | int NOT NULL | Points awarded on completion |
+| `icon_system_name` | text | SF Symbol name for card icon |
+| `color_hex` | text | Card accent color (e.g., `#FF5722`) |
+| `start_date` / `end_date` | timestamptz | Contest window |
+| `created_at` | timestamptz | Default: now() |
+
+#### `contest_participants`
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid PK | |
+| `contest_id` | uuid FK → contests | CASCADE delete |
+| `user_id` | uuid FK → profiles | CASCADE delete |
+| `accuracy` | double precision | 0.0–100.0, from pose detection |
+| `time_seconds` | double precision | Time to complete |
+| `completed` | boolean | Default: false |
+| `joined_at` | timestamptz | Default: now() |
+| `completed_at` | timestamptz | Set when finished |
+| **UNIQUE** | (contest_id, user_id) | One entry per user per contest |
+
+#### `profiles` — Contest Columns
+| Column | Type | Notes |
+|---|---|---|
+| `points` | int, default 0 | Total earned points |
+| `badge` | text | Winner badge text |
+
+### SupabaseAuthManager Methods
+| Method | Purpose |
+|---|---|
+| `fetchContests()` | Fetches all contests + participant counts + isJoined status |
+| `joinContest(contestId:)` | Upserts into `contest_participants` (ignores duplicates) |
+| `submitContestResult(contestId:, accuracy:, timeSeconds:)` | Updates participant row with results |
+| `fetchLeaderboard(contestId:)` | Fetches completed participants with profile data, sorted by accuracy DESC then time ASC |
+| `awardContestPoints(contestId:, pointsReward:)` | Adds points to user's profile |
+
+### Ranking Logic
+1. **Primary sort**: `accuracy` descending (higher = better)
+2. **Secondary sort**: `time_seconds` ascending (faster = better)
+3. Top 3 get medal emojis: 🥇 🥈 🥉
+
+### Key Design Decisions
+- `ContestStatusView` is **reusable** — pass any `ContestModel` and it renders the full contest page
+- Joining auto-happens when opening `ContestStatusView` (no separate join step needed)
+- `supabase` is a **module-level** `let` in `SupabaseAuthManager.swift` — accessible from any file without needing `authManager.supabase`
+- Participant count uses a lightweight `select("id, user_id")` query decoded as `[[String: String]]` to avoid Codable issues
+
+### Exercise Training Integration (Self-Contained)
+The contest training is **completely decoupled** from the exercise library's `TrainingView`/`ExerciseParameterSettingView`. Users cannot change parameters — everything is fixed by the contest.
+
+```
+ContestStatusView (ContestTrainingPhase enum)
+  ├── .idle — Contest status page (problem, status, standings)
+  │     └── "Start Exercise" button
+  │           ├── Loads Category via FitnessExerciseCategory().loadCategory(named:)
+  │           ├── Sets FIXED: targetCount = contest.targetReps, targetTime = nil
+  │           ├── Sets controller = category.exerciseAdjustment
+  │           ├── Skips .setting state entirely
+  │           └── exerciseStatus = .traning → trainingPhase = .training
+  │
+  ├── .training — PoseDetectionView (camera + pose detection)
+  │     └── User taps "Finish" in StatusBarView → exerciseStatus = .summary
+  │
+  └── .summary — ContestSummaryView (custom, not the library SummaryView)
+        ├── Shows: correct reps, accuracy%, time, points earned
+        ├── Auto-submits to Supabase (submitContestResult + awardContestPoints)
+        └── "Back to Contest" → reinitializes, returns to .idle
+```
+
+> **Key:** `ContestSummaryView` is a separate struct from `SummaryView` — it does NOT save to CoreData, only uploads to Supabase.
+
+### Accuracy Calculation
+```swift
+let totalReps = totalCorrect + totalIncorrect
+let accuracy = totalReps > 0 ? (Double(totalCorrect) / Double(totalReps)) * 100.0 : 0.0
+// accuracy is stored as 0.0–100.0 in contest_participants.accuracy
+```
+
+### Available Exercises (10)
+| Exercise | Muscle Group | exercise_name (Supabase) |
+|---|---|---|
+| Squat | Quads | `Squat` |
+| Dumbbell Curl | Biceps | `Dumbbell Curl` |
+| Lateral Raise | Shoulders | `Lateral Raise` |
+| Dumbbell Press | Shoulders | `Dumbbell Press` |
+| Jumping Jack | Cardio | `Jumping Jack` |
+| Push-Up | Chest | `Push-Up` |
+| Sit-Up | Abs | `Sit-Up` |
+| Front Raise | Shoulders | `Front Raise` |
+| Kettlebell Swing | Full Body | `Kettlebell Swing` |
+| High Knees | Cardio | `High Knees` |
+
+> **Important:** When creating new contests in Supabase, the `exercise_name` must exactly match one of the names above (case-sensitive). `FitnessExerciseCategory().loadCategory(named:)` uses `lowercased()` comparison, but the data flow depends on exact name matching.
+
+### Rank-Based Badge System
+The top 3 participants in any completed contest automatically receive a medal badge (🥇 for 1st, 🥈 for 2nd, 🥉 for 3rd) on their Profile page inside the `UserView`. 
+This is handled dynamically via a Postgres View `user_badges` which:
+1. Filters contests where `end_date <= now()`.
+2. Computes the rank using `RANK() OVER (PARTITION BY contest_id ORDER BY accuracy DESC, time_seconds ASC)`.
+3. Returns records for participants where `rank <= 3`.
+
+The Swift app performs a simple `.select()` on this view scoped to the `currentUser.id` to retrieve an array of `BadgeModel`s and renders them beautifully alongside the user's profile information.
+
+### SQL Setup
+See `supabase_contest_setup.sql` in the project root for the complete schema + sample data.
+
 
 ---
 

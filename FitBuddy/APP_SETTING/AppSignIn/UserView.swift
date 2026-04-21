@@ -19,6 +19,7 @@ struct UserView: View {
         VStack(spacing: 10) {
             if authManager.isAuthenticated {
                 officialUser
+                userBadgesSection
                 signOutButton
             } else {
                 anonymousUser
@@ -102,6 +103,7 @@ struct UserView: View {
                     .clipShape(Capsule())
             }
             .padding(.top, 5)
+            
         }
         .frame(width: UIScreen.main.bounds.width - 60)
         .padding(.vertical, 5)
@@ -109,6 +111,58 @@ struct UserView: View {
             BlurView(style: theme.main.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .shadow(radius: 4)
+        }
+    }
+    
+    @ViewBuilder
+    var userBadgesSection: some View {
+        if !authManager.userBadges.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Badges")
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundColor(theme.main.text)
+                    .padding(.horizontal, 25)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(authManager.userBadges) { badge in
+                            VStack(spacing: 8) {
+                                ZStack {
+                                    Circle()
+                                        .fill(
+                                            badge.rank == 1 ? Color.yellow.opacity(0.2) :
+                                            badge.rank == 2 ? Color.gray.opacity(0.2) :
+                                            Color.orange.opacity(0.2)
+                                        )
+                                        .frame(width: 60, height: 60)
+                                    Text(badge.rank == 1 ? "🥇" : (badge.rank == 2 ? "🥈" : "🥉"))
+                                        .font(.system(size: 40))
+                                        .shadow(color: .black.opacity(0.2), radius: 2, y: 2)
+                                }
+                                
+                                Text(badge.contestTitle)
+                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                    .foregroundColor(theme.main.text)
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(2)
+                                    .frame(width: 100)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 10)
+                            .background {
+                                BlurView(style: theme.main.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .shadow(radius: 3)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 25)
+                    .padding(.vertical, 5)
+                }
+            }
+            .padding(.top, 10)
+            .frame(width: UIScreen.main.bounds.width)
         }
     }
     
