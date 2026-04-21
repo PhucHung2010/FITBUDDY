@@ -1,0 +1,17 @@
+# Xcode Build
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# SPM
+.swiftpm/
+.build/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Supabase keys (safety)
+# Secrets/
