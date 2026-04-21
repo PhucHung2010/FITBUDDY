@@ -12,9 +12,17 @@ import QuickPoseSwiftUI
 
 struct ContentView: View {
     @StateObject var theme = AppThemeController()
+    @EnvironmentObject var authManager: SupabaseAuthManager
+    
     var body: some View {
-        WideTabView()
-//            .environmentObject(theme)
+        Group {
+            if authManager.isAuthenticated {
+                WideTabView()
+//                    .environmentObject(theme)
+            } else {
+                LoginView()
+            }
+        }
     }
 }
 
@@ -25,6 +33,7 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
             .environmentObject(TabViewController())
             .environmentObject(UserController())
+            .environmentObject(SupabaseAuthManager())
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

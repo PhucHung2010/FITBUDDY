@@ -9,9 +9,15 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.704697098642-aj952bb5pd4fhp24e9ukg4263jcjr05p</string>
+				<string>com.googleusercontent.apps.841610832624-prbkvi4b9h2t2cn8q58v5eevb8mqcr9n</string>
 			</array>
 		</dict>
 	</array>
+	<key>GIDClientID</key>
+	<string>841610832624-prbkvi4b9h2t2cn8q58v5eevb8mqcr9n.apps.googleusercontent.com</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow this app to use your camera for detection</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Please allow this app to access your photo library for your profile avatar</string>
 </dict>
 </plist>

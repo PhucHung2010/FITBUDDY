@@ -6,6 +6,7 @@ import SwiftUI
 enum Tab: String, CaseIterable {
     case Fitness
     case Home
+    case Contest
     case Setting
     
     var systemImage: String {
@@ -14,6 +15,8 @@ enum Tab: String, CaseIterable {
             return "dumbbell.fill"
         case .Home:
             return "house"
+        case .Contest:
+            return "trophy.fill"
         case .Setting:
             return "slider.horizontal.3"
         }

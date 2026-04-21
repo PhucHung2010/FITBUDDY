@@ -131,6 +131,116 @@ struct CompletedExerciseInstruction {
             "Repeat for the desired number of steps or distance."
         ]
     )
+    
+    let pushUp = DescriptionAndInstructionString(
+        description: "The push-up is a classic bodyweight exercise that targets the chest, shoulders, and triceps, while also engaging the core and lower back for stability.",
+        instruction: [
+            "Start in a high plank position with your hands slightly wider than shoulder-width apart.",
+            "Keep your body in a straight line from head to heels.",
+            "Lower your body until your chest is just above the floor by bending your elbows.",
+            "Push back up to the starting position.",
+            "Keep your core tight and do not let your lower back sag."
+        ]
+    )
+    
+    let sitUp = DescriptionAndInstructionString(
+        description: "Sit-ups are a fundamental abdominal exercise designed to strengthen and tone the core muscles.",
+        instruction: [
+            "Lie on your back with your knees bent and feet flat on the floor.",
+            "Place your hands lightly behind your head or crossed over your chest.",
+            "Engage your core and lift your upper body off the floor, bringing your chest toward your knees.",
+            "Lower yourself back down slowly and under control.",
+            "Avoid pulling on your neck with your hands."
+        ]
+    )
+    
+    let frontRaise = DescriptionAndInstructionString(
+        description: "The front raise is a weight training exercise that primarily targets the anterior deltoid muscles of the shoulder.",
+        instruction: [
+            "Stand with your feet shoulder-width apart, holding a dumbbell in each hand in front of your thighs.",
+            "Keep your arms straight with a slight bend in the elbows.",
+            "Lift the weights straight up in front of you until they reach shoulder height.",
+            "Pause for a moment at the top of the movement.",
+            "Slowly lower the weights back to the starting position."
+        ]
+    )
+    
+    let swing = DescriptionAndInstructionString(
+        description: "The kettlebell swing is a dynamic, explosive exercise that targets the posterior chain, including the glutes, hamstrings, and lower back.",
+        instruction: [
+            "Stand with your feet slightly wider than shoulder-width apart, holding a kettlebell or dumbbell with both hands.",
+            "Hinge at your hips and bend your knees slightly to lower the weight between your legs.",
+            "Thrust your hips forward explosively and swing the weight up to shoulder height.",
+            "Let the weight swing back down between your legs naturally.",
+            "Keep your core tight and your back straight throughout the movement."
+        ]
+    )
+    
+    let highKnees = DescriptionAndInstructionString(
+        description: "High knees is a cardiovascular exercise that strengthens the core, calves, quads, and hamstrings while elevating your heart rate.",
+        instruction: [
+            "Stand with your feet hip-width apart and arms at your sides.",
+            "Lift your right knee as high as you can toward your chest.",
+            "Switch legs quickly, bringing your left knee to your chest as your right leg descends.",
+            "Pump your arms to maintain momentum.",
+            "Continue alternating legs continuously."
+        ]
+    )
+    
+    let deadlift = DescriptionAndInstructionString(
+        description: "The deadlift is a weight training exercise in which a loaded barbell or bar is lifted off the ground to the level of the hips.",
+        instruction: [
+            "Stand with your mid-foot under the barbell.",
+            "Bend over and grab the bar with a shoulder-width grip.",
+            "Bend your knees until your shins touch the bar.",
+            "Lift your chest up and straighten your lower back.",
+            "Take a big breath, hold it, and stand up with the weight."
+        ]
+    )
+    
+    let pullUp = DescriptionAndInstructionString(
+        description: "The pull-up is an upper-body compound pulling exercise that primarily targets the back muscles.",
+        instruction: [
+            "Grab the pull-up bar with your palms facing outward.",
+            "Hang from the bar with your arms fully extended.",
+            "Pull yourself up until your chin is above the bar.",
+            "Lower yourself back down with control.",
+            "Repeat the movement without swinging your body."
+        ]
+    )
+    
+    let tricepsExtension = DescriptionAndInstructionString(
+        description: "The triceps extension is an isolation exercise that targets the triceps brachii muscle.",
+        instruction: [
+            "Hold a dumbbell with both hands overhead.",
+            "Keep your elbows close to your head and pointing straight up.",
+            "Lower the dumbbell behind your head by bending your elbows.",
+            "Extend your arms back up to the starting position.",
+            "Keep your core tight and avoid arching your lower back."
+        ]
+    )
+    
+    let hammerCurl = DescriptionAndInstructionString(
+        description: "The hammer curl is a variation of the bicep curl that targets the brachialis and brachioradialis muscles.",
+        instruction: [
+            "Stand straight with a dumbbell in each hand, palms facing your torso.",
+            "Keep your upper arms stationary.",
+            "Curl the weights upward while keeping your palms facing inward.",
+            "Pause briefly at the top of the movement.",
+            "Slowly lower the dumbbells back to the starting position."
+        ]
+    )
+    
+    let gluteBridge = DescriptionAndInstructionString(
+        description: "The glute bridge is a floor exercise that targets the glutes and hamstrings.",
+        instruction: [
+            "Lie on your back with your knees bent and feet flat on the floor.",
+            "Keep your arms at your sides with your palms facing down.",
+            "Squeeze your glutes and lift your hips off the floor until your body forms a straight line from your shoulders to your knees.",
+            "Hold the top position for a second or two.",
+            "Slowly lower your hips back down to the floor."
+        ]
+    )
 }
 
 
@@ -152,7 +262,19 @@ struct CompletedExerciseImageVideoInstruction {
     let squat = ImageAndVideoString(image: [("demoImage1", "demoImage2"), ("demoImage3", "demoImage4")],
                                     video: ["squat"])
     
-    
+    let highKnees = ImageAndVideoString(image: [("HighKnees_1", "HighKnees_2"), ("HighKnees_3", "HighKnees_4")],
+                                        video: ["highKnees"])
+                                        
+    let deadlift = ImageAndVideoString(image: [("deadlift_1", "deadlift_2"), ("deadlift_3", "deadlift_4")], video: ["deadlift"])
+    let pullUp = ImageAndVideoString(image: [("pullUp_1", "pullUp_2"), ("pullUp_3", "pullUp_4")], video: ["pullUp"])
+    let tricepsExtension = ImageAndVideoString(image: [("triceps_1", "triceps_2"), ("triceps_3", "triceps_4")], video: ["tricepsExtension"])
+    let hammerCurl = ImageAndVideoString(image: [("hammer_1", "hammer_2"), ("hammer_3", "hammer_4")], video: ["hammerCurl"])
+    let gluteBridge = ImageAndVideoString(image: [("gluteBridge_1", "gluteBridge_2"), ("gluteBridge_3", "gluteBridge_4")], video: ["gluteBridge"])
+}
+
+private var globalBlur: Double {
+    let saved = UserDefaults.standard.double(forKey: "globalAngleBlur")
+    return saved > 0.0 ? saved : 15.0
 }
 
 struct CompletedExerciseAdjustment {
@@ -163,16 +285,16 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.move, .arm, .moreStable),
                       left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 160, angleBlur: 10),
-                                           peakResult: .init(angleValue: 20, angleBlur: 10),
+                                           launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 20, angleBlur: globalBlur),
                                            launchDirection: .increase,
                                            peakDirection: .decrease,
                                            greaterThanStartFeedback: Feedback.show(.move, LR: .left, .arm, .down),
                                            smallerThanEndFeedback: Feedback.show(.move, LR: .left, .arm, .up)),
                       right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 160, angleBlur: 10),
-                                            peakResult: .init(angleValue: 20, angleBlur: 10),
+                                            launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 20, angleBlur: globalBlur),
                                             launchDirection: .increase,
                                             peakDirection: .decrease,
                                             greaterThanStartFeedback: Feedback.show(.move, LR: .right, .arm, .down),
@@ -202,22 +324,22 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.move, .knee, .moreStable),
                       left: MovementTarget(feature: .rangeOfMotion(.knee(side: .left, clockwiseDirection: true)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 180, angleBlur: 15),
-                                           peakResult: .init(angleValue: 90, angleBlur: 20),
+                                           launchResult: .init(angleValue: 180, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 90, angleBlur: globalBlur),
                                            launchDirection: .increase,
                                            peakDirection: .decrease,
                                            greaterThanStartFeedback: Feedback.show(.straighten, LR: .left, .leg),
                                            smallerThanEndFeedback: Feedback.show(.lower, .knee, .down)),
                       right: MovementTarget(feature: .rangeOfMotion(.knee(side: .right, clockwiseDirection: false)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 180, angleBlur: 15),
-                                            peakResult: .init(angleValue: 90, angleBlur: 20),
+                                            launchResult: .init(angleValue: 180, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 90, angleBlur: globalBlur),
                                             launchDirection: .increase,
                                             peakDirection: .decrease,
                                             greaterThanStartFeedback: Feedback.show(.straighten, LR: .right, .leg),
                                             smallerThanEndFeedback: Feedback.show(.lower, .knee, .down)))
         ],
-        guardGroups: nil
+        guardGroups: []
     )
     
     
@@ -228,16 +350,16 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.raise, .arm, .moreStable),
                       left: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .left, clockwiseDirection: false)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 20, angleBlur: 10),
-                                           peakResult: .init(angleValue: 90, angleBlur: 10),
+                                           launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 90, angleBlur: globalBlur),
                                            launchDirection: .decrease,
                                            peakDirection: .increase,
                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .arm, .down),
                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .arm, .up)),
                       right: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .right, clockwiseDirection: true)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 20, angleBlur: 10),
-                                            peakResult: .init(angleValue: 90, angleBlur: 10),
+                                            launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 90, angleBlur: globalBlur),
                                             launchDirection: .decrease,
                                             peakDirection: .increase,
                                             greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .arm, .down),
@@ -262,16 +384,16 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.raise, .arm, .moreStable),
                       left: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .left, clockwiseDirection: false)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 40, angleBlur: 10),
-                                           peakResult: .init(angleValue: 120, angleBlur: 10),
+                                           launchResult: .init(angleValue: 40, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 120, angleBlur: globalBlur),
                                            launchDirection: .decrease,
                                            peakDirection: .increase,
                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .arm, .down),
                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .arm, .up)),
                       right: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .right, clockwiseDirection: true)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 40, angleBlur: 10),
-                                            peakResult: .init(angleValue: 120, angleBlur: 10),
+                                            launchResult: .init(angleValue: 40, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 120, angleBlur: globalBlur),
                                             launchDirection: .decrease,
                                             peakDirection: .increase,
                                             greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .arm, .down),
@@ -281,22 +403,22 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.raise, .arm, .moreStable),
                       left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 20, angleBlur: 10),
-                                           peakResult: .init(angleValue: 100, angleBlur: 10),
+                                           launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 100, angleBlur: globalBlur),
                                            launchDirection: .decrease,
                                            peakDirection: .increase,
                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .arm, .down),
                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .arm, .up)),
                       right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 20, angleBlur: 10),
-                                            peakResult: .init(angleValue: 100, angleBlur: 10),
+                                            launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 100, angleBlur: globalBlur),
                                             launchDirection: .decrease,
                                             peakDirection: .increase,
                                             greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .arm, .down),
                                             smallerThanEndFeedback: Feedback.show(.raise, LR: .right, .arm, .up)))
         ],
-        guardGroups: nil
+        guardGroups: []
     )
     
     let jumpingJack = FitnessExerciseAdjustment(
@@ -305,15 +427,15 @@ struct CompletedExerciseAdjustment {
                       acceptedAngleValueDifference: 360,
                       angleValueDifferenceFeedback: Feedback.show(.move, .arm, .apart),
                       left: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .left, clockwiseDirection: false)),
-                                           launchResult: .init(angleValue: 20, angleBlur: 20),
-                                           peakResult: .init(angleValue: 130, angleBlur: 20),
+                                           launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 130, angleBlur: globalBlur),
                                            launchDirection: .decrease,
                                            peakDirection: .increase,
                                            greaterThanStartFeedback: Feedback.show(.move, LR: .left, .arm, .up),
                                            smallerThanEndFeedback: Feedback.show(.move, LR: .left, .arm, .down)),
                       right: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .right, clockwiseDirection: true)),
-                                            launchResult: .init(angleValue: 20, angleBlur: 20),
-                                            peakResult: .init(angleValue: 130, angleBlur: 20),
+                                            launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 130, angleBlur: globalBlur),
                                             launchDirection: .decrease,
                                             peakDirection: .increase,
                                             greaterThanStartFeedback: Feedback.show(.move, LR: .left, .arm, .up),
@@ -322,25 +444,275 @@ struct CompletedExerciseAdjustment {
                       acceptedAngleValueDifference: 360,
                       angleValueDifferenceFeedback: Feedback.show(.move, .arm, .apart),
                       left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: false)),
-                                           launchResult: .init(angleValue: 175, angleBlur: 5),
-                                           peakResult: .init(angleValue: 155, angleBlur: 5),
+                                           launchResult: .init(angleValue: 175, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 155, angleBlur: globalBlur),
                                            launchDirection: .increase,
                                            peakDirection: .decrease,
                                            greaterThanStartFeedback: Feedback.show(.move, LR: .left, .leg, .up),
                                            smallerThanEndFeedback: Feedback.show(.move, LR: .left, .leg, .down)),
                       right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: true)),
-                                            launchResult: .init(angleValue: 175, angleBlur: 5),
-                                            peakResult: .init(angleValue: 155, angleBlur: 5),
+                                            launchResult: .init(angleValue: 175, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 155, angleBlur: globalBlur),
                                             launchDirection: .increase,
                                             peakDirection: .decrease,
                                             greaterThanStartFeedback: Feedback.show(.move, LR: .right, .leg, .up),
                                             smallerThanEndFeedback: Feedback.show(.move, LR: .right, .leg, .down)))
         ],
-        guardGroups: nil,
+        guardGroups: [],
         startAcceptedPeakDuration: 0,
         endAcceptedPeakDuration: 0.5,
         peakDurationFeedback: "Move body more stable"
         
+    )
+    
+    let frontRaise = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "ShoulderFlexion",
+                      acceptedAngleValueDifference: 20,
+                      angleValueDifferenceFeedback: Feedback.show(.raise, .arm, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .left, clockwiseDirection: true)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                           launchDirection: .increase,
+                                           peakDirection: .decrease,
+                                           greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .arm, .down),
+                                           smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .arm, .up)),
+                      right: MovementTarget(feature: .rangeOfMotion(.shoulder(side: .right, clockwiseDirection: false)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 20, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                            launchDirection: .increase,
+                                            peakDirection: .decrease,
+                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .arm, .down),
+                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .right, .arm, .up)))
+        ],
+        guardGroups: []
+    )
+    
+    let pushUp = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Elbow",
+                      acceptedAngleValueDifference: 45,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .arm, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                           launchDirection: .decrease,
+                                           peakDirection: .increase,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .arm, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .arm, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                            launchDirection: .decrease,
+                                            peakDirection: .increase,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .arm, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .arm, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let sitUp = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Hip",
+                      acceptedAngleValueDifference: 360,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .leg, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 150, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 60, angleBlur: globalBlur),
+                                           launchDirection: .decrease,
+                                           peakDirection: .increase,
+                                           greaterThanStartFeedback: Feedback.show(.move, LR: .left, .leg, .down),
+                                           smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .leg, .up)),
+                      right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 150, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 60, angleBlur: globalBlur),
+                                            launchDirection: .decrease,
+                                            peakDirection: .increase,
+                                            greaterThanStartFeedback: Feedback.show(.move, LR: .right, .leg, .down),
+                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .right, .leg, .up)))
+        ],
+        guardGroups: []
+    )
+    
+    let swing = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "HipSwing",
+                      acceptedAngleValueDifference: 360,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .leg, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: true)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 110, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                           launchDirection: .increase,
+                                           peakDirection: .decrease,
+                                           greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .leg, .up),
+                                           smallerThanEndFeedback: Feedback.show(.move, LR: .left, .leg, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: false)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 110, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                            launchDirection: .increase,
+                                            peakDirection: .decrease,
+                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .leg, .up),
+                                            smallerThanEndFeedback: Feedback.show(.move, LR: .right, .leg, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let highKnees = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "LegLift",
+                      acceptedAngleValueDifference: 360,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .leg, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                           launchDirection: .decrease,
+                                           peakDirection: .increase,
+                                           greaterThanStartFeedback: Feedback.show(.lower, LR: .left, .leg, .down),
+                                           smallerThanEndFeedback: Feedback.show(.raise, LR: .left, .leg, .up)),
+                      right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 90, angleBlur: globalBlur),
+                                            launchDirection: .decrease,
+                                            peakDirection: .increase,
+                                            greaterThanStartFeedback: Feedback.show(.lower, LR: .right, .leg, .down),
+                                            smallerThanEndFeedback: Feedback.show(.raise, LR: .right, .leg, .up)))
+        ],
+        guardGroups: []
+    )
+    
+    let deadlift = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Hip",
+                      acceptedAngleValueDifference: 360,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .leg, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 70, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                           launchDirection: .increase,
+                                           peakDirection: .decrease,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .leg, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .leg, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 70, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 170, angleBlur: globalBlur),
+                                            launchDirection: .increase,
+                                            peakDirection: .decrease,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .leg, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .leg, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let pullUp = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Elbow",
+                      acceptedAngleValueDifference: 45,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .arm, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                           launchDirection: .decrease,
+                                           peakDirection: .increase,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .arm, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .arm, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                            launchDirection: .decrease,
+                                            peakDirection: .increase,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .arm, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .arm, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let tricepsExtension = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Elbow",
+                      acceptedAngleValueDifference: 45,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .arm, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: true)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                           launchDirection: .increase,
+                                           peakDirection: .decrease,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .arm, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .arm, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: false)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                            launchDirection: .increase,
+                                            peakDirection: .decrease,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .arm, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .arm, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let hammerCurl = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Elbow",
+                      acceptedAngleValueDifference: 45,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .arm, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                           launchDirection: .decrease,
+                                           peakDirection: .increase,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .arm, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .arm, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 160, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 45, angleBlur: globalBlur),
+                                            launchDirection: .decrease,
+                                            peakDirection: .increase,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .arm, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .arm, .down)))
+        ],
+        guardGroups: []
+    )
+    
+    let gluteBridge = FitnessExerciseAdjustment(
+        limbGroups: [
+            LimbGroup(name: "Hip",
+                      acceptedAngleValueDifference: 360,
+                      angleValueDifferenceFeedback: Feedback.show(.move, .leg, .moreStable),
+                      left: MovementTarget(feature: .rangeOfMotion(.hip(side: .left, clockwiseDirection: true)),
+                                           correctionStyle: nil,
+                                           launchResult: .init(angleValue: 110, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 180, angleBlur: globalBlur),
+                                           launchDirection: .increase,
+                                           peakDirection: .decrease,
+                                           greaterThanStartFeedback: Feedback.show(.raise, LR: .left, .leg, .up),
+                                           smallerThanEndFeedback: Feedback.show(.lower, LR: .left, .leg, .down)),
+                      right: MovementTarget(feature: .rangeOfMotion(.hip(side: .right, clockwiseDirection: false)),
+                                            correctionStyle: nil,
+                                            launchResult: .init(angleValue: 110, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 180, angleBlur: globalBlur),
+                                            launchDirection: .increase,
+                                            peakDirection: .decrease,
+                                            greaterThanStartFeedback: Feedback.show(.raise, LR: .right, .leg, .up),
+                                            smallerThanEndFeedback: Feedback.show(.lower, LR: .right, .leg, .down)))
+        ],
+        guardGroups: []
     )
 }
 
@@ -443,13 +815,53 @@ struct FitnessExerciseCategory {
         ),
         
         Category(
-            name: "Walking Lunge",
-            muscleGroup: .quads,
-            description: CompletedExerciseInstruction().walkingLunge.description,
-            instruction: CompletedExerciseInstruction().walkingLunge.instruction,
-            images: CompletedExerciseImageVideoInstruction().jumpingJack.image,
-            videos: CompletedExerciseImageVideoInstruction().jumpingJack.video,
-            exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl
+            name: "Push-Up",
+            muscleGroup: .chest,
+            description: CompletedExerciseInstruction().pushUp.description,
+            instruction: CompletedExerciseInstruction().pushUp.instruction,
+            images: CompletedExerciseImageVideoInstruction().pushUp.image,
+            videos: CompletedExerciseImageVideoInstruction().pushUp.video,
+            exerciseAdjustment: CompletedExerciseAdjustment().pushUp
+        ),
+        
+        Category(
+            name: "Sit-Up",
+            muscleGroup: .abs,
+            description: CompletedExerciseInstruction().sitUp.description,
+            instruction: CompletedExerciseInstruction().sitUp.instruction,
+            images: CompletedExerciseImageVideoInstruction().sitUp.image,
+            videos: CompletedExerciseImageVideoInstruction().sitUp.video,
+            exerciseAdjustment: CompletedExerciseAdjustment().sitUp
+        ),
+        
+        Category(
+            name: "Front Raise",
+            muscleGroup: .shoulders,
+            description: CompletedExerciseInstruction().frontRaise.description,
+            instruction: CompletedExerciseInstruction().frontRaise.instruction,
+            images: CompletedExerciseImageVideoInstruction().frontRaise.image,
+            videos: CompletedExerciseImageVideoInstruction().frontRaise.video,
+            exerciseAdjustment: CompletedExerciseAdjustment().frontRaise
+        ),
+        
+        Category(
+            name: "Kettlebell Swing",
+            muscleGroup: .fullBody,
+            description: CompletedExerciseInstruction().swing.description,
+            instruction: CompletedExerciseInstruction().swing.instruction,
+            images: CompletedExerciseImageVideoInstruction().swing.image,
+            videos: CompletedExerciseImageVideoInstruction().swing.video,
+            exerciseAdjustment: CompletedExerciseAdjustment().swing
+        ),
+        
+        Category(
+            name: "High Knees",
+            muscleGroup: .cardio,
+            description: CompletedExerciseInstruction().highKnees.description,
+            instruction: CompletedExerciseInstruction().highKnees.instruction,
+            images: CompletedExerciseImageVideoInstruction().highKnees.image,
+            videos: CompletedExerciseImageVideoInstruction().highKnees.video,
+            exerciseAdjustment: CompletedExerciseAdjustment().highKnees
         )
     ]
 }

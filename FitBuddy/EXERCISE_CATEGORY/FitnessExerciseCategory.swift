@@ -41,8 +41,8 @@ struct CompletedExerciseAdjustment {
                       angleValueDifferenceFeedback: Feedback.show(.move, .arm, .apart),
                       left: MovementTarget(feature: .rangeOfMotion(.elbow(side: .left, clockwiseDirection: false)),
                                            correctionStyle: nil,
-                                           launchResult: .init(angleValue: 150, angleBlur: 20),
-                                           peakResult: .init(angleValue: 30, angleBlur: 20),
+                                           launchResult: .init(angleValue: 150, angleBlur: globalBlur),
+                                           peakResult: .init(angleValue: 30, angleBlur: globalBlur),
                                            middleRangeResultBlur: 20,
                                            launchDirection: .increase,
                                            peakDirection: .decrease,
@@ -50,8 +50,8 @@ struct CompletedExerciseAdjustment {
                                            smallerThanEndFeedback: Feedback.show(.move, LR: .left, .arm, .down)),
                       right: MovementTarget(feature: .rangeOfMotion(.elbow(side: .right, clockwiseDirection: true)),
                                             correctionStyle: nil,
-                                            launchResult: .init(angleValue: 150, angleBlur: 20),
-                                            peakResult: .init(angleValue: 30, angleBlur: 20),
+                                            launchResult: .init(angleValue: 150, angleBlur: globalBlur),
+                                            peakResult: .init(angleValue: 30, angleBlur: globalBlur),
                                             middleRangeResultBlur: 20,
                                             launchDirection: .increase,
                                             peakDirection: .decrease,
@@ -110,7 +110,7 @@ struct Category {
 
 
 struct FitnessExerciseCategory {
-    let categories: [Category] = [
+    var categories: [Category] { return [
         Category(name: "Squat",
                  description: CompletedExerciseInstruction().dumbbellCurl.description,
                  instruction: CompletedExerciseInstruction().dumbbellCurl.instruction,
@@ -132,6 +132,7 @@ struct FitnessExerciseCategory {
                  videos: CompletedExerciseImageVideoInstruction().dumbbellCurl.video,
                  exerciseAdjustment: CompletedExerciseAdjustment().dumbbellCurl), 
     ]
+    }
 }
 
 

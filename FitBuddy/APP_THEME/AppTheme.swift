@@ -49,17 +49,17 @@ struct Theme {
         ultraThinMaterial: .systemUltraThinMaterialLight,
         mainColor: Color.offWhite,
         offColor: .darkGray3,
-        tabbar: .offWhite,
-        text: .darkGray3
+        tabbar: Color(red: 200 / 255, green: 205 / 255, blue: 225 / 255),  // Cosmic silver tabbar
+        text: Color(red: 35 / 255, green: 30 / 255, blue: 55 / 255)        // Deep space text
     )
     
     static let dark = Theme(
         normalMaterial: .systemThinMaterialDark,
         ultraThinMaterial: .systemUltraThinMaterialDark,
-        mainColor: Color.darkGray3,
-        offColor: Color.offWhite,
-        tabbar: Color.darkGray3,
-        text: Color.offWhite
+        mainColor: Color(red: 18 / 255, green: 15 / 255, blue: 35 / 255),  // Deep space
+        offColor: Color(red: 210 / 255, green: 215 / 255, blue: 235 / 255), // Starlight
+        tabbar: Color(red: 12 / 255, green: 10 / 255, blue: 28 / 255),     // Void tabbar
+        text: Color(red: 210 / 255, green: 215 / 255, blue: 235 / 255)     // Starlight text
     )
 }
 

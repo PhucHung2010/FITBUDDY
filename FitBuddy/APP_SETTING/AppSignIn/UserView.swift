@@ -10,27 +10,31 @@ import Foundation
 
 
 struct UserView: View {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @EnvironmentObject var userController: UserController
+    @EnvironmentObject var authManager: SupabaseAuthManager
     @EnvironmentObject var theme: AppThemeController
+    @State private var showEditProfile = false
+    
     var body: some View {
         VStack(spacing: 10) {
-            if userController.user == nil {
-                anonymousUser
-                signInButton
-            }
-            else {
+            if authManager.isAuthenticated {
                 officialUser
                 signOutButton
+            } else {
+                anonymousUser
             }
         }
         .frame(width: UIScreen.main.bounds.width)
+        .sheet(isPresented: $showEditProfile) {
+            ProfileEditView()
+        }
     }
     
     
     var officialUser: some View {
         VStack {
-            if let image = userController.user?.imageURL {
+            // User avatar from Google or Supabase
+            if let image = authManager.currentUserProfile?.imageURL ?? userController.user?.imageURL ?? authManager.currentUser?.userMetadata["avatar_url"]?.value as? String {
                 AsyncImage(url: URL(string: image)) { phase in
                     if let image = phase.image {
                         image
@@ -46,25 +50,58 @@ struct UserView: View {
                         .clipShape(Circle())
                         .shadow(radius: 4)
                 }
+            } else {
+                Image(systemName: "person.crop.circle.fill")
+                    .resizable()
+                    .scaledToFill()
+                    .foregroundColor(theme.main.text.opacity(0.6))
+                    .frame(width: 110, height: 110)
             }
             VStack {
-                Text(userController.user?.name ?? "No name")
+                Text(authManager.currentUserProfile?.name ?? userController.user?.name ?? authManager.currentUser?.userMetadata["full_name"]?.value as? String ?? "User")
                     .foregroundColor(theme.main.text)
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .lineLimit(1)
                     .minimumScaleFactor(0.2)
-                Text(userController.user?.email ?? "khong co")
-                    .foregroundColor(theme.main.text)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                
+                if let username = authManager.currentUserProfile?.username, !username.isEmpty {
+                    Text("@\(username)")
+                        .foregroundColor(theme.main.text.opacity(0.7))
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .lineLimit(1)
+                }
+                
+                Text(authManager.currentUserProfile?.email ?? userController.user?.email ?? authManager.currentUser?.email ?? "")
+                    .foregroundColor(theme.main.text.opacity(0.7))
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
                     .lineLimit(1)
                     .minimumScaleFactor(0.2)
+                
+                if let bio = authManager.currentUserProfile?.bio, !bio.isEmpty {
+                    Text(bio)
+                        .foregroundColor(theme.main.text)
+                        .font(.system(size: 14, weight: .regular))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 4)
+                }
             }
-            .padding(5)
+            .padding(10)
             .background {
                 BlurView(style: theme.main.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 15))
                     .shadow(radius: 2)
             }
+            
+            Button(action: { showEditProfile = true }) {
+                Text("Edit Profile")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                    .background(theme.main.text.opacity(0.3))
+                    .clipShape(Capsule())
+            }
+            .padding(.top, 5)
         }
         .frame(width: UIScreen.main.bounds.width - 60)
         .padding(.vertical, 5)
@@ -102,36 +139,11 @@ struct UserView: View {
         }
     }
     
-    var signInButton: some View {
-        Button(action: { userController.login() }) {
-            HStack {
-                Text("Sign in with")
-                    .foregroundColor(theme.main.text)
-                    .font(.system(size: 20, weight: .bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.2)
-                Image("google")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 25, height: 25)
-                    .padding(6)
-                    .background {
-                        Circle().foregroundColor(theme.main.mainColor)
-                    }
-                    .shadow(radius: 4)
-            }
-            .padding(5)
-            .background {
-                BlurView(style: theme.main.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 45))
-                    .shadow(radius: 4)
-            }
-        }
-        .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
-    }
-    
     var signOutButton: some View {
-        Button(action: { userController.signOut() }) {
+        Button(action: {
+            userController.signOut()
+            authManager.logOut()
+        }) {
             HStack {
                 Text("Sign out")
                     .foregroundColor(theme.main.text)

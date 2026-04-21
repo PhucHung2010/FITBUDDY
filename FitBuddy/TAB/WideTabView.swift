@@ -44,6 +44,12 @@ struct WideTabView: View {
                         tabBar.isHidden = true
                      })
                 
+                ContestView()
+                    .tag(Tab.Contest)
+                    .background(TabBarAccessor { tabBar in
+                        tabBar.isHidden = true
+                    })
+                
 //                RankingView()
 //                    .tag(Tab.Ranking)
 //                    .background(TabBarAccessor { tabBar in

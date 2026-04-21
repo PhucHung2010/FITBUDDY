@@ -76,6 +76,12 @@ class FitnessExercisePerformance: PoseDetection {
     }
     
     
+    /// Chuyển góc ngoài (> 180°) thành góc trong: 360° - angle
+    /// Các khớp cơ thể (khuỷu tay, đầu gối, vai...) chỉ có ý nghĩa từ 0°-180°
+    private func normalizeAngle(_ angle: Double) -> Double {
+        return angle > 180.0 ? 360.0 - angle : angle
+    }
+    
     func perform() {
 //        performOLD()
 //        performAI()
@@ -144,11 +150,13 @@ class FitnessExercisePerformance: PoseDetection {
             for index in controller!.limbGroups.indices {
                 var group = controller!.limbGroups[index]
                 
-                guard let leftVal = result[group.left.feature]?.value,
-                      let rightVal = result[group.right.feature]?.value else {
+                guard let rawLeftVal = result[group.left.feature]?.value,
+                      let rawRightVal = result[group.right.feature]?.value else {
                     continue
                 }
 
+                let leftVal = self.normalizeAngle(rawLeftVal)
+                let rightVal = self.normalizeAngle(rawRightVal)
                 group.left.currentAngle = leftVal
                 group.right.currentAngle = rightVal
 

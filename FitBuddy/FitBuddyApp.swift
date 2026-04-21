@@ -6,37 +6,21 @@
 //
 import Foundation
 import SwiftUI
-import FirebaseAuth
 import GoogleSignIn
-import Firebase
 
 @main
 struct FitBuddyApp: App {
     @StateObject var userController = UserController()
+    @StateObject var supabaseAuthManager = SupabaseAuthManager()
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
                     GIDSignIn.sharedInstance.handle(url)
                 }
-                .onAppear {
-                    FirebaseApp.configure()
-                    userController.restorePreviousSignIn()
-                }
                 .environmentObject(userController)
+                .environmentObject(supabaseAuthManager)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }
 }
-
-
-
-//            if cameraPermissionGranted {
-//                    .onAppear {
-//                        AVCaptureDevice.requestAccess(for: .video) { accessGranted in
-//                            DispatchQueue.main.async {
-//                                self.cameraPermissionGranted = accessGranted
-//                            }
-//                        }
-//                    }
-//            }
