@@ -15,53 +15,56 @@ struct ChatRoomView: View {
     @Namespace var bottomID
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            HStack(spacing: 12) {
-                Button(action: {
-                    socialManager.stopListening()
-                    isPresented = false
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(theme.main.text)
-                }
-                
-                if let urlStr = recipient.imageURL, let url = URL(string: urlStr) {
-                    AsyncImage(url: url) { phase in
-                        if let image = phase.image {
-                            image.resizable().scaledToFill()
-                        } else {
-                            Circle().fill(theme.main.text.opacity(0.1))
-                        }
-                    }
-                    .frame(width: 36, height: 36)
-                    .clipShape(Circle())
-                } else {
-                    Circle().fill(theme.main.text.opacity(0.2))
-                        .frame(width: 36, height: 36)
-                }
-                
-                Text(recipient.name ?? "Chat")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundColor(theme.main.text)
-                
-                Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(theme.main.mainColor)
-            .shadow(color: .black.opacity(0.05), radius: 5, y: 5)
+        ZStack {
+            theme.main.mainColor.ignoresSafeArea()
             
-            // Messages
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(socialManager.currentRoomMessages) { msg in
-                            MessageBubble(message: msg, isMe: msg.senderId == currentUserId)
-                                .id(msg.id)
+            VStack(spacing: 0) {
+                // Header
+                HStack(spacing: 12) {
+                    Button(action: {
+                        socialManager.stopListening()
+                        isPresented = false
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(theme.main.text)
+                    }
+                    
+                    if let urlStr = recipient.imageURL, let url = URL(string: urlStr) {
+                        AsyncImage(url: url) { phase in
+                            if let image = phase.image {
+                                image.resizable().scaledToFill()
+                            } else {
+                                Circle().fill(theme.main.text.opacity(0.1))
+                            }
                         }
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
+                    } else {
+                        Circle().fill(theme.main.text.opacity(0.2))
+                            .frame(width: 36, height: 36)
+                    }
+                    
+                    Text(recipient.name ?? "Chat")
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.main.text)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(theme.main.mainColor)
+                .shadow(color: .black.opacity(0.05), radius: 5, y: 5)
+                
+                // Messages
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(socialManager.currentRoomMessages) { msg in
+                                MessageBubble(message: msg, isMe: msg.senderId.lowercased() == currentUserId.lowercased())
+                                    .id(msg.id)
+                            }
                         
                         Color.clear
                             .frame(height: 1)
@@ -105,7 +108,7 @@ struct ChatRoomView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
             .background(theme.main.mainColor)
-        }
+        } // close VStack
         .navigationBarHidden(true)
         .onAppear {
             socialManager.subscribeToMessages(roomId: roomId)
@@ -113,8 +116,9 @@ struct ChatRoomView: View {
         .onDisappear {
             socialManager.stopListening()
         }
-    }
-}
+        } // close ZStack
+    } // close body
+} // close struct
 
 struct MessageBubble: View {
     let message: ChatMessage

@@ -852,16 +852,6 @@ struct FitnessExerciseCategory {
             images: CompletedExerciseImageVideoInstruction().swing.image,
             videos: CompletedExerciseImageVideoInstruction().swing.video,
             exerciseAdjustment: CompletedExerciseAdjustment().swing
-        ),
-        
-        Category(
-            name: "High Knees",
-            muscleGroup: .cardio,
-            description: CompletedExerciseInstruction().highKnees.description,
-            instruction: CompletedExerciseInstruction().highKnees.instruction,
-            images: CompletedExerciseImageVideoInstruction().highKnees.image,
-            videos: CompletedExerciseImageVideoInstruction().highKnees.video,
-            exerciseAdjustment: CompletedExerciseAdjustment().highKnees
         )
     ]
 }

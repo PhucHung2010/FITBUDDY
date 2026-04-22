@@ -5,9 +5,7 @@ struct ChatListView: View {
     @EnvironmentObject var socialManager: SocialManager
     @EnvironmentObject var theme: AppThemeController
     
-    @State private var navigateToChat: Bool = false
-    @State private var selectedRoomId: String = ""
-    @State private var selectedRecipient: UserModel? = nil
+    @State private var activeChat: ChatRoomWithRecipient? = nil
     
     var body: some View {
         ZStack {
@@ -45,9 +43,7 @@ struct ChatListView: View {
                                 ForEach(socialManager.myChatRooms) { roomData in
                                     if let recipient = roomData.recipient {
                                         Button(action: {
-                                            selectedRoomId = roomData.room.id
-                                            selectedRecipient = recipient
-                                            navigateToChat = true
+                                            activeChat = roomData
                                         }) {
                                             chatRow(recipient: recipient)
                                         }
@@ -67,11 +63,25 @@ struct ChatListView: View {
                     }
                 }
             }
-        .fullScreenCover(isPresented: $navigateToChat) {
-            if let recipient = selectedRecipient, let currentUserId = authManager.currentUser?.id.uuidString {
-                ChatRoomView(roomId: selectedRoomId, recipient: recipient, currentUserId: currentUserId, isPresented: $navigateToChat)
-                    .environmentObject(socialManager)
-                    .environmentObject(theme)
+        .fullScreenCover(item: $activeChat) { chat in
+            if let recipient = chat.recipient, let currentUserId = authManager.currentUser?.id.uuidString {
+                ChatRoomView(
+                    roomId: chat.room.id,
+                    recipient: recipient,
+                    currentUserId: currentUserId,
+                    isPresented: Binding(
+                        get: { activeChat != nil },
+                        set: { if !$0 { activeChat = nil } }
+                    )
+                )
+                .environmentObject(authManager)
+                .environmentObject(socialManager)
+                .environmentObject(theme)
+            } else {
+                ZStack {
+                    theme.main.mainColor.ignoresSafeArea()
+                    ProgressView()
+                }
             }
         }
     }

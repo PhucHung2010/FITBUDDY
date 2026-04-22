@@ -191,27 +191,23 @@ class SocialManager: ObservableObject {
                 return commonRoomId
             }
             
-            // Create a new room
-            let newRoomResponse = try await supabase
+            // Create a new room with a client-generated UUID
+            let newRoomId = UUID().uuidString.lowercased()
+            try await supabase
                 .from("chat_rooms")
-                .insert([String: String]())
-                .select()
-                .single()
+                .insert(["id": newRoomId])
                 .execute()
-            
-            // Decode new room ID (can just decode to dict)
-            let newRoomData = try JSONDecoder().decode(ChatRoom.self, from: newRoomResponse.data)
             
             // Insert participants
             try await supabase
                 .from("chat_participants")
                 .insert([
-                    ["room_id": newRoomData.id, "user_id": currentUserId],
-                    ["room_id": newRoomData.id, "user_id": targetUserId]
+                    ["room_id": newRoomId, "user_id": currentUserId],
+                    ["room_id": newRoomId, "user_id": targetUserId]
                 ])
                 .execute()
                 
-            return newRoomData.id
+            return newRoomId
             
         } catch {
             print("Failed creating chat room: \(error)")

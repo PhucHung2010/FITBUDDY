@@ -64,6 +64,17 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 -- STEP 5: Apply Policies
 -- ============================================
 
+-- Helper function to avoid infinite recursion when querying chat_participants
+CREATE OR REPLACE FUNCTION is_room_participant(check_room_id uuid)
+RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM chat_participants
+    WHERE room_id = check_room_id AND user_id = auth.uid()
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
 ALTER TABLE chat_rooms ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Authenticated users can create rooms"
@@ -72,10 +83,7 @@ ON chat_rooms FOR INSERT TO authenticated WITH CHECK (true);
 CREATE POLICY "Participants can view their rooms"
 ON chat_rooms FOR SELECT TO authenticated
 USING (
-  EXISTS (
-    SELECT 1 FROM chat_participants cp 
-    WHERE cp.room_id = id AND cp.user_id = auth.uid()
-  )
+  is_room_participant(id)
 );
 
 ALTER TABLE chat_participants ENABLE ROW LEVEL SECURITY;
@@ -87,10 +95,7 @@ WITH CHECK (true);
 CREATE POLICY "Participants can view room members"
 ON chat_participants FOR SELECT TO authenticated
 USING (
-  EXISTS (
-    SELECT 1 FROM chat_participants cp 
-    WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
-  )
+  is_room_participant(room_id)
 );
 
 ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
@@ -98,20 +103,14 @@ ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Participants can view messages"
 ON chat_messages FOR SELECT TO authenticated
 USING (
-  EXISTS (
-    SELECT 1 FROM chat_participants cp 
-    WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
-  )
+  is_room_participant(room_id)
 );
 
 CREATE POLICY "Participants can send messages"
 ON chat_messages FOR INSERT TO authenticated
 WITH CHECK (
   auth.uid() = sender_id AND
-  EXISTS (
-    SELECT 1 FROM chat_participants cp 
-    WHERE cp.room_id = room_id AND cp.user_id = auth.uid()
-  )
+  is_room_participant(room_id)
 );
 
 -- ============================================
