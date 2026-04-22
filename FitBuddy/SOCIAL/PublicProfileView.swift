@@ -10,7 +10,7 @@ struct PublicProfileView: View {
     @State private var navigateToChat: Bool = false
     @State private var commonRoomId: String? = nil
     @State private var isCreatingRoom: Bool = false
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         ZStack {
@@ -19,7 +19,7 @@ struct PublicProfileView: View {
             VStack(spacing: 0) {
                 // Header custom
                 HStack {
-                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                    Button(action: { dismiss() }) {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(theme.main.text)
@@ -170,12 +170,13 @@ struct PublicProfileView: View {
                     .padding(.top, 20)
                 }
             }
-            
-            // Hidden navigation link to chat room
+        }
+        .fullScreenCover(isPresented: $navigateToChat) {
             if let commonRoomId = commonRoomId, let currentUserId = authManager.currentUser?.id.uuidString {
-                NavigationLink(destination: ChatRoomView(roomId: commonRoomId, recipient: user, currentUserId: currentUserId, isPresented: $navigateToChat).environmentObject(socialManager), isActive: $navigateToChat) {
-                    EmptyView()
-                }
+                ChatRoomView(roomId: commonRoomId, recipient: user, currentUserId: currentUserId, isPresented: $navigateToChat)
+                    .environmentObject(authManager)
+                    .environmentObject(socialManager)
+                    .environmentObject(theme)
             }
         }
         .navigationBarHidden(true)

@@ -6,7 +6,6 @@ struct UserSearchView: View {
     @EnvironmentObject var theme: AppThemeController
     @State private var searchText = ""
     @State private var searchTask: Task<Void, Never>?
-    @State private var navigateToProfile: Bool = false
     @State private var selectedUser: UserModel?
     
     var body: some View {
@@ -72,7 +71,6 @@ struct UserSearchView: View {
                                     if user.id != authManager.currentUser?.id.uuidString {
                                         Button(action: {
                                             selectedUser = user
-                                            navigateToProfile = true
                                         }) {
                                             searchResultRow(user: user)
                                         }
@@ -82,18 +80,16 @@ struct UserSearchView: View {
                         }
                         .padding(.vertical, 16)
                     }
-                }
-            }
-        .fullScreenCover(isPresented: $navigateToProfile) {
-            if let user = selectedUser {
-                PublicProfileView(user: user)
-                    .environmentObject(authManager)
-                    .environmentObject(socialManager)
-                    .environmentObject(theme)
             }
         }
+        .fullScreenCover(item: $selectedUser) { user in
+            PublicProfileView(user: user)
+                .environmentObject(authManager)
+                .environmentObject(socialManager)
+                .environmentObject(theme)
+        }
     }
-    
+
     @ViewBuilder
     func searchResultRow(user: UserModel) -> some View {
         HStack(spacing: 16) {

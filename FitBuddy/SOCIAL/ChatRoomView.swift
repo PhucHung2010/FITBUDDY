@@ -6,9 +6,10 @@ struct ChatRoomView: View {
     let currentUserId: String
     
     @Binding var isPresented: Bool
+    @EnvironmentObject var authManager: SupabaseAuthManager
     @EnvironmentObject var socialManager: SocialManager
     @EnvironmentObject var theme: AppThemeController
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     
     @State private var draftMessage: String = ""
     @Namespace var bottomID
@@ -20,7 +21,7 @@ struct ChatRoomView: View {
                 Button(action: {
                     socialManager.stopListening()
                     isPresented = false
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 20, weight: .bold))
