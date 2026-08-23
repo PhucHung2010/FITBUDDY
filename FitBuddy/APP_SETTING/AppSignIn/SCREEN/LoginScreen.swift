@@ -40,7 +40,7 @@ struct LoginScreen: View {
                     .padding()
                 
                 GoogleSiginBtn {
-                    userController.login()
+                    userController.signInWithGoogle()
                 }
             }
             .padding(.top, 52)

@@ -8,18 +8,17 @@
 import SwiftUI
 
 struct CustomSlider: View {
-    
+    @EnvironmentObject var theme: AppThemeController
     @Binding private var sliderValue: Float
     @State private var draftSliderValue: Float
     @State private var isDragging = false
     @State private var boardOffset: CGFloat = 0
     
     @State private var sliderLimit: CGFloat
-    
     let sliderWidth: CGFloat
     let action: () -> Void
     
-    init(_ sliderValue: Binding<Float>,_ sliderLimit: CGFloat = 100, sliderWidth: CGFloat = 300, onEditingChanged: @escaping () -> Void = {}) {
+    init(_ sliderValue: Binding<Float>, _ sliderLimit: CGFloat = 100, sliderWidth: CGFloat = 300, onEditingChanged: @escaping () -> Void = {}) {
         self._sliderValue = sliderValue
         _sliderLimit = State(initialValue: sliderLimit)
         self.sliderWidth = sliderWidth
@@ -28,59 +27,69 @@ struct CustomSlider: View {
     }
     
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 30)
-                .fill(Color.gray.opacity(0.3))
-                .shadow(radius: 1)
-                .overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.lightGray, lineWidth: 3))
-                .frame(width: (sliderWidth), height: 25)
-                .overlay() {
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(Color.Orange)
-                        .frame(width: CGFloat(CGFloat(draftSliderValue) / sliderLimit) * (sliderWidth), height: 25)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    RoundedRectangle(cornerRadius: 45)
-                        .fill(Color.white)
-                        .frame(width: 20, height: 30)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 45)
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 1.5)
-                        )
-                        .shadow(color: Color.black.opacity(0.2), radius: 2, x: 0, y: 0)
-                        .offset(x: CGFloat(CGFloat(draftSliderValue) / sliderLimit) * (sliderWidth))
-                        .gesture(
-                            DragGesture()
-                                .onChanged { gesture in
-                                    isDragging = true
-//                                        withAnimation(.spring(response: 0.3, dampingFraction: 1)) {
-                                    draftSliderValue = Float(min(max(0, Double(gesture.location.x / (sliderWidth) * sliderLimit) - 10), sliderLimit))
-//                                        }
-                                    withAnimation(.interactiveSpring(response: 0.3, dampingFraction: 1, blendDuration: 0.1)) {
-                                        boardOffset = CGFloat(CGFloat(draftSliderValue) / sliderLimit) * (sliderWidth)
-                                    }
-                                    action()
-                                }
-                                .onEnded { _ in
-                                    isDragging = false
-                                    sliderValue = draftSliderValue
-                                }
-                        )
-                        .offset(x: -10)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                     
-                    if isDragging {
-                        Text("\(Int(draftSliderValue))")
-                            .font(.system(size: 17, weight: .semibold, design: .rounded))
-                            .foregroundColor(.white)
-                            .padding(5)
-                            .background(Color.darkGray.opacity(0.9))
-                            .cornerRadius(30)
-                            .offset(x: boardOffset - 10, y: -45)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+        let isLight = theme.appTheme == .light
+        let progressWidth = max(0, min(sliderWidth, CGFloat(CGFloat(draftSliderValue) / sliderLimit) * sliderWidth))
+        
+        ZStack(alignment: .leading) {
+            // Sunken Groove Track
+            Capsule()
+                .fill(isLight ? NeumorphicColors.lightInset : NeumorphicColors.darkInset)
+                .frame(width: sliderWidth, height: 16)
+                .neumorphicInset(cornerRadius: 8)
+                .overlay(
+                    // Filled Progress Track
+                    HStack {
+                        Capsule()
+                            .fill(theme.accentGradient)
+                            .frame(width: progressWidth, height: 12)
+                            .padding(.leading, 2)
+                        Spacer(minLength: 0)
                     }
-                }
+                )
+            
+            // Raised Circular Thumb Knob with Center Colored Dot
+            Circle()
+                .fill(isLight ? NeumorphicColors.lightSurface : NeumorphicColors.darkSurface)
+                .frame(width: 28, height: 28)
+                .neumorphicCircle(shadowRadius: 5, shadowDistance: 3)
+                .overlay(
+                    Circle()
+                        .fill(theme.accentGradient)
+                        .frame(width: 10, height: 10)
+                )
+                .offset(x: max(0, min(sliderWidth - 28, progressWidth - 14)))
+                .gesture(
+                    DragGesture()
+                        .onChanged { gesture in
+                            isDragging = true
+                            let clampedX = max(0, min(Double(gesture.location.x / sliderWidth * sliderLimit), Double(sliderLimit)))
+                            draftSliderValue = Float(clampedX)
+                            boardOffset = CGFloat(CGFloat(draftSliderValue) / sliderLimit) * sliderWidth
+                            action()
+                        }
+                        .onEnded { _ in
+                            isDragging = false
+                            sliderValue = draftSliderValue
+                        }
+                )
+            
+            // Floating Value Badge
+            if isDragging {
+                Text("\(Int(draftSliderValue))")
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule()
+                            .fill(theme.accentGradient)
+                            .shadow(color: Color.black.opacity(0.2), radius: 4, y: 2)
+                    )
+                    .offset(x: max(0, min(sliderWidth - 40, progressWidth - 20)), y: -38)
+            }
         }
-        .animation(.easeInOut(duration: 0.3), value: isDragging)
+        .frame(width: sliderWidth, height: 36)
+        .animation(.easeInOut(duration: 0.2), value: isDragging)
         .onChange(of: sliderValue) { newValue in
             draftSliderValue = newValue
         }

@@ -13,17 +13,22 @@ import Firebase
 @main
 struct FitBuddyApp: App {
     @StateObject var userController = UserController()
+    @StateObject var theme = AppThemeController()
+    @StateObject var tabController = TabViewController()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+                    userController.handleOAuthCallback(url: url)
                 }
                 .onAppear {
                     FirebaseApp.configure()
-                    userController.restorePreviousSignIn()
+                    userController.restoreSession()
                 }
                 .environmentObject(userController)
+                .environmentObject(theme)
+                .environmentObject(tabController)
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
         }
     }

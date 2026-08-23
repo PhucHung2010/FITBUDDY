@@ -19,8 +19,7 @@ struct SummaryView: View {
             AppBackground().ignoresSafeArea()
             
             VStack(spacing: 20) {
-                TitleText
-                
+
                     RepSummaryView(screenWidth: screenWidth,
                                totalCorrect: CGFloat(exercisePerformance.totalCorrect),
                                totalIncorrect: CGFloat(exercisePerformance.totalIncorrect),
@@ -58,12 +57,7 @@ struct SummaryView: View {
         }
     }
     
-    var TitleText: some View {
-        AppHeadingView(title: "Summary")
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, 30)
-    }
-    
+
     var DoneButton: some View {
         Button(action: {
             exercisePerformance.reinitialize()

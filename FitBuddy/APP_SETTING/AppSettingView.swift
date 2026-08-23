@@ -122,18 +122,9 @@ struct AppSettingView: View {
             if performanceView == false {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 15) {
-                        AppHeadingView(title: "Setting")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 30)
-                        VStack(spacing: 3) {
-                            Divider().padding(.horizontal)
-                            Text("User")
-                                .font(.system(size: 25, weight: .heavy, design: .rounded))
-                                .foregroundColor(theme.main.text)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 30)
-                            UserView()
-                        }
+
+                        ProfileEditorView()
+                        
                         VStack(spacing: 3) {
                             Divider().padding(.horizontal)
                             Text("Theme")
@@ -152,6 +143,7 @@ struct AppSettingView: View {
                                 .padding(.leading, 30)
                             DemoFeatureOptionView(performanceView: $performanceView, exercisePerformance: exercisePerformance)
                         }
+                        Spacer().frame(height: 100)
                     }
                 }
                 .transition(.move(edge: .leading))

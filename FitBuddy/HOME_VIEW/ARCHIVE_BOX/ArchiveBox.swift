@@ -118,128 +118,130 @@ struct ArchiveBox: View {
     
     
     var archiveBox: some View {
-        VStack {
+        VStack(spacing: 12) {
             HStack {
                 Button(action: {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                         showHistoryList.toggle()
                     }
                 }) {
-                    Image(systemName: "archivebox.circle.fill")
-                        .font(.system(size: 35, weight: .semibold))
-                        .foregroundColor(.Orange)
-                        .frame(height: 40)
-                        .background {
-                            BlurView(style: theme.main.ultraThinMaterial)
-                                .clipShape(Circle())
-                                .shadow(radius: 4)
+                    HStack(spacing: 8) {
+                        Image(systemName: showHistoryList ? "archivebox.fill" : "archivebox")
+                            .font(.system(size: 16, weight: .bold))
+                        Text("Archive")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                    }
+                    .foregroundColor(showHistoryList ? .white : theme.main.text)
+                    .padding(.horizontal, 14)
+                    .frame(height: 38)
+                    .background {
+                        if showHistoryList {
+                            Capsule().fill(theme.accentGradient)
                         }
+                    }
+                    .neumorphicPill(gradient: showHistoryList ? theme.accentGradient : nil)
                 }
-                .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.92))
+                
+                Spacer()
+                
                 if showHistoryList {
                     dateFormatToggle
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                } else {
+                    NeumorphicIndicatorDots(dotSize: 5, spacing: 4)
                 }
             }
-            .frame(height: 40)
+            .frame(height: 44)
+            .padding(.horizontal, 6)
             
             if showHistoryList { HistoryList() }
         }
-        .frame(width: UIScreen.main.bounds.width - 50)
-        .padding(5)
-        .mask(RoundedRectangle(cornerRadius: 25))
-        .background(BlurRoundedBackground(cornerRadius: 25,
-                                          style: theme.main.ultraThinMaterial))
+        .frame(width: UIScreen.main.bounds.width - 32)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 12)
+        .neumorphicCard(cornerRadius: 28)
     }
     
     var dateFormatToggle: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 4) {
             ForEach(DateFormatOption.allCases, id: \.rawValue) { dateFormatOption in
-                HStack(spacing: 5) {
-                    Text("\(dateFormatOption)")
-                        .font(.system(size: 13, weight: .semibold))
-                }
-                .foregroundColor(currentDateFormatOption == dateFormatOption.rawValue ? theme.main.mainColor : .Orange)
-                .shadow(radius: 2)
-                .scaleEffect(currentDateFormatOption == dateFormatOption.rawValue ? 1.2 : 1)
-                .frame(width: 60, height: 30)
-                .background {
-                    if currentDateFormatOption == dateFormatOption.rawValue {
-                        RoundedRectangle(cornerRadius: 45)
-                            .fill(Color.Orange)
-                            .matchedGeometryEffect(id: "ActiveDate", in: animation)
-                            .shadow(radius: 4)
-                    } else {
-                        RoundedRectangle(cornerRadius: 45)
-                            .fill(Color.white.opacity(0.0001))
+                let isActive = currentDateFormatOption == dateFormatOption.rawValue
+                Text("\(dateFormatOption)")
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .foregroundColor(isActive ? .white : theme.main.text.opacity(0.6))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background {
+                        if isActive {
+                            Capsule()
+                                .fill(theme.accentGradient)
+                                .matchedGeometryEffect(id: "ActiveDate", in: animation)
+                                .shadow(color: Color.black.opacity(0.18), radius: 3, y: 1)
+                        }
                     }
-                }
-                .onTapGesture {
-                    currentDateFormatOption = dateFormatOption.rawValue
-                    groupedByTimeUnit = groupSummaryByTimeUnit(summaryParameter, dateFormat: currentDateFormatOption)
-                }
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            currentDateFormatOption = dateFormatOption.rawValue
+                            groupedByTimeUnit = groupSummaryByTimeUnit(summaryParameter, dateFormat: currentDateFormatOption)
+                        }
+                    }
             }
         }
-        .animation(.spring(response: 0.5, dampingFraction: 1), value: currentDateFormatOption)
-        .padding(4)
-        .background(BlurRoundedBackground(style: theme.main.ultraThinMaterial))
+        .padding(3)
+        .neumorphicInset(cornerRadius: 18)
         .transition(.scale)
     }
     
     @ViewBuilder
     func HistoryList() -> some View {
         if summaryParameter.isEmpty {
-            Text("History is empty!")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(theme.main.text)
-                .padding(5)
-                .background(BlurRoundedBackground(cornerRadius: 20, style: theme.main.ultraThinMaterial))
+            VStack(spacing: 8) {
+                Image(systemName: "clock.arrow.circlepath")
+                    .font(.system(size: 32))
+                    .foregroundColor(theme.main.text.opacity(0.35))
+                Text("History is empty!")
+                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                    .foregroundColor(theme.main.text.opacity(0.6))
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+            .neumorphicInset(cornerRadius: 20)
         }
         else {
             TabView(selection: $selectedTimeUnit) {
                 ForEach(groupedByTimeUnit.sorted(by: { $0.key > $1.key }), id: \.key) { timeUnit, items in
                     ScrollView(showsIndicators: false) {
-                        VStack {
+                        VStack(spacing: 12) {
                             Text(timeUnit)
-                                .font(.system(size: 20, weight: .bold))
-                                .foregroundColor(.Orange)
-                                .padding(4)
-                                .background {
-                                    BlurView(style: theme.main.ultraThinMaterial)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .shadow(radius: 4)
-                                }
-                                .padding(.horizontal)
-                                .padding(.top, 5)
+                                .font(.system(size: 16, weight: .bold, design: .rounded))
+                                .foregroundColor(theme.main.text)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 5)
+                                .neumorphicInset(cornerRadius: 12)
+                                .padding(.top, 4)
                             
                             ForEach(items.indices, id: \.self) { index in
                                 let parameter = items[index]
                                 
-                                VStack(spacing: 10) {
+                                VStack(spacing: 8) {
                                     HStack(spacing: 10) {
                                         Text(parameter.categoryName ?? "Unknown")
-                                            .font(.system(size: 20, weight: .heavy))
-                                            .foregroundColor(.Orange)
-                                            .minimumScaleFactor(0.5)
-                                            .padding(.leading, 5)
+                                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                                            .foregroundColor(theme.main.text)
+                                            .minimumScaleFactor(0.6)
+                                            .padding(.leading, 6)
                                         Spacer()
                                         Text(parameter.dateAdded.map { formatter.string(from: $0) } ?? "No date")
-                                            .font(.system(size: 17, weight: .medium))
-                                            .foregroundColor(theme.main.text)
-                                            .padding(.trailing, 5)
-                                            .minimumScaleFactor(0.5)
+                                            .font(.system(size: 13, weight: .medium, design: .rounded))
+                                            .foregroundColor(theme.main.text.opacity(0.5))
+                                            .padding(.trailing, 6)
+                                            .minimumScaleFactor(0.6)
                                     }
-                                    .frame(width: UIScreen.main.bounds.width - 70, height: 30)
-                                    .background(
-                                        BlurView(style: theme.main.ultraThinMaterial)
-                                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                                            .shadow(radius: 2)
-                                    )
-                                    .scaleEffect(isPressingOnText && beingPressedOn == index ? 0.5 : 1.0)
-                                    .animation(.spring(response: 0.5, dampingFraction: 1), value: isPressingOnText)
+                                    .frame(height: 36)
+                                    .scaleEffect(isPressingOnText && beingPressedOn == index ? 0.96 : 1.0)
+                                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressingOnText)
                                     .onTapGesture {
-                                        withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                             selectedParameter = (selectedParameter == parameter) ? nil : parameter
                                         }
                                     }
@@ -251,7 +253,7 @@ struct ArchiveBox: View {
                                     } ,perform: {
                                         if let index = beingPressedOn {
                                             viewContext.delete(summaryParameter[index])
-                                            withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                                 summaryParameter.removeAll { $0 == summaryParameter[index] }
                                                 groupedByTimeUnit = groupSummaryByTimeUnit(summaryParameter, dateFormat: currentDateFormatOption)
                                                 selectedParameter = nil
@@ -261,28 +263,29 @@ struct ArchiveBox: View {
                                     })
                                     
                                     if selectedParameter == parameter {
-                                        VStack(spacing: 35) {
+                                        VStack(spacing: 16) {
                                             AccuracyBarButton(parameter: parameter)
                                             
-                                            VStack(spacing: 20) {
+                                            VStack(spacing: 14) {
                                                 RepSummaryView(minimizeBarChart: true,
-                                                               screenWidth: CGFloat(UIScreen.main.bounds.width - 100),
+                                                               screenWidth: CGFloat(UIScreen.main.bounds.width - 90),
                                                                totalCorrect: CGFloat(parameter.totalCorrect),
                                                                totalIncorrect: CGFloat(parameter.totalIncorrect),
                                                                targetCount: Int(parameter.targetCount))
                                                 TimeSummaryView(minimizeBarChart: true,
-                                                                screenWidth: CGFloat(UIScreen.main.bounds.width - 100),
+                                                                screenWidth: CGFloat(UIScreen.main.bounds.width - 90),
                                                                 totalTime: CGFloat(parameter.totalTime),
                                                                 targetTime: Int(parameter.targetTime))
                                             }
                                         }
-                                        .padding(.bottom, 10)
-                                        .transition(.scale)
+                                        .padding(.vertical, 10)
+                                        .transition(.scale.combined(with: .opacity))
                                     }
                                 }
-                                .mask(RoundedRectangle(cornerRadius: 15))
-                                .background(BlurRoundedBackground(cornerRadius: 15, style: theme.main.ultraThinMaterial))
-                                .frame(width: UIScreen.main.bounds.width - 30)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 8)
+                                .neumorphicCard(cornerRadius: 18)
+                                .frame(width: UIScreen.main.bounds.width - 50)
                             }
                             
                             Spacer().frame(height: 50)
@@ -292,13 +295,10 @@ struct ArchiveBox: View {
                 }
             }
             .tabViewStyle(.page)
-            .frame(width: UIScreen.main.bounds.width - 30)
+            .frame(width: UIScreen.main.bounds.width - 32)
             .frame(height: 300)
-            .onChange(of: selectedTimeUnit) {newValue in
+            .onChange(of: selectedTimeUnit) { newValue in
                 selectedParameter = nil
-//                if let unit = newValue {
-//                    groupedByTimeUnit = SummaryExerciseParameterStorage.loadSummaryParameterForTimeUnit(for: "YourCategoryName", timeUnit: unit, in: viewContext)
-//                }
             }
             .transition(.scale)
         }
@@ -331,21 +331,21 @@ struct ArchiveBox: View {
     @ViewBuilder
     func accuracyBar(parameter: SummaryExerciseParameterStorage) -> some View {
         let total = Int(parameter.totalCorrect + parameter.totalIncorrect)
-        HStack(spacing: 5) {
+        let accuracyPercent = total != 0 ? Int(Double(parameter.totalCorrect) / Double(total) * 100.0) : 0
+        HStack(spacing: 6) {
             Image(systemName: "scope")
-                .font(.system(size: 15, weight: .bold))
-                .foregroundColor(.black)
-            Text("Accuracy: \(total != 0 ? Int(Double(parameter.totalCorrect) / Double(total) * 100.0) : 0)%")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.black)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundColor(.white)
+            Text("Accuracy: \(accuracyPercent)%")
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .foregroundColor(.white)
         }
-        .padding(.trailing, 3)
-        .frame(height: 30)
-        .minimumScaleFactor(0.5)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 6)
         .background(
-            BlurView(style: .systemUltraThinMaterialLight)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .shadow(radius: 4)
+            Capsule()
+                .fill(accuracyPercent >= 80 ? NeumorphicColors.greenGradient : NeumorphicColors.coralGradient)
+                .shadow(color: Color.black.opacity(0.18), radius: 4, y: 2)
         )
     }
 }

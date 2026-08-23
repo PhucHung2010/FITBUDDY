@@ -4,6 +4,16 @@
 <dict>
 	<key>CFBundleURLTypes</key>
 	<array>
+		<!-- Reversed Client ID for iOS GIDSignIn (from Supabase/Google Cloud) -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.251655851801-ajq8ufai9mklccmpmlak01npvucdjals</string>
+			</array>
+		</dict>
+		<!-- Reversed Client ID from Firebase GoogleService-Info.plist -->
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -13,5 +23,8 @@
 			</array>
 		</dict>
 	</array>
+	<!-- GIDClientID: The iOS Client ID to use for native Google Sign-In -->
+	<key>GIDClientID</key>
+	<string>251655851801-ajq8ufai9mklccmpmlak01npvucdjals.apps.googleusercontent.com</string>
 </dict>
 </plist>

@@ -11,10 +11,23 @@ import QuickPoseCore
 import QuickPoseSwiftUI
 
 struct ContentView: View {
-    @StateObject var theme = AppThemeController()
+    @EnvironmentObject var userController: UserController
     var body: some View {
-        WideTabView()
-//            .environmentObject(theme)
+        Group {
+            switch userController.authState {
+            case .loading:
+                ZStack {
+                    AppBackground()
+                    ProgressView()
+                }
+            case .unauthenticated:
+                LoginPageView()
+            case .needsProfile:
+                ProfileSetupView()
+            case .authenticated:
+                WideTabView()
+            }
+        }
     }
 }
 

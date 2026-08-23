@@ -4,6 +4,6 @@ struct TestingGit: View {
         Text("Hello, World!")
     }
 }
-#preview {
+#Preview {
     TestingGit()
 }

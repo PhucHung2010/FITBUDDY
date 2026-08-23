@@ -34,10 +34,7 @@ struct WholeBodyDemoView_Previews: PreviewProvider {
         ZStack {
             AppBackground().ignoresSafeArea()
             AppSettingView()
-                .environmentObject(UserController(user: UserModel(id: "no",
-                                                                  name: "Hưng Nguyễn",
-                                                                  email: "nhphung2468@gmail.com",
-                                                                  imageURL: "https://lh3.googleusercontent.com/a/ACg8ocL1E5Imyb3wQUfxEZ8GIvyXOjgtU776TXxIxfk2U1b3AtK3h7I=s1000")))
+                .environmentObject(UserController())
                 .environmentObject(AppThemeController())
         }
     }

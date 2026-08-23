@@ -50,53 +50,71 @@ struct ExerciseSelectionSheet: View {
     @EnvironmentObject var tabViewController: TabViewController
     
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer().frame(height: 10)
-            
-            TextField("", text: $searchTerm, prompt: Text("Search Exercises").foregroundColor(theme.main.text))
-                .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: .Orange, roundedCornes: 20))
-                .focused($isTextFieldFocused)
-                .onChange(of: isTextFieldFocused) { isFocused in
-                    if isFocused {
-                        tabViewController.showTabBar = false
-                    } else {
-                        if selectedCategory == nil {
-                            tabViewController.showTabBar = true
+        VStack(spacing: 12) {
+            // Sunken Search Input Well
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundColor(theme.main.text.opacity(0.45))
+                    .font(.system(size: 15, weight: .medium))
+                
+                TextField("", text: $searchTerm, prompt: Text("Search Exercises...").foregroundColor(theme.main.text.opacity(0.45)))
+                    .focused($isTextFieldFocused)
+                    .font(.system(size: 15, weight: .medium, design: .rounded))
+                    .foregroundColor(theme.main.text)
+                    .onChange(of: isTextFieldFocused) { isFocused in
+                        if isFocused {
+                            tabViewController.showTabBar = false
+                        } else {
+                            if selectedCategory == nil {
+                                tabViewController.showTabBar = true
+                            }
                         }
                     }
+                
+                if !searchTerm.isEmpty {
+                    Button(action: { searchTerm = "" }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(theme.main.text.opacity(0.4))
+                            .font(.system(size: 14))
+                    }
                 }
-                .padding(.horizontal)
-            
+            }
+            .padding(.horizontal, 14)
+            .frame(height: 44)
+            .neumorphicInset(cornerRadius: 22)
+            .padding(.horizontal, 4)
+            .padding(.top, 6)
             
             ScrollView(showsIndicators: false) {
-                Spacer().frame(height: 10)
-                
-//                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 1)) {
-                VStack(spacing: 20) {
+                VStack(spacing: 16) {
                     ForEach(groupedExercise, id: \.group) { (group, exercises) in
                         VStack(alignment: .leading, spacing: 10) {
-                            Text(group.displayName)
-                                .font(.system(size: 25, weight: .bold, design: .rounded))
-                                .foregroundColor(.Orange)
-                                .padding(.horizontal)
-                                .background {
-                                    BlurRoundedBackground(cornerRadius: 20, style: theme.main.ultraThinMaterial)
-                                }
+                            HStack(spacing: 8) {
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(theme.accentGradient)
+                                    .frame(width: 4, height: 16)
+                                Text(group.displayName)
+                                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                                    .foregroundColor(theme.main.text)
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
+                            .neumorphicCard(cornerRadius: 14)
                             
-                            ForEach(exercises, id: \.id) {category in
-                                VStack {
+                            ForEach(exercises, id: \.id) { category in
+                                VStack(spacing: 8) {
                                     CardView(category: category)
                                         .transition(.offset(x: -500))
 
-                                    if isOccupied == category.id{
-                                        VStack {
-                                            HStack {
+                                    if isOccupied == category.id {
+                                        VStack(spacing: 10) {
+                                            HStack(spacing: 10) {
                                                 RepPickerView(category: category, exercisePerformance: exercisePerformance)
                                                 TimePickerView(category: category, exercisePerformance: exercisePerformance)
                                             }
 
                                             Button(action: {
-                                                withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                                     isOccupied = nil
                                                     selectedCategoryId.append(category.id)
                                                 }
@@ -110,48 +128,47 @@ struct ExerciseSelectionSheet: View {
                                                 try? viewContext.save()
                                                 routineParameter = RoutineExerciseStorage.loadRoutineParameter(for: selectedDate, in: viewContext)
                                             }) {
-                                                Image(systemName: "checkmark")
-                                                    .font(.system(size: 25, weight: .heavy))
-                                                    .foregroundColor(theme.main.mainColor)
-                                                    .shadow(radius: 3)
-                                                    .frame(height: 40)
-                                                    .frame(maxWidth: .infinity)
-                                                    .background {
-                                                        Color.Orange
-                                                            .clipShape(RoundedRectangle(cornerRadius: 40))
-                                                            .shadow(radius: 6)
-                                                    }
+                                                HStack(spacing: 8) {
+                                                    Image(systemName: "checkmark.circle.fill")
+                                                        .font(.system(size: 18, weight: .bold))
+                                                    Text("Save Exercise")
+                                                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                                                }
+                                                .foregroundColor(.white)
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 44)
+                                                .background(
+                                                    Capsule()
+                                                        .fill(NeumorphicColors.greenGradient)
+                                                        .shadow(color: Color.black.opacity(0.18), radius: 5, y: 2)
+                                                )
                                             }
+                                            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.95))
                                         }
+                                        .padding(10)
+                                        .neumorphicCard(cornerRadius: 20)
                                         .transition(.scale.combined(with: .opacity))
-                                    }
-                                }
-                                .overlay {
-                                    if selectedCategoryId.contains(category.id) || isOccupied == category.id{
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.Orange, lineWidth: 5)
-                                            .transition(.opacity)
                                     }
                                 }
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 4)
                     }
                 }
-                Spacer().frame(height: 100)
+                Spacer().frame(height: 80)
             }
         }
         .frame(height: 500)
-        .animation(.spring(response: 0.5, dampingFraction: 1), value: searchTerm)
+        .animation(.spring(response: 0.4, dampingFraction: 0.75), value: searchTerm)
     }
-    
-    
     
     @ViewBuilder
     func CardView(category: Category) -> some View {
         let images = FitnessExerciseCategory().imageForExerciseCard(named: category.name)
+        let isSelected = selectedCategoryId.contains(category.id)
+        
         Button(action: {
-            withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                 if selectedCategoryId.contains(category.id) {
                     selectedCategoryId.removeAll { $0 == category.id }
                     if let obj = routineParameter.first(where: { $0.id == category.id }) {
@@ -162,48 +179,57 @@ struct ExerciseSelectionSheet: View {
                     isOccupied = nil
                 } else if isOccupied == category.id {
                     isOccupied = nil
-                }
-                else {
+                } else {
                     isOccupied = category.id
                 }
             }
         }) {
-            BlurView(style: theme.main.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                .shadow(radius: 4)
-                .overlay {
-                    HStack {
-                        HStack(spacing: 2) {
-                            Image("\(images.0)")
-                                .resizable()
-                                .scaledToFit()
-                            Image("\(images.1)")
-                                .resizable()
-                                .scaledToFit()
-                        }
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .frame(height: 75)
-                        .padding(.leading, 2.5)
-                        .shadow(radius: 2)
-                        
-                        VStack {
-                            Text(category.name)
-                                .font(.system(size: 20, weight: .heavy, design: .rounded))
-                                .foregroundStyle(.linearGradient(colors: [.Orange, .Orange], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                .multilineTextAlignment(.center)
-                                .padding(.trailing, 5)
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.5)
-                                .shadow(radius: 2)
-                            Spacer().frame(maxWidth: .infinity).frame(height: 0)
-                        }
-//                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.bottom, 3)
-                    }
+            HStack(spacing: 12) {
+                HStack(spacing: 2) {
+                    Image("\(images.0)")
+                        .resizable()
+                        .scaledToFit()
+                    Image("\(images.1)")
+                        .resizable()
+                        .scaledToFit()
                 }
-                .frame(height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .frame(height: 70)
+                .padding(.leading, 4)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(category.name)
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.main.text)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.6)
+                }
+                
+                Spacer()
+                
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(NeumorphicColors.dotGreen)
+                        .padding(.trailing, 10)
+                } else if isOccupied == category.id {
+                    Image(systemName: "chevron.down.circle.fill")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(Color(red: 1.0, green: 0.45, blue: 0.25))
+                        .padding(.trailing, 10)
+                } else {
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundColor(theme.main.text.opacity(0.4))
+                        .padding(.trailing, 10)
+                }
+            }
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
+            .neumorphicCard(cornerRadius: 20, accentGlow: isSelected ? NeumorphicColors.dotGreen.opacity(0.6) : nil)
+            .frame(height: 78)
         }
-        .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.3))
+        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
     }
 }
 

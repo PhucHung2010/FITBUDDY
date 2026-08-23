@@ -33,84 +33,147 @@ struct ThemeSettingView: View {
     @State var non_changedPickerImage = false
     
     var body: some View {
-        HStack(spacing: 0) {
-            themeToggle
-                .padding(.leading, 10)
-            
-            Canvas {context, size in
-                context.addFilter(.alphaThreshold(min: 0.15))
-                context.addFilter(.blur(radius: blurRadius >= standardBlurRadius ? standardBlurRadius - (blurRadius - standardBlurRadius) : blurRadius))
+        VStack(spacing: 16) {
+            // Mode Toggle (Light / Dark)
+            HStack(spacing: 12) {
+                themeToggle
+                    .padding(.leading, 6)
                 
-                context.drawLayer { ctx in
-                    if let resolvedImage = context.resolveSymbol(id: 1) {
-                        ctx.draw(resolvedImage, at: CGPoint(x: size.width / 1.5, y: size.height / 2), anchor: .center)
+                Spacer()
+                
+                Canvas { context, size in
+                    context.addFilter(.alphaThreshold(min: 0.15))
+                    context.addFilter(.blur(radius: blurRadius >= standardBlurRadius ? standardBlurRadius - (blurRadius - standardBlurRadius) : blurRadius))
+                    
+                    context.drawLayer { ctx in
+                        if let resolvedImage = context.resolveSymbol(id: 1) {
+                            ctx.draw(resolvedImage, at: CGPoint(x: size.width / 2, y: size.height / 2), anchor: .center)
+                        }
                     }
+                } symbols: {
+                    ResolvedImage(currentImage: Theme.themeShape.shape(for: AppTheme.appTheme))
+                        .foregroundColor(AppTheme.accentColor)
+                        .tag(1)
                 }
-            } symbols: {
-                ResolvedImage(currentImage: Theme.themeShape.shape(for: AppTheme.appTheme))
-                    .tag(1)
-            }
-            .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
-                if non_changedPickerImage == false {
-                    if animationMorph {
+                .frame(width: 50, height: 50)
+                .padding(.trailing, 10)
+                .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
+                    if non_changedPickerImage == false {
+                        if animationMorph {
+                            if blurRadius <= 2*standardBlurRadius {
+                                blurRadius += blurTime
+                                if blurRadius.rounded() >= 2*standardBlurRadius {
+                                    animationMorph = false
+                                    blurRadius = 0
+                                }
+                            }
+                        }
+                    }
+                    else {
                         if blurRadius <= 2*standardBlurRadius {
                             blurRadius += blurTime
                             if blurRadius.rounded() >= 2*standardBlurRadius {
                                 animationMorph = false
+                                non_changedPickerImage = false
                                 blurRadius = 0
                             }
                         }
                     }
                 }
-                else {
-                    if blurRadius <=  2*standardBlurRadius {
-                        blurRadius += blurTime
-                        if blurRadius.rounded() >=  2*standardBlurRadius {
-                            animationMorph = false
-                            non_changedPickerImage = false
-                            blurRadius = 0
-                        }
-                    }
+                .onTapGesture {
+                    non_changedPickerImage = true
                 }
             }
-            .onTapGesture {
-                non_changedPickerImage = true
+            .frame(width: UIScreen.main.bounds.width - 32, height: 66)
+            .padding(.horizontal, 10)
+            .neumorphicCard(cornerRadius: 28)
+            
+            // Accent Color Palette Card
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text("Accent Color")
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .foregroundColor(AppTheme.main.text)
+                    
+                    Spacer()
+                    
+                    Text(AppTheme.accentTheme.rawValue)
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundColor(AppTheme.accentColor)
+                }
+                .padding(.horizontal, 4)
+                
+                // Color Swatches Row
+                HStack(spacing: 0) {
+                    ForEach(AccentTheme.allCases, id: \.self) { accent in
+                        let isSelected = AppTheme.accentTheme == accent
+                        
+                        Button(action: {
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                AppTheme.accentTheme = accent
+                            }
+                        }) {
+                            ZStack {
+                                if isSelected {
+                                    Circle()
+                                        .stroke(accent.primaryColor, lineWidth: 2.5)
+                                        .frame(width: 44, height: 44)
+                                        .shadow(color: accent.primaryColor.opacity(0.4), radius: 4)
+                                }
+                                
+                                Circle()
+                                    .fill(accent.gradient)
+                                    .frame(width: 32, height: 32)
+                                    .shadow(color: Color.black.opacity(0.18), radius: 3, y: 1.5)
+                                    .overlay {
+                                        if isSelected {
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 13, weight: .black))
+                                                .foregroundColor(.white)
+                                        }
+                                    }
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.88))
+                    }
+                }
+                .padding(.vertical, 8)
+                .neumorphicInset(cornerRadius: 20)
             }
+            .padding(16)
+            .frame(width: UIScreen.main.bounds.width - 32)
+            .neumorphicCard(cornerRadius: 26)
         }
-        .frame(width: UIScreen.main.bounds.width - 30, height: 60)
-        .background(BlurRoundedBackground(cornerRadius: 50))
     }
     
     var themeToggle: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 4) {
             ForEach(Theme.option.allCases, id: \.rawValue) { theme in
+                let isSelected = AppTheme.appTheme == theme
                 Text("\(theme.rawValue)")
-                    .font(.system(size: 15, weight: .heavy))
-                    .foregroundColor(AppTheme.appTheme == theme ? AppTheme.main.mainColor : .Orange)
-                    .shadow(radius: 2)
-                    .scaleEffect(AppTheme.appTheme == theme ? 1.3 : 1)
-                    .padding(.vertical, 10)
-                    .frame(width: 100)
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundColor(isSelected ? .white : AppTheme.main.text.opacity(0.55))
+                    .padding(.vertical, 8)
+                    .frame(width: 90)
                     .background {
-                        if AppTheme.appTheme == theme {
-                            RoundedRectangle(cornerRadius: 45)
-                                .fill(Color.Orange)
+                        if isSelected {
+                            Capsule()
+                                .fill(AppTheme.accentGradient)
                                 .matchedGeometryEffect(id: "ActiveTheme", in: animation)
-                                .shadow(radius: 4)
-                        } else {
-                            RoundedRectangle(cornerRadius: 45)
-                                .fill(Color.white.opacity(0.0001))
+                                .shadow(color: Color.black.opacity(0.18), radius: 4, y: 2)
                         }
                     }
                     .onTapGesture {
-                        withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
                             AppTheme.appTheme = theme
                             animationMorph = true
                         }
                     }
             }
         }
-        .background(BlurRoundedBackground(cornerRadius: 30))
+        .padding(4)
+        .neumorphicInset(cornerRadius: 22)
     }
 }
 

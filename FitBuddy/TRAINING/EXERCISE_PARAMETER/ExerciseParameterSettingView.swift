@@ -28,9 +28,12 @@ struct ExerciseParameterSettingView: View {
 
     var body: some View {
         ZStack {
+            AppBackground().ignoresSafeArea()
+            
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 20) {
-                    HStack(spacing: 0) {
+                VStack(spacing: 16) {
+                    // Header Bar
+                    HStack {
                         Button(action: {
                             withAnimation(.easeInOut) {
                                 category = nil
@@ -39,173 +42,159 @@ struct ExerciseParameterSettingView: View {
                             showAdjustment = false
                             showHistorySummary = false
                         }) {
-                            HStack {
-                                Image(systemName: "arrow.left")
-                                    .font(.system(size: 20, weight: .heavy))
-                                    .foregroundColor(.Orange)
+                            HStack(spacing: 8) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: 15, weight: .bold))
                                 Text("Library")
-                                    .font(.system(size: 20, weight: .heavy, design: .rounded))
-                                    .foregroundColor(.Orange)
+                                    .font(.system(size: 16, weight: .bold, design: .rounded))
                             }
-                            .padding(2)
-                            .background (BlurRoundedBackground(cornerRadius: 30))
-                            .shadow(radius: 2)
+                            .foregroundColor(theme.main.text)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .neumorphicPill()
                         }
-                        .padding(.leading)
-                        .padding(.top)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.9))
+                        
+                        Spacer()
+                        
+                        NeumorphicIndicatorDots(dotSize: 5, spacing: 4)
                     }
-                    
-                    
-                    
-                    if let category = category {
-                        AppHeadingView(title: category.name)
-                    }
-                    
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
                     
                     if let category = category {
                         VStack(spacing: 10) {
-                           PreviewImage(category: category)
+                            PreviewImage(category: category)
                         }
-                        .padding(5)
-                        .mask(RoundedRectangle(cornerRadius: 25))
-                        .background (BlurRoundedBackground(cornerRadius: 25))
+                        .padding(8)
+                        .neumorphicCard(cornerRadius: 26)
+                        .padding(.horizontal, 16)
                     }
                     
-                    VStack {
+                    // INSTRUCTION Section Card
+                    VStack(spacing: 10) {
                         Button(action: {
-                            withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                 showInstruction.toggle()
                             }
                         }) {
                             HStack {
                                 Image(systemName: "text.book.closed.fill")
+                                    .font(.system(size: 16, weight: .bold))
                                 Text("INSTRUCTION")
+                                    .font(.system(size: 16, weight: .heavy, design: .rounded))
+                                Spacer()
+                                Image(systemName: showInstruction ? "chevron.up" : "chevron.down")
+                                    .font(.system(size: 14, weight: .bold))
                             }
-                            .font(.system(size: 25, weight: .black))
-                            .foregroundColor(showInstruction ? Color.offWhite : Color.Orange)
-                            .shadow(radius: 2)
-                            .frame(width: UIScreen.main.bounds.width - 30, height: 40)
+                            .foregroundColor(showInstruction ? .white : theme.main.text)
+                            .padding(.horizontal, 16)
+                            .frame(height: 48)
                             .background {
-                                if (showInstruction) {
-                                    Color.Orange
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 3)
-                                } else {
-                                    BlurView(style: theme.main.ultraThinMaterial)
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 6)
+                                if showInstruction {
+                                    RoundedRectangle(cornerRadius: 18).fill(NeumorphicColors.coralGradient)
                                 }
                             }
                         }
-                        .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
+                        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
                         
                         if showInstruction {
                             if let category = category {
                                 InstructionView(category: category)
-                                    .padding(.bottom)
+                                    .padding(.bottom, 8)
+                                    .padding(.horizontal, 8)
                             }
                         }
                     }
-                    .mask(RoundedRectangle(cornerRadius: 20))
-                    .background {
-                        BlurRoundedBackground(cornerRadius: 20)
-                    }
+                    .padding(8)
+                    .neumorphicCard(cornerRadius: 24)
+                    .padding(.horizontal, 16)
                     
-                    
-                    VStack {
+                    // PROGRESS Section Card
+                    VStack(spacing: 10) {
                         Button(action: {
-                            withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                 showHistorySummary.toggle()
                             }
                         }) {
                             HStack {
                                 Image(systemName: "clock.arrow.circlepath")
-                                Text("PROCESS")
+                                    .font(.system(size: 16, weight: .bold))
+                                Text("PROGRESS")
+                                    .font(.system(size: 16, weight: .heavy, design: .rounded))
+                                Spacer()
+                                Image(systemName: showHistorySummary ? "chevron.up" : "chevron.down")
+                                    .font(.system(size: 14, weight: .bold))
                             }
-                            .font(.system(size: 25, weight: .black))
-                            .foregroundColor(showHistorySummary ? .lightOffWhite : Color.Orange)
-                            .shadow(radius: 2)
-                            .frame(width: UIScreen.main.bounds.width - 30, height: 40)
+                            .foregroundColor(showHistorySummary ? .white : theme.main.text)
+                            .padding(.horizontal, 16)
+                            .frame(height: 48)
                             .background {
-                                if (showHistorySummary) {
-                                    Color.Orange
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 3)
-                                } else {
-                                    BlurView(style: theme.main.ultraThinMaterial)
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 6)
+                                if showHistorySummary {
+                                    RoundedRectangle(cornerRadius: 18).fill(NeumorphicColors.blueGradient)
                                 }
                             }
                         }
-                        .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
+                        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
 
                         if showHistorySummary {
                             if let category = category {
                                 HistorySummary(category: category)
+                                    .padding(.bottom, 8)
+                                    .padding(.horizontal, 8)
                             }
                         }
                     }
-                    .mask(RoundedRectangle(cornerRadius: 20))
-                    .background {
-                        BlurRoundedBackground(cornerRadius: 20)
-                    }
+                    .padding(8)
+                    .neumorphicCard(cornerRadius: 24)
+                    .padding(.horizontal, 16)
                     
-                    
-                    VStack {
+                    // START / PARAMETERS Card
+                    VStack(spacing: 10) {
                         Button(action: {
                             if showAdjustment {
-                                withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                     if let category = category?.exerciseAdjustment {
                                         exercisePerformance.controller = category
                                         exercisePerformance.exerciseStatus = .traning
                                     }
                                 }
                             } else {
-                                withAnimation(.spring(response: 0.5, dampingFraction: 1)) {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                                     showAdjustment.toggle()
                                 }
                             }
                         }) {
-                            HStack() {
-                                Image(systemName: "dumbbell.fill")
-                                Text("START")
+                            HStack(spacing: 8) {
+                                Image(systemName: showAdjustment ? "play.circle.fill" : "slider.horizontal.3")
+                                    .font(.system(size: 18, weight: .bold))
+                                Text(showAdjustment ? "START WORKOUT" : "CONFIGURE & START")
+                                    .font(.system(size: 17, weight: .heavy, design: .rounded))
                             }
-                            .font(.system(size: 25, weight: .black))
-                            .foregroundColor(Color.lightOffWhite)
-                            .shadow(radius: 2)
-                            .frame(width: UIScreen.main.bounds.width - 30, height: 40)
-                            .background {
-                                if showAdjustment {
-                                    Color.green
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 3)
-                                } else {
-                                    Color.Orange
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
-                                        .shadow(radius: 3)
-                                }
-                            }
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 52)
+                            .background(
+                                Capsule()
+                                    .fill(showAdjustment ? NeumorphicColors.greenGradient : NeumorphicColors.coralGradient)
+                                    .shadow(color: Color.black.opacity(0.18), radius: 5, y: 2)
+                            )
                         }
-                        .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
+                        .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
                         
                         if showAdjustment {
                             AdjustmentView(category: $category, exercisePerformance: exercisePerformance)
-                                .padding(.bottom)
+                                .padding(.bottom, 8)
+                                .padding(.horizontal, 8)
                         }
                     }
-                    .mask(RoundedRectangle(cornerRadius: 20))
-                    .background {
-                        BlurRoundedBackground(cornerRadius: 20)
-                    }
+                    .padding(8)
+                    .neumorphicCard(cornerRadius: 24)
+                    .padding(.horizontal, 16)
                     
-                    Spacer().frame(height: 200)
+                    Spacer().frame(height: 120)
                 }
             }
-        }
-        .background {
-            AppBackground()
         }
     }
 }

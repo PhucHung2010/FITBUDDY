@@ -19,15 +19,12 @@ struct HomeView: View {
         ZStack {
             if selectedCategory == nil {
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        AppHeadingView(title: "FitBuddy")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.leading, 30)
+                    VStack(spacing: 16) {
+                        Spacer().frame(height: 8)
                         CalendarView(selectedDate: $selectedDate)
                         RoutineView(selectedDate: $selectedDate,
                                     selectedCategory: $selectedCategory,
                                     exercisePerformance: exercisePerformance)
-                        .padding(.bottom, 20)
                         ArchiveBox()
                         
                         Spacer().frame(height: 100)
@@ -44,7 +41,7 @@ struct HomeView: View {
             }
         }
         .background {
-            AppBackground()
+            AppBackground().ignoresSafeArea()
         }
     }
 }

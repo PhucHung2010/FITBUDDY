@@ -13,8 +13,8 @@ struct DemoFeatureOptionView: View {
     
     @ObservedObject var exercisePerformance: DemoFeaturesPerformance
     var body: some View {
-        VStack {
-            ForEach(DemoFeatures.allCases, id: \.self) {feature in
+        VStack(spacing: 12) {
+            ForEach(DemoFeatures.allCases, id: \.self) { feature in
                 Button(action: {
                     withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
                         exercisePerformance.setController(to: feature)
@@ -22,23 +22,31 @@ struct DemoFeatureOptionView: View {
                         performanceView = true
                     }
                 }) {
-                    HStack {
+                    HStack(spacing: 14) {
                         Image(systemName: feature.featureSystemImage(for: feature))
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(theme.main.text)
+                            .frame(width: 36, height: 36)
+                            .neumorphicCircle()
+                        
                         Text(feature.rawValue)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundColor(theme.main.text)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(theme.main.text.opacity(0.3))
                     }
-                    .font(.system(size: 25, weight: .heavy))
-                    .foregroundColor(Color.Orange)
-                    .shadow(radius: 3)
-                    .frame(width: UIScreen.main.bounds.width - 40, height: 40)
-                    .background {
-                        BlurView(style: theme.main.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .shadow(radius: 6)
-                    }
+                    .padding(.horizontal, 16)
+                    .frame(width: UIScreen.main.bounds.width - 32, height: 56)
+                    .neumorphicCard(cornerRadius: 22)
                 }
-                .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
+                .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
             }
         }
+        .padding(.vertical, 4)
     }
 }
 
@@ -47,10 +55,7 @@ struct DemoView_Previews: PreviewProvider {
         ZStack {
             AppBackground().ignoresSafeArea()
             AppSettingView()
-                .environmentObject(UserController(user: UserModel(id: "no",
-                                                                  name: "Hưng Nguyễn",
-                                                                  email: "nhphung2468@gmail.com",
-                                                                  imageURL: "https://lh3.googleusercontent.com/a/ACg8ocL1E5Imyb3wQUfxEZ8GIvyXOjgtU776TXxIxfk2U1b3AtK3h7I=s1000")))
+                .environmentObject(UserController())
                 .environmentObject(AppThemeController())
                 .environmentObject(TabViewController())
         }

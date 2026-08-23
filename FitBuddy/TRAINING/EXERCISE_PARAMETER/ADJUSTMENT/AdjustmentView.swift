@@ -21,6 +21,7 @@ struct AdjustmentView: View {
             FeedbackPickerView(category: category, exercisePerformance: exercisePerformance)
             CameraOptionView(category: category, exercisePerformance: exercisePerformance)
             ArcSizePickerView(category: category, exercisePerformance: exercisePerformance)
+            AngleBlurPickerView(category: category, exercisePerformance: exercisePerformance)
         }
         .transition(.scale)
     }

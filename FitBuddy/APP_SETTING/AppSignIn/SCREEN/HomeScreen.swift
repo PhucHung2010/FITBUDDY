@@ -15,8 +15,8 @@ struct HomeScreen: View {
     @EnvironmentObject var userController: UserController
     var body: some View {
         VStack {
-            if let image = userController.user?.imageURL {
-                AsyncImage(url: URL(string: image)) { phase in
+            if let profile = userController.profile, !profile.avatarUrl.isEmpty {
+                AsyncImage(url: URL(string: profile.avatarUrl)) { phase in
                     if let image = phase.image {
                         image
                         .resizable()
@@ -33,7 +33,7 @@ struct HomeScreen: View {
             Button(action: {
                 userController.signOut()
             }) {
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                Text("Sign Out")
             }
         }
     }

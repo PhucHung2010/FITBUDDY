@@ -25,8 +25,8 @@ struct BlurRoundedBackground: View {
     }
 
     var body: some View {
-        BlurView(style: usingLocal ? style : theme.main.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            .shadow(radius: shadowRadius)
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(theme.appTheme == .light ? NeumorphicColors.lightSurface : NeumorphicColors.darkSurface)
+            .neumorphicCard(cornerRadius: cornerRadius, shadowRadius: shadowRadius)
     }
 }

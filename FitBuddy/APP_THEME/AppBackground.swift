@@ -5,9 +5,11 @@ struct AppBackground: View {
     var body: some View {
         ZStack {
             if theme.appTheme == .light {
-                LinearGradient(colors: [.darkOffWhite, .darkOffWhite2], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+                NeumorphicColors.lightBackground
+                    .ignoresSafeArea()
             } else {
-                LinearGradient(colors: [.darkStart, .darkEnd], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+                NeumorphicColors.darkBackground
+                    .ignoresSafeArea()
             }
         }
     }

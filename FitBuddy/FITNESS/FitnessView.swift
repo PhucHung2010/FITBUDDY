@@ -1,5 +1,5 @@
 //
-//  fitnessView.swift
+//  FitnessView.swift
 //  FitBuddy
 //
 //  Created by Hung Nguyen on 02/06/2025.
@@ -9,14 +9,9 @@ import SwiftUI
 
 struct FitnessView: View {
     var body: some View {
-//        ZStack {
-//            AppBackground()
-            FitnessGallery()
-//        }
+        FitnessGallery()
     }
 }
-
-
 
 struct FitnessGallery: View {
     @EnvironmentObject var theme: AppThemeController
@@ -30,8 +25,7 @@ struct FitnessGallery: View {
     
     var filteredExercise: [Category] {
         guard !searchTerm.isEmpty else { return exerciseCategory.categories }
-
-        return exerciseCategory.categories.filter { $0.name.localizedCaseInsensitiveContains (searchTerm) }
+        return exerciseCategory.categories.filter { $0.name.localizedCaseInsensitiveContains(searchTerm) }
     }
     
     var sortedExerciseByName: [Category] {
@@ -55,35 +49,44 @@ struct FitnessGallery: View {
     var body: some View {
         ZStack {
             if selectedCategory == nil {
-                
-                    ScrollView(showsIndicators: false) {
-                        Spacer().frame(height: 60)
-                        LazyVGrid(columns: Array(repeating: GridItem(), count: 1)) {
-                            ForEach(groupedExercise, id: \.group) { (group, exercises) in
-                                VStack(alignment: .leading, spacing: 10) {
+                ScrollView(showsIndicators: false) {
+                    Spacer().frame(height: 76)
+                    
+                    LazyVStack(spacing: 24) {
+                        ForEach(groupedExercise, id: \.group) { (group, exercises) in
+                            VStack(spacing: 12) {
+                                // Category Header Pill
+                                HStack(spacing: 10) {
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(theme.accentGradient)
+                                        .frame(width: 4, height: 18)
+                                    
                                     Text(group.displayName)
-                                        .font(.system(size: 25, weight: .bold, design: .rounded))
-                                        .foregroundColor(.Orange)
-                                        .padding(.horizontal)
-                                        .background {
-                                            BlurView(style: theme.main.ultraThinMaterial)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .shadow(radius: 4)
-                                        }
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                        .foregroundColor(theme.main.text)
                                     
-                                    ForEach(exercises, id: \.id) { category in
-                                        CardView(category: category)
-                                    }
+                                    Spacer()
                                     
+                                    NeumorphicIndicatorDots(dotSize: 5, spacing: 4)
+                                }
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .neumorphicCard(cornerRadius: 18)
+                                
+                                ForEach(exercises, id: \.id) { category in
+                                    CardView(category: category)
                                 }
                             }
+                            .padding(.horizontal, 16)
                         }
-
-                        Spacer().frame(height: 100)
                     }
-                    .animation(.spring(response: 0.5, dampingFraction: 1), value: searchTerm)
-                
-                    toolbar
+
+                    Spacer().frame(height: 100)
+                }
+                .animation(.spring(response: 0.5, dampingFraction: 1), value: searchTerm)
+            
+                toolbar
             } else if let selected = selectedCategory {
                 TrainingView(category: $selectedCategory,
                              exercisePerformance: exercisePerformance)
@@ -96,38 +99,68 @@ struct FitnessGallery: View {
         }
     }
 
-
-    
-    
+    // MARK: - Search Toolbar (Neumorphic App Bar)
     var toolbar: some View {
-        VStack {
-            HStack {
+        VStack(spacing: 8) {
+            HStack(spacing: 12) {
                 Button(action: {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
                         showAbstract.toggle()
                     }
                 }) {
                     Image(systemName: "dumbbell.fill")
-                        .foregroundColor(theme.main.text)
-                        .font(.system(size: 25, weight: .semibold))
-                }
-                .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
-                        
-                TextField("", text: $searchTerm, prompt: Text("Search Exercises").foregroundColor(theme.main.text))
-                    .focused($isTextFieldFocused)
-                    .onChange(of: isTextFieldFocused) { newValue in
-                        if newValue {
-                            tabViewController.showTabBar = false
-                        } else {
-                            if selectedCategory == nil {
-                                tabViewController.showTabBar = true
+                        .foregroundColor(showAbstract ? .white : theme.main.text)
+                        .font(.system(size: 18, weight: .semibold))
+                        .frame(width: 44, height: 44)
+                        .background {
+                            if showAbstract {
+                                Circle().fill(theme.accentGradient)
                             }
                         }
+                        .neumorphicCircle(isPressed: showAbstract)
+                }
+                .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.9))
+                        
+                // Sunken Search Input Well
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(theme.main.text.opacity(0.45))
+                        .font(.system(size: 15, weight: .medium))
+                    
+                    TextField("", text: $searchTerm, prompt: Text("Search Exercises...").foregroundColor(theme.main.text.opacity(0.45)))
+                        .focused($isTextFieldFocused)
+                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .foregroundColor(theme.main.text)
+                        .onChange(of: isTextFieldFocused) { newValue in
+                            if newValue {
+                                tabViewController.showTabBar = false
+                            } else {
+                                if selectedCategory == nil {
+                                    tabViewController.showTabBar = true
+                                }
+                            }
+                        }
+                    
+                    if !searchTerm.isEmpty {
+                        Button(action: { searchTerm = "" }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(theme.main.text.opacity(0.4))
+                                .font(.system(size: 14))
+                        }
+                    } else {
+                        NeumorphicIndicatorDots(dotSize: 4, spacing: 3)
                     }
-
+                }
+                .padding(.horizontal, 14)
+                .frame(height: 44)
+                .neumorphicInset(cornerRadius: 22)
             }
-            .modifier(customViewModifier(startColor: .offWhite, endColor: .darkOffWhite2, textColor: .Orange, roundedCornes: 20))
-            .padding(.horizontal)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .neumorphicCard(cornerRadius: 26)
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
             
             if showAbstract {
                 Abstract()
@@ -152,33 +185,34 @@ struct FitnessGallery: View {
                                 showAbstract = false
                                 isTextFieldFocused = false
                             }) {
-                                VStack {
-                                    Divider()
+                                HStack {
                                     Text(category.name)
-                                        .font(.system(size: 20, weight: .regular))
+                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
                                         .foregroundColor(
                                             searchTerm == category.name
                                             ? .white : theme.main.text
                                         )
-                                        .frame(maxWidth: .infinity, alignment:
-                                                .leading)
-                                        .padding(.horizontal, 7)
-                                        .frame(width: 200, height: 30)
-                                        .minimumScaleFactor(0.2)
-                                    Divider()
+                                    Spacer()
+                                    if searchTerm == category.name {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(.white)
+                                    }
                                 }
+                                .padding(.horizontal, 14)
+                                .frame(height: 40)
                                 .background(
-                                    searchTerm == category.name ? Color.Orange : Color.white.opacity(0.00001)
+                                    searchTerm == category.name ? AnyView(theme.accentGradient) : AnyView(Color.clear)
                                 )
                             }
-                            .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.2))
+                            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
                             .id(category.name)
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
                 }
-                .frame(width: 200, height: 320)
-                .background (BlurRoundedBackground(cornerRadius: 10, style: .systemUltraThinMaterialDark))
+                .frame(width: 230, height: 300)
+                .neumorphicCard(cornerRadius: 22)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 20)
                 .onAppear {
@@ -187,16 +221,19 @@ struct FitnessGallery: View {
                     }
                 }
             }
-            .transition(.move(edge: .leading))
+            .transition(.scale.combined(with: .opacity))
         }
     }
     
+    // MARK: - Exercise Card View (Extruded Neumorphic Card)
     @ViewBuilder
     func CardView(category: Category) -> some View {
         if selectedCategory?.id == category.id {
-            RoundedRectangle(cornerRadius: 30).frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width).foregroundColor(.white.opacity(0.0000001))
-        }
-        else {
+            RoundedRectangle(cornerRadius: 24)
+                .frame(height: 140)
+                .frame(maxWidth: .infinity)
+                .foregroundColor(.clear)
+        } else {
             Button(action: {
                 withAnimation(.easeInOut) {
                     selectedCategory = category
@@ -204,49 +241,45 @@ struct FitnessGallery: View {
                     tabViewController.showTabBar = false
                 }
             }) {
-                BlurView(style: theme.main.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .shadow(color: .black.opacity(0.4),
-                            radius: 4,
-                            x: 3, y: 3)
-                    .shadow(color: .black.opacity(0.2),
-                            radius: 2,
-                            x: -1, y: -1)
-                    .overlay {
-                        if let image = category.images.first {
-                            HStack {
-                                HStack(spacing: 4) {
-                                    Image("\(image.0)")
-                                        .resizable()
-                                        .scaledToFit()
-                                    Image("\(image.1)")
-                                        .resizable()
-                                        .scaledToFit()
-                                }
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                                .frame(height: 140)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 5)
-                                
-                                Text(category.name)
-                                    .font(.system(size: 22, weight: .heavy, design: .rounded))
-                                    .foregroundStyle(.linearGradient(colors: [.Orange, .Orange], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                    .multilineTextAlignment(.center)
-                                    .frame(width: (UIScreen.main.bounds.width - 30) / 2.5)
-                                    .minimumScaleFactor(0.5)
-                                    .shadow(radius: 2)
-                            }
+                HStack(spacing: 14) {
+                    if let image = category.images.first {
+                        HStack(spacing: 4) {
+                            Image("\(image.0)")
+                                .resizable()
+                                .scaledToFit()
+                            Image("\(image.1)")
+                                .resizable()
+                                .scaledToFit()
                         }
+                        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .frame(height: 116)
+                        .padding(.leading, 10)
+                        .padding(.vertical, 8)
+                        
+                        Spacer()
+                        
+                        VStack(alignment: .trailing, spacing: 6) {
+                            Text(category.name)
+                                .font(.system(size: 21, weight: .heavy, design: .rounded))
+                                .foregroundColor(theme.main.text)
+                                .multilineTextAlignment(.trailing)
+                                .minimumScaleFactor(0.6)
+                            
+                            NeumorphicIndicatorDots(dotSize: 4, spacing: 3)
+                        }
+                        .padding(.trailing, 18)
                     }
-                    .frame(width: UIScreen.main.bounds.width - 30, height: 150)
-                    .matchedGeometryEffect(id: category.id, in: animation)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 140)
+                .neumorphicCard(cornerRadius: 24)
+                .matchedGeometryEffect(id: category.id, in: animation)
             }
-            .buttonStyle(ScaledButtonStyle(scaleRadius: 0.7, animationDuration: 0.3))
-            .padding(.bottom, 10)
+            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
+            .padding(.bottom, 4)
         }
     }
 }
-
 
 struct fitnessView_Previews: PreviewProvider {
     static var previews: some View {
