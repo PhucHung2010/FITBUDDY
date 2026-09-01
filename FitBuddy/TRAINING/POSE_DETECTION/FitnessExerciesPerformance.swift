@@ -28,7 +28,13 @@ class FitnessExercisePerformance: PoseDetection {
     @Published var feedbackText: [String]? = []
     
     @Published var controller: FitnessExerciseAdjustment?
-    @Published var exerciseStatus: exerciseStatus = .setting
+    @Published var exerciseStatus: exerciseStatus = .setting {
+        didSet {
+            if exerciseStatus != .traning {
+                TextSpeech.stop()
+            }
+        }
+    }
     
     @Published var keepAvailable: Bool = false
     
@@ -51,9 +57,12 @@ class FitnessExercisePerformance: PoseDetection {
         self.keepAvailable = keepAvailable
     }
     
+    private(set) var isRunning: Bool = false
+    
     func reinitialize() {
-//        self.exerciseStarted = false
-//        self.exerciseEnded = false
+        self.isRunning = false
+        self.quickPose.stop()
+        TextSpeech.stop()
         self.exerciseStatus = .setting
         self.totalCorrect = 0
         self.totalIncorrect = 0
@@ -63,62 +72,87 @@ class FitnessExercisePerformance: PoseDetection {
     }
     
     func updateFeedback(newFeedback: String?) {
-        if feedback {
-            if let feedback = newFeedback {
-                if feedbackText?.last != feedback {
-                    DispatchQueue.main.async {
-                        self.feedbackText?.append(feedback)
-                        TextSpeech(text: feedback).say()
-                    }
-                }
+        guard feedback, exerciseStatus == .traning, let feedback = newFeedback else { return }
+        let trimmed = feedback.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self, self.exerciseStatus == .traning else {
+                TextSpeech.stop()
+                return
             }
+            if self.feedbackText?.last != trimmed {
+                self.feedbackText?.append(trimmed)
+            }
+            TextSpeech.shared.say(text: trimmed, isExerciseActive: self.exerciseStatus == .traning)
         }
     }
     
     
     func perform() {
-//        performOLD()
-//        performAI()
-//        performHUMAN()
+        guard !isRunning else {
+            print("[FitnessExercisePerformance] QuickPose is already running, skipping redundant start.")
+            return
+        }
+        isRunning = true
         performHUMANAllInOnePlaceUpdate()
     }
     
     func performHUMANAllInOnePlaceUpdate() {
+        guard self.controller != nil else { return }
+        
+        // Set style for limb group
+        if let indices = self.controller?.limbGroups.indices {
+            for index in indices {
+                self.controller?.limbGroups[index].left.updateCurrentStyles(showArc: self.showArc)
+                self.controller?.limbGroups[index].right.updateCurrentStyles(showArc: self.showArc)
+            }
+        }
+        
+        guard let activeController = self.controller else { return }
+        
         var features: [QuickPose.Feature] = []
         // Set style for guard group
-        if let guardGroups = controller!.guardGroups {
+        if let guardGroups = activeController.guardGroups {
             features = guardGroups.map { $0.group.feature.restyled($0.group.acceptanceStyle) }
         }
         
-        // Set style for limb group
-        for index in controller!.limbGroups.indices {
-            controller?.limbGroups[index].left.updateCurrentStyles(showArc: self.showArc)
-            controller?.limbGroups[index].right.updateCurrentStyles(showArc: self.showArc)
+        features += activeController.limbGroups.flatMap {
+            [$0.left.feature.restyled($0.left.currentCorrectionStyle ?? $0.left.correctionStyle),
+             $0.right.feature.restyled($0.right.currentCorrectionStyle ?? $0.right.correctionStyle)]
         }
-        features += controller!.limbGroups.flatMap{[$0.left.feature.restyled($0.left.currentCorrectionStyle ?? $0.left.correctionStyle),
-                                                    $0.right.feature.restyled($0.right.currentCorrectionStyle ?? $0.right.correctionStyle)]}
         
         // overlay feature
         var overlayFeatures: [QuickPose.Feature] = features
         
-        var controllerLimbGroups = controller!.limbGroups
-        var controllerIsMutated = controller!.isMutated
-        var controllerMutationDate = controller!.mutationDate
+        var controllerLimbGroups = activeController.limbGroups
+        var controllerIsMutated = activeController.isMutated
+        var controllerMutationDate = activeController.mutationDate
         var newTotalCorrect = self.totalCorrect
         var newTotalIncorrect = self.totalIncorrect
         
-        self.quickPose.start(features: features, modelConfig: self.modelConfig) {[self] status, outputImage, result, _ , _ in
+        self.quickPose.start(features: features, modelConfig: self.modelConfig) { [weak self] status, outputImage, result, _, _ in
+            guard let self = self, let currentCtrl = self.controller else { return }
+            
+            // Mark model as ready on first successful callback
+            if !self.isModelReady {
+                DispatchQueue.main.async {
+                    self.isModelReady = true
+                }
+            }
+            
             DispatchQueue.main.async {
                 self.overlayImage = outputImage
             }
             
-            controllerLimbGroups = controller!.limbGroups
-            controllerIsMutated = controller!.isMutated
-            controllerMutationDate = controller!.mutationDate
+            controllerLimbGroups = currentCtrl.limbGroups
+            controllerIsMutated = currentCtrl.isMutated
+            controllerMutationDate = currentCtrl.mutationDate
             newTotalCorrect = self.totalCorrect
             newTotalIncorrect = self.totalIncorrect
+            
             // Guard group checking
-            if let guardGroups = controller!.guardGroups {
+            if let guardGroups = currentCtrl.guardGroups {
                 guard guardGroups.allSatisfy({
                     if let angle = result[$0.group.feature]?.value {
                         /// start angle value is the smallest angle in range of motion
@@ -141,8 +175,8 @@ class FitnessExercisePerformance: PoseDetection {
             }
             
             // limb group checking
-            for index in controller!.limbGroups.indices {
-                var group = controller!.limbGroups[index]
+            for index in currentCtrl.limbGroups.indices {
+                var group = currentCtrl.limbGroups[index]
                 
                 guard let leftVal = result[group.left.feature]?.value,
                       let rightVal = result[group.right.feature]?.value else {
@@ -152,7 +186,6 @@ class FitnessExercisePerformance: PoseDetection {
                 group.left.currentAngle = leftVal
                 group.right.currentAngle = rightVal
 
-                
                 /// angle value acceptance checking
                 if abs(group.left.currentAngle - group.right.currentAngle) <= group.acceptedAngleValueDifference {
                     /// tracking movement
@@ -168,10 +201,10 @@ class FitnessExercisePerformance: PoseDetection {
                         /// mark accepted
                         group.isAccepted = true
                         /// mark mutated
-                        if self.controller?.isMutated == false {
+                        if currentCtrl.isMutated == false {
                             controllerIsMutated = true
                         }
-                        if self.controller!.mutationDate == nil {
+                        if currentCtrl.mutationDate == nil {
                             controllerMutationDate = Date()
                         }
                         
@@ -182,59 +215,55 @@ class FitnessExercisePerformance: PoseDetection {
                     else if (group.left.beingIllegal || group.right.beingIllegal) && groupStatusBeforeChecking {
                         group.left.totalCycle = 0
                         group.right.totalCycle = 0
-//                        group.left.beingIllegal = false
-//                        group.right.beingIllegal = false
                         group.beingIllegal = true
                     }
                 }
                 else {
-                    /// mark limb group being illegal
-//                    updateIllegalFeature(target: group.left, overlayFeatures: &overlayFeatures)
-//                    updateIllegalFeature(target: group.right, overlayFeatures: &overlayFeatures)
-                    
                     self.updateFeedback(newFeedback: group.angleValueDifferenceFeedback)
-
-//                    group.beingIllegal = true
                 }
                 
                 controllerLimbGroups[index] = group
             }
            
-           if theresGroupBeingIllegal(target: controller!.limbGroups) {
-               newTotalIncorrect += 1
-               for index in self.controller!.limbGroups.indices {
-                   controllerLimbGroups[index].beingIllegal = false
-               }
-               for index in controller!.limbGroups.indices {
-                   controllerLimbGroups[index].isAccepted = false
-                   controllerLimbGroups[index].left.totalCycle = 0
-                   controllerLimbGroups[index].right.totalCycle = 0
-               }
-               controllerIsMutated = false
-               controllerMutationDate = nil
-           }
+            if self.theresGroupBeingIllegal(target: currentCtrl.limbGroups) {
+                newTotalIncorrect += 1
+                for index in currentCtrl.limbGroups.indices {
+                    controllerLimbGroups[index].beingIllegal = false
+                }
+                for index in currentCtrl.limbGroups.indices {
+                    controllerLimbGroups[index].isAccepted = false
+                    controllerLimbGroups[index].left.totalCycle = 0
+                    controllerLimbGroups[index].right.totalCycle = 0
+                }
+                controllerIsMutated = false
+                controllerMutationDate = nil
+            }
             
-            if controller!.isMutated {
-                if let date = controller!.mutationDate {
+            if currentCtrl.isMutated {
+                if let date = currentCtrl.mutationDate {
                     let currentTime = Date()
                     let timeDifference = currentTime.timeIntervalSince(date)
                     
-                    if timeDifference <= controller!.endAcceptedPeakDuration  {
-                        /// i don't check endAcceptedPeakDuration along with startAcceptedPeakDuration because we cannot know if all the limb group are done
-                        if isAllAccepted(target: controller!.limbGroups)  {
-                            if controller!.startAcceptedPeakDuration <= timeDifference {
+                    if timeDifference <= currentCtrl.endAcceptedPeakDuration {
+                        if self.isAllAccepted(target: currentCtrl.limbGroups) {
+                            if currentCtrl.startAcceptedPeakDuration <= timeDifference {
                                 newTotalCorrect += 1
-                                if newTotalCorrect == targetCount {
+                                if let target = self.targetCount, target > 0, newTotalCorrect >= target {
                                     AudioServicesPlaySystemSound(1114)
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                                        self?.isRunning = false
+                                        self?.quickPose.stop()
+                                        self?.exerciseStatus = .summary
+                                    }
                                 } else {
                                     AudioServicesPlaySystemSound(1113)
                                 }
                                 self.updateFeedback(newFeedback: "")
                             } else {
                                 newTotalIncorrect += 1
-                                self.updateFeedback(newFeedback: self.controller?.launchDurationFeedback)
+                                self.updateFeedback(newFeedback: currentCtrl.launchDurationFeedback)
                             }
-                            for index in controller!.limbGroups.indices {
+                            for index in currentCtrl.limbGroups.indices {
                                 controllerLimbGroups[index].isAccepted = false
                                 controllerLimbGroups[index].left.totalCycle = 0
                                 controllerLimbGroups[index].right.totalCycle = 0
@@ -244,8 +273,8 @@ class FitnessExercisePerformance: PoseDetection {
                         }
                     } else {
                         newTotalIncorrect += 1
-                        self.updateFeedback(newFeedback: self.controller?.peakDurationFeedback)
-                        for index in controller!.limbGroups.indices {
+                        self.updateFeedback(newFeedback: currentCtrl.peakDurationFeedback)
+                        for index in currentCtrl.limbGroups.indices {
                             controllerLimbGroups[index].isAccepted = false
                             controllerLimbGroups[index].left.totalCycle = 0
                             controllerLimbGroups[index].right.totalCycle = 0
@@ -255,12 +284,13 @@ class FitnessExercisePerformance: PoseDetection {
                     }
                 }
             }
-            quickPose.update(features: overlayFeatures)
+            self.quickPose.update(features: overlayFeatures)
            
-            DispatchQueue.main.async {
-                self.controller!.limbGroups = controllerLimbGroups
-                self.controller!.isMutated = controllerIsMutated
-                self.controller!.mutationDate = controllerMutationDate
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, self.controller != nil else { return }
+                self.controller?.limbGroups = controllerLimbGroups
+                self.controller?.isMutated = controllerIsMutated
+                self.controller?.mutationDate = controllerMutationDate
                 self.totalCorrect = newTotalCorrect
                 self.totalIncorrect = newTotalIncorrect
             }
@@ -268,18 +298,18 @@ class FitnessExercisePerformance: PoseDetection {
     }
     
     func restartControllerCounting() -> Void {
-        if controller != nil {
-            for index in controller!.limbGroups.indices {
-                DispatchQueue.main.async {
-                    self.controller!.limbGroups[index].isAccepted = false
-                    self.controller!.limbGroups[index].left.totalCycle = 0
-                    self.controller!.limbGroups[index].right.totalCycle = 0
-                }
+        guard let count = self.controller?.limbGroups.count else { return }
+        for index in 0..<count {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, let currentCount = self.controller?.limbGroups.count, index < currentCount else { return }
+                self.controller?.limbGroups[index].isAccepted = false
+                self.controller?.limbGroups[index].left.totalCycle = 0
+                self.controller?.limbGroups[index].right.totalCycle = 0
             }
-            DispatchQueue.main.async {
-                self.controller!.isMutated = false
-                self.controller!.mutationDate = nil
-            }
+        }
+        DispatchQueue.main.async { [weak self] in
+            self?.controller?.isMutated = false
+            self?.controller?.mutationDate = nil
         }
     }
     

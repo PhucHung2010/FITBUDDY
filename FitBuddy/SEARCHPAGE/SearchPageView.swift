@@ -19,6 +19,7 @@ struct SearchPageView: View {
     @State private var searchTask: Task<Void, Never>? = nil
     @State private var searchCache: [String: [SupabaseProfile]] = [:]
     @State private var lastExecutedQuery: String = ""
+    @FocusState private var isSearchFieldFocused: Bool
     
     var body: some View {
         ZStack {
@@ -42,8 +43,10 @@ struct SearchPageView: View {
                             .font(.system(size: 16, weight: .semibold))
                         
                         TextField("Search by username or user ID...", text: $searchText)
+                            .focused($isSearchFieldFocused)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
+                            .submitLabel(.search)
                             .font(.system(size: 15, weight: .medium, design: .rounded))
                             .foregroundColor(theme.main.text)
                             .onChange(of: searchText) { newValue in
@@ -121,6 +124,7 @@ struct SearchPageView: View {
                                 ForEach(searchResults) { profile in
                                     SearchResultCard(profile: profile)
                                         .onTapGesture {
+                                            isSearchFieldFocused = false
                                             withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
                                                 selectedProfile = profile
                                             }
@@ -132,6 +136,7 @@ struct SearchPageView: View {
                             
                             Spacer().frame(height: 100)
                         }
+                        .scrollDismissesKeyboard(.interactively)
                     }
                 }
             }
@@ -171,7 +176,7 @@ struct SearchPageView: View {
         }
         
         searchTask = Task {
-            try? await Task.sleep(nanoseconds: 450_000_000) // 450ms debounce
+            try? await Task.sleep(nanoseconds: 450_000_000) // Original 450ms debounce
             guard !Task.isCancelled else { return }
             await performSearch(query: trimmed)
         }

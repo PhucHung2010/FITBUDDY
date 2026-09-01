@@ -21,7 +21,6 @@ struct WideTabView: View {
     
     @Namespace private var animation
     @State private var tabShapePosition: CGPoint = .zero
-    @State var uiTabarController: UITabBarController?
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -31,26 +30,34 @@ struct WideTabView: View {
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
                      })
+                
+                SearchPageView()
+                    .tag(Tab.Search)
+                    .background(TabBarAccessor { tabBar in
+                        tabBar.isHidden = true
+                     })
                     
                 HomeView()
                     .tag(Tab.Home)
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
                      })
-                     
-                SearchPageView()
-                    .tag(Tab.Search)
+                
+                ContestView()
+                    .tag(Tab.Contest)
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
                      })
                      
                 MessageListView()
+                    .navigationBarHidden(true)
                     .tag(Tab.Messages)
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
                      })
                 
                 AppSettingView()
+                    .navigationBarHidden(true)
                     .tag(Tab.Setting)
                     .background(TabBarAccessor { tabBar in
                         tabBar.isHidden = true
@@ -66,7 +73,7 @@ struct WideTabView: View {
     @ViewBuilder
     func CustomTabBar() -> some View {
         if tabViewController.showTabBar {
-            HStack(spacing: (UIScreen.main.bounds.width - 290) / 4) {
+            HStack(spacing: max(4, (UIScreen.main.bounds.width - 330) / CGFloat(Tab.allCases.count - 1))) {
                 ForEach(Tab.allCases, id: \.rawValue) { tab in
                     TabItem(
                         tint: theme.main.text,
@@ -115,9 +122,9 @@ struct TabItem: View {
         }) {
             VStack(spacing: 0) {
                 Image(systemName: tab.systemImage)
-                    .font(.system(size: 20, weight: activeTab == tab ? .bold : .medium))
+                    .font(.system(size: 17, weight: activeTab == tab ? .bold : .medium))
                     .foregroundColor(activeTab == tab ? activeTint : inactiveTint)
-                    .frame(width: 48, height: 48)
+                    .frame(width: 40, height: 40)
                     .background {
                         if activeTab == tab {
                             Circle()

@@ -11,9 +11,8 @@ import Supabase
 class ChatService {
     private let supabase = SupabaseManager.shared.client
     
-    // MARK: - Get or Create DM Room
+    // MARK: - Get or Create DM Room (RPC only — enforces mutual-follow at database level)
     func getOrCreateChatRoom(with otherUserId: UUID) async -> UUID? {
-        // 1. Try RPC first
         do {
             let roomId: UUID = try await supabase
                 .rpc("get_or_create_dm_room", params: ["other_user_id": otherUserId.uuidString])
@@ -21,80 +20,25 @@ class ChatService {
                 .value
             return roomId
         } catch {
-            print("RPC get_or_create_dm_room failed, trying direct fallback: \(error)")
-        }
-        
-        // 2. Direct fallback (check existing rooms or create new one)
-        do {
-            let currentUserId = try await supabase.auth.session.user.id
-            
-            // Get my rooms
-            let myMembers: [ChatMember] = try await supabase
-                .from("chat_members")
-                .select()
-                .eq("user_id", value: currentUserId.uuidString)
-                .execute()
-                .value
-            
-            let myRoomIds = myMembers.map { $0.roomId }
-            
-            // Check if other user is in any of those rooms in 1 query (not N queries)
-            if !myRoomIds.isEmpty {
-                let otherMembers: [ChatMember] = try await supabase
-                    .from("chat_members")
-                    .select()
-                    .in("room_id", values: myRoomIds.map { $0.uuidString })
-                    .eq("user_id", value: otherUserId.uuidString)
-                    .execute()
-                    .value
-                
-                if let found = otherMembers.first {
-                    return found.roomId
-                }
-            }
-            
-            // Create new room if none found
-            struct EmptyInsert: Codable {}
-            let newRoom: ChatRoom = try await supabase
-                .from("chat_rooms")
-                .insert(EmptyInsert())
-                .select()
-                .single()
-                .execute()
-                .value
-                
-            let newRoomId = newRoom.id
-            
-            // Insert both members
-            let membersToAdd = [
-                ChatMemberInsert(roomId: newRoomId, userId: currentUserId),
-                ChatMemberInsert(roomId: newRoomId, userId: otherUserId)
-            ]
-            
-            try await supabase
-                .from("chat_members")
-                .insert(membersToAdd)
-                .execute()
-                
-            return newRoomId
-        } catch {
-            print("Direct fallback failed to get/create chat room: \(error)")
+            // No direct fallback — the RPC enforces mutual-follow and self-DM protection.
+            // Bypassing it would allow creating rooms without mutual follow.
+            print("[ChatService] get_or_create_dm_room failed: \(error.localizedDescription)")
             return nil
         }
     }
     
-    // MARK: - Fetch Chat Rooms for Current User (1 request via RPC, not N+1)
-    func fetchChatRooms() async -> [ChatRoomPreview] {
+    // MARK: - Fetch Chat Rooms for Current User (1 request via RPC, with auto-retry)
+    func fetchChatRooms(retryCount: Int = 1) async -> [ChatRoomPreview] {
         do {
             // Single RPC call replaces the old 1+(3×N) request loop
             struct ChatRoomRow: Codable {
                 let roomId: UUID
                 let otherUserId: UUID
-                let otherUserUid: String
-                let otherUsername: String
-                let otherBio: String
-                let otherAvatar: String
-                let otherBg: String
+                let otherUserUid: String?
+                let otherUsername: String?
+                let otherBio: String?
+                let otherAvatar: String?
+                let otherBg: String?
                 let lastMsgId: UUID?
                 let lastMsgContent: String?
                 let lastMsgSender: UUID?
@@ -123,11 +67,11 @@ class ChatService {
             return rows.map { row in
                 let profile = SupabaseProfile(
                     id: row.otherUserId,
-                    userId: row.otherUserUid,
-                    username: row.otherUsername,
-                    bio: row.otherBio,
-                    avatarUrl: row.otherAvatar,
-                    backgroundUrl: row.otherBg
+                    userId: row.otherUserUid ?? "",
+                    username: row.otherUsername ?? "User",
+                    bio: row.otherBio ?? "",
+                    avatarUrl: row.otherAvatar ?? "",
+                    backgroundUrl: row.otherBg ?? ""
                 )
                 
                 let lastMessage: ChatMessage? = row.lastMsgId.map { msgId in
@@ -144,6 +88,11 @@ class ChatService {
             }
             
         } catch {
+            if retryCount > 0 {
+                print("[ChatService] Network hiccup (\(error.localizedDescription)), retrying fetchChatRooms in 0.5s...")
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                return await fetchChatRooms(retryCount: retryCount - 1)
+            }
             print("Fetch chat rooms error: \(error)")
             return []
         }
@@ -234,9 +183,8 @@ class ChatService {
         let channelName = "chat-room-\(roomId.uuidString)"
         let channel = supabase.realtimeV2.channel(channelName)
         
-        // INSERT listener — use SDK's built-in decodeRecord
+        // INSERT listener — ChatMessage already defines snake_case CodingKeys
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
         
         _ = channel.onPostgresChange(
             InsertAction.self,

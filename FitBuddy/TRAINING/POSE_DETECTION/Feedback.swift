@@ -13,25 +13,75 @@ import AVFoundation
 import AudioToolbox
 import Foundation
 
-class TextSpeech {
-    static let synthesizer = AVSpeechSynthesizer()
+class TextSpeech: NSObject, AVSpeechSynthesizerDelegate {
+    static let shared = TextSpeech()
     
-    var isSaid = false
-    let text: String
+    private let synthesizer = AVSpeechSynthesizer()
+    private var lastSpeechEndTime: Date = Date.distantPast
+    private let cooldownAfterSpeech: TimeInterval = 0.5 // 0.5s delay after each feedback finishes
     
-    init(text: String) {
+    override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
+    
+    var text: String = ""
+    
+    convenience init(text: String) {
+        self.init()
         self.text = text
     }
     
     func say() {
-        if isSaid {
+        say(text: self.text)
+    }
+    
+    /// Speaks the feedback text with 0.5s delay.
+    /// If synthesizer is currently speaking or within 0.5s cooldown, skips overlapping feedback.
+    func say(text: String, isExerciseActive: Bool = true) {
+        guard isExerciseActive else { return }
+        
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        
+        // Skip if synthesizer is already speaking (prevents overlapping queue buildup)
+        if synthesizer.isSpeaking {
             return
         }
-        let utterance = AVSpeechUtterance(string: self.text)
+        
+        // Enforce 0.5s delay after previous feedback finishes
+        let timeSinceLastSpeech = Date().timeIntervalSince(lastSpeechEndTime)
+        if timeSinceLastSpeech < cooldownAfterSpeech {
+            return
+        }
+        
+        let utterance = AVSpeechUtterance(string: trimmed)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
         utterance.rate = 0.55
-        TextSpeech.synthesizer.speak(utterance)
-        self.isSaid = true
+        utterance.postUtteranceDelay = 0.5 // 0.5s pause after speech
+        
+        synthesizer.speak(utterance)
+    }
+    
+    /// Instantly cuts off ongoing speech and clears queue when user stops or finishes exercise
+    static func stop() {
+        shared.stopSpeaking()
+    }
+    
+    func stopSpeaking() {
+        if synthesizer.isSpeaking {
+            synthesizer.stopSpeaking(at: .immediate)
+        }
+        lastSpeechEndTime = Date.distantPast
+    }
+    
+    // MARK: - AVSpeechSynthesizerDelegate
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        lastSpeechEndTime = Date()
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        lastSpeechEndTime = Date.distantPast
     }
 }
 

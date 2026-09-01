@@ -26,9 +26,12 @@ struct ExerciseSelectionSheet: View {
     @State var searchTerm = ""
     
     var filteredExercise: [Category] {
-        guard !searchTerm.isEmpty else { return exerciseCategory.categories }
-
-        return exerciseCategory.categories.filter { $0.name.localizedCaseInsensitiveContains (searchTerm) }
+        let trimmed = searchTerm.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return exerciseCategory.categories }
+        return exerciseCategory.categories.filter {
+            $0.name.localizedCaseInsensitiveContains(trimmed) ||
+            $0.muscleGroup.displayName.localizedCaseInsensitiveContains(trimmed)
+        }
     }
     
     var sortedExerciseByName: [Category] {

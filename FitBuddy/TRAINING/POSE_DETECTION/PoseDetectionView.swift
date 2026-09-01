@@ -33,22 +33,33 @@ class PoseDetection: ObservableObject {
     @Published var showArc: Bool = true
     @Published var overlayImage: UIImage?
     
+    /// Tracks whether the QuickPose ML model has been loaded and is ready for inference.
+    /// Set to true after the first successful frame callback from quickPose.start().
+    @Published var isModelReady: Bool = false
     
-    
-//    init(targetCount: Int? = nil,
-//         targetTime: Int? = nil,
-//         feedback: Bool = false,
-//         controller: FitnessExerciseAdjustment?,
-//         modelConfig: QuickPose.ModelConfig = QuickPose.ModelConfig(
-//            detailedFaceTracking: false,
-//            detailedHandTracking: false)
-//    ) {
-//        self.targetCount = targetCount
-//        self.targetTime = targetTime
-//        self.feedback = feedback
-//        self.controller = controller
-//        self.modelConfig = modelConfig
-//    }
+    /// Prepares the QuickPose model by performing a lightweight start to warm up TensorFlow Lite.
+    /// Call this early (e.g. when entering a contest detail view) so the model is loaded
+    /// by the time the user starts exercising.
+    func prepareModel(modelConfig: QuickPose.ModelConfig = QuickPose.ModelConfig(detailedFaceTracking: false, detailedHandTracking: false)) {
+        guard !isModelReady else { return }
+        // Start with a minimal feature to trigger model loading, then stop once ready
+        let warmupFeature: [QuickPose.Feature] = [.overlay(.wholeBody)]
+        self.quickPose.start(features: warmupFeature, modelConfig: modelConfig) { [weak self] status, _, _, _, _ in
+            guard let self = self else { return }
+            switch status {
+            case .success, .noPersonFound:
+                if !self.isModelReady {
+                    DispatchQueue.main.async {
+                        self.isModelReady = true
+                    }
+                    self.quickPose.stop()
+                }
+            @unknown default:
+                break
+            }
+        }
+    }
+
     func playTing() {
         AudioServicesPlaySystemSound(1113)
     }
@@ -105,10 +116,18 @@ struct PoseDetectionView: View {
         .onChange(of: showCountdown) {_ in
             if !showCountdown {
                 Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                    if !repeatTimeCounter {
+                    if !repeatTimeCounter || exercisePerformance.exerciseStatus != .traning {
                         timer.invalidate()
                     } else {
                         exercisePerformance.totalTime += 1
+                        if let targetTime = exercisePerformance.targetTime, targetTime > 0, exercisePerformance.totalTime >= targetTime {
+                            timer.invalidate()
+                            AudioServicesPlaySystemSound(1114)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                exercisePerformance.quickPose.stop()
+                                exercisePerformance.exerciseStatus = .summary
+                            }
+                        }
                     }
                 }
             }

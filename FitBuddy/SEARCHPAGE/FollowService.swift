@@ -137,65 +137,8 @@ class FollowService {
         }
     }
     
-    // MARK: - Check if current user follows target
-    func checkIfFollowing(targetId: UUID) async -> Bool {
-        do {
-            let currentUserId = try await supabase.auth.session.user.id
-            let results: [FollowRow] = try await supabase
-                .from("follows")
-                .select("follower_id, following_id")
-                .eq("follower_id", value: currentUserId.uuidString)
-                .eq("following_id", value: targetId.uuidString)
-                .limit(1)
-                .execute()
-                .value
-            return !results.isEmpty
-        } catch {
-            return false
-        }
-    }
-    
-    // MARK: - Check mutual follow (friends)
-    func checkMutualFollow(otherUserId: UUID) async -> Bool {
-        do {
-            let currentUserId = try await supabase.auth.session.user.id
-            // Try database RPC check_mutual_follow first
-            if let isMutual: Bool = try? await supabase
-                .rpc("check_mutual_follow", params: [
-                    "user_a": currentUserId.uuidString,
-                    "user_b": otherUserId.uuidString
-                ])
-                .execute()
-                .value {
-                return isMutual
-            }
-            
-            // Fallback direct concurrent check
-            async let q1: [FollowRow] = (try? await supabase
-                .from("follows")
-                .select("follower_id, following_id")
-                .eq("follower_id", value: currentUserId.uuidString)
-                .eq("following_id", value: otherUserId.uuidString)
-                .limit(1)
-                .execute().value) ?? []
-                
-            async let q2: [FollowRow] = (try? await supabase
-                .from("follows")
-                .select("follower_id, following_id")
-                .eq("follower_id", value: otherUserId.uuidString)
-                .eq("following_id", value: currentUserId.uuidString)
-                .limit(1)
-                .execute().value) ?? []
-                
-            let (r1, r2) = await (q1, q2)
-            return !r1.isEmpty && !r2.isEmpty
-        } catch {
-            return false
-        }
-    }
-    
-    // MARK: - Get follower count
-    func getFollowerCount(userId: UUID) async -> Int {
+    // MARK: - Get follower count (internal fallback helper)
+    private func getFollowerCount(userId: UUID) async -> Int {
         do {
             let response = try await supabase
                 .from("follows")
@@ -208,8 +151,8 @@ class FollowService {
         }
     }
     
-    // MARK: - Get following count
-    func getFollowingCount(userId: UUID) async -> Int {
+    // MARK: - Get following count (internal fallback helper)
+    private func getFollowingCount(userId: UUID) async -> Int {
         do {
             let response = try await supabase
                 .from("follows")

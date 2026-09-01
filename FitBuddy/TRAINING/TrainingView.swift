@@ -28,6 +28,9 @@ struct TrainingView: View {
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 1), value: exercisePerformance.exerciseStatus)
+        .onDisappear {
+            TextSpeech.stop()
+        }
     }
 }
 

@@ -11,6 +11,7 @@ import Supabase
 struct ChatView: View {
     let roomId: UUID
     let otherUser: SupabaseProfile
+    var showBackButton: Bool = true
     let onBack: () -> Void
     
     @EnvironmentObject var theme: AppThemeController
@@ -32,12 +33,18 @@ struct ChatView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack(spacing: 12) {
-                    Button(action: onBack) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(theme.main.text)
-                            .frame(width: 40, height: 40)
-                            .neumorphicCircle()
+                    if showBackButton {
+                        Button(action: {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
+                                onBack()
+                            }
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(theme.main.text)
+                                .frame(width: 40, height: 40)
+                                .neumorphicCircle()
+                        }
                     }
                     
                     if !otherUser.avatarUrl.isEmpty {

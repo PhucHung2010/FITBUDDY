@@ -80,33 +80,35 @@ class DemoFeaturesPerformance: PoseDetection {
     }
     
     func perform() {
-        if controller != nil && modelConfig != nil {
-            quickPose.start(features: controller!, modelConfig: self.modelConfig!, onFrame: { status, image, features, feedback, landmarks in
-                switch status {
-                    case .success:
-                        DispatchQueue.main.sync {
-                            self.overlayImage = image
-                        }
-                        if let result = features.values.first  {
-                            DispatchQueue.main.sync {
-                                self.feedbackText = result.stringValue
-                            }
-                        } else {
-                            DispatchQueue.main.sync {
-                                self.feedbackText = "Demo"
-                            }
-                        }
-                    case .noPersonFound:
-                        DispatchQueue.main.sync {
-                            self.feedbackText = "Stand in view";
-                        }
-                    case .sdkValidationError:
-                        DispatchQueue.main.sync {
-                            self.feedbackText = "Be back soon";
-                        }
+        guard let activeController = controller, let activeConfig = modelConfig else { return }
+        quickPose.start(features: activeController, modelConfig: activeConfig, onFrame: { [weak self] status, image, features, feedback, landmarks in
+            guard let self = self else { return }
+            switch status {
+            case .success:
+                DispatchQueue.main.async {
+                    self.overlayImage = image
                 }
-            })
-        }
+                if let result = features.values.first {
+                    DispatchQueue.main.async {
+                        self.feedbackText = result.stringValue
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.feedbackText = "Demo"
+                    }
+                }
+            case .noPersonFound:
+                DispatchQueue.main.async {
+                    self.feedbackText = "Stand in view"
+                }
+            case .sdkValidationError:
+                DispatchQueue.main.async {
+                    self.feedbackText = "Be back soon"
+                }
+            @unknown default:
+                break
+            }
+        })
     }
 }
 
@@ -115,11 +117,21 @@ struct AppSettingView: View {
     @EnvironmentObject var theme: AppThemeController
     @EnvironmentObject var tabbar: TabViewController
     @State private var performanceView: Bool = false
+    @State private var showAboutUs: Bool = false
     
     
     var body: some View {
         ZStack {
-            if performanceView == false {
+            if showAboutUs {
+                AboutUsView(onBack: {
+                    withAnimation(.spring(response: 0.38, dampingFraction: 0.85)) {
+                        showAboutUs = false
+                        tabbar.showTabBar = true
+                    }
+                })
+                .transition(.move(edge: .trailing))
+            }
+            else if performanceView == false {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 15) {
 
@@ -143,6 +155,46 @@ struct AppSettingView: View {
                                 .padding(.leading, 30)
                             DemoFeatureOptionView(performanceView: $performanceView, exercisePerformance: exercisePerformance)
                         }
+                        
+                        // MARK: - About Us Section
+                        VStack(spacing: 12) {
+                            Divider().padding(.horizontal)
+                            Text("About us")
+                                .font(.system(size: 25, weight: .heavy, design: .rounded))
+                                .foregroundColor(theme.main.text)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.leading, 30)
+                            
+                            Button(action: {
+                                withAnimation(.spring(response: 0.38, dampingFraction: 0.85)) {
+                                    showAboutUs = true
+                                    tabbar.showTabBar = false
+                                }
+                            }) {
+                                HStack(spacing: 14) {
+                                    Image(systemName: "dumbbell.fill")
+                                        .font(.system(size: 18, weight: .bold))
+                                        .foregroundColor(theme.main.text)
+                                        .frame(width: 36, height: 36)
+                                        .neumorphicCircle()
+                                    
+                                    Text("FitBuddy")
+                                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                                        .foregroundColor(theme.main.text)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 13, weight: .bold))
+                                        .foregroundColor(theme.main.text.opacity(0.3))
+                                }
+                                .padding(.horizontal, 16)
+                                .frame(width: UIScreen.main.bounds.width - 32, height: 56)
+                                .neumorphicCard(cornerRadius: 22)
+                            }
+                            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
+                        }
+                        
                         Spacer().frame(height: 100)
                     }
                 }

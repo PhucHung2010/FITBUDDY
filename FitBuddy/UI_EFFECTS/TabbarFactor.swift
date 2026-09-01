@@ -7,6 +7,7 @@ enum Tab: String, CaseIterable {
     case Fitness
     case Search
     case Home
+    case Contest
     case Messages
     case Setting
     
@@ -18,6 +19,8 @@ enum Tab: String, CaseIterable {
             return "magnifyingglass"
         case .Home:
             return "house"
+        case .Contest:
+            return "trophy.fill"
         case .Messages:
             return "bubble.left.and.bubble.right.fill"
         case .Setting:
@@ -53,6 +56,9 @@ struct TabBarAccessor: UIViewControllerRepresentable {
             super.viewWillAppear(animated)
             if let tabBar = self.tabBarController {
                 self.callback(tabBar.tabBar)
+                // Hide the "More" navigation controller's nav bar that UIKit creates
+                // when there are more than 5 tabs
+                tabBar.moreNavigationController.navigationBar.isHidden = true
             }
         }
     }

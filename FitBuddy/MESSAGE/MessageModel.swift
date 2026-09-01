@@ -53,6 +53,23 @@ struct ChatMessage: Codable, Identifiable, Equatable {
         case content
         case createdAt = "created_at"
     }
+    
+    init(id: UUID, roomId: UUID, senderId: UUID, content: String, createdAt: String = "") {
+        self.id = id
+        self.roomId = roomId
+        self.senderId = senderId
+        self.content = content
+        self.createdAt = createdAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.roomId = try container.decode(UUID.self, forKey: .roomId)
+        self.senderId = try container.decode(UUID.self, forKey: .senderId)
+        self.content = try container.decodeIfPresent(String.self, forKey: .content) ?? ""
+        self.createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt) ?? ""
+    }
 }
 
 // For UI presentation

@@ -13,6 +13,11 @@ struct SearchedUserProfileView: View {
     
     @EnvironmentObject var theme: AppThemeController
     @EnvironmentObject var tabController: TabViewController
+    @EnvironmentObject var userController: UserController
+    
+    var isOwnProfile: Bool {
+        userController.profile?.id == profile.id
+    }
     
     @State private var isFollowing = false
     @State private var isFollowedBy = false
@@ -52,6 +57,27 @@ struct SearchedUserProfileView: View {
                                 .frame(height: 190)
                         }
                         
+                        // Back Button inside Header (ONLY when viewing other users from search, NEVER on own profile)
+                        if !isOwnProfile {
+                            HStack {
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 1)) {
+                                        onBack()
+                                    }
+                                }) {
+                                    Image(systemName: "chevron.left")
+                                        .font(.system(size: 16, weight: .bold))
+                                        .foregroundColor(theme.main.text)
+                                        .frame(width: 42, height: 42)
+                                        .neumorphicCircle()
+                                }
+                                Spacer()
+                            }
+                            .padding(.top, 50)
+                            .padding(.leading, 16)
+                            .frame(maxHeight: .infinity, alignment: .topLeading)
+                        }
+                        
                         // Avatar
                         if !profile.avatarUrl.isEmpty {
                             AsyncImage(url: URL(string: profile.avatarUrl)) { phase in
@@ -72,18 +98,6 @@ struct SearchedUserProfileView: View {
                                 .neumorphicCircle(shadowRadius: 10, shadowDistance: 5)
                                 .offset(y: 55)
                         }
-                        
-                        // Back Button
-                        Button(action: onBack) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(theme.main.text)
-                                .frame(width: 42, height: 42)
-                                .neumorphicCircle()
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .padding(.top, 50)
-                        .padding(.leading, 20)
                     }
                     .padding(.bottom, 65)
                     
@@ -132,61 +146,75 @@ struct SearchedUserProfileView: View {
                                 .padding(.vertical, 6)
                         }
                         
-                        // Action Buttons
-                        HStack(spacing: 14) {
-                            // Follow Button
-                            Button(action: toggleFollow) {
-                                Text(isFollowing ? "Following" : "Follow")
-                                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                                    .foregroundColor(isFollowing ? theme.main.text : .white)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 48)
-                                    .background {
-                                        if !isFollowing {
-                                            Capsule().fill(theme.accentGradient)
-                                        }
-                                    }
-                                    .neumorphicPill(gradient: isFollowing ? nil : theme.accentGradient, isPressed: isFollowing)
+                        if isOwnProfile {
+                            HStack(spacing: 8) {
+                                Image(systemName: "person.crop.circle.badge.checkmark")
+                                    .foregroundColor(theme.accentColor)
+                                Text("This is your profile")
+                                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                                    .foregroundColor(theme.main.text)
                             }
-                            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
-                            .disabled(isLoadingFollow)
-                            
-                            // Message Button
-                            Button(action: openChat) {
-                                if isOpeningChat {
-                                    ProgressView()
-                                        .scaleEffect(0.8)
-                                        .frame(width: 48, height: 48)
-                                } else {
-                                    Image(systemName: "paperplane.fill")
-                                        .font(.system(size: 18, weight: .bold))
-                                        .foregroundColor(isMutualFollow ? .white : theme.main.text.opacity(0.3))
-                                        .frame(width: 48, height: 48)
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 12)
+                            .neumorphicCard(cornerRadius: 20)
+                            .padding(.top, 8)
+                        } else {
+                            // Action Buttons
+                            HStack(spacing: 14) {
+                                // Follow Button
+                                Button(action: toggleFollow) {
+                                    Text(isFollowing ? "Following" : "Follow")
+                                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                                        .foregroundColor(isFollowing ? theme.main.text : .white)
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 48)
                                         .background {
-                                            if isMutualFollow {
-                                                Circle().fill(theme.accentGradient)
+                                            if !isFollowing {
+                                                Capsule().fill(theme.accentGradient)
                                             }
                                         }
-                                        .neumorphicCircle(isPressed: !isMutualFollow)
+                                        .neumorphicPill(gradient: isFollowing ? nil : theme.accentGradient, isPressed: isFollowing)
                                 }
+                                .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.96))
+                                .disabled(isLoadingFollow)
+                                
+                                // Message Button
+                                Button(action: openChat) {
+                                    if isOpeningChat {
+                                        ProgressView()
+                                            .scaleEffect(0.8)
+                                            .frame(width: 48, height: 48)
+                                    } else {
+                                        Image(systemName: "paperplane.fill")
+                                            .font(.system(size: 18, weight: .bold))
+                                            .foregroundColor(isMutualFollow ? .white : theme.main.text.opacity(0.3))
+                                            .frame(width: 48, height: 48)
+                                            .background {
+                                                if isMutualFollow {
+                                                    Circle().fill(theme.accentGradient)
+                                                }
+                                            }
+                                            .neumorphicCircle(isPressed: !isMutualFollow)
+                                    }
+                                }
+                                .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.9))
+                                .disabled(!isMutualFollow || isOpeningChat)
+                                .opacity(isMutualFollow ? 1.0 : 0.5)
                             }
-                            .buttonStyle(NeumorphicStretchButtonStyle(scaleRadius: 0.9))
-                            .disabled(!isMutualFollow || isOpeningChat)
-                            .opacity(isMutualFollow ? 1.0 : 0.5)
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 8)
-                        
-                        if !isMutualFollow && isFollowing {
-                            Text("Waiting for them to follow back to message")
-                                .font(.system(size: 12, weight: .medium, design: .rounded))
-                                .foregroundColor(theme.main.text.opacity(0.45))
-                                .padding(.top, 2)
-                        } else if !isMutualFollow {
-                            Text("Follow each other to message")
-                                .font(.system(size: 12, weight: .medium, design: .rounded))
-                                .foregroundColor(theme.main.text.opacity(0.45))
-                                .padding(.top, 2)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 8)
+                            
+                            if !isMutualFollow && isFollowing {
+                                Text("Waiting for them to follow back to message")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundColor(theme.main.text.opacity(0.45))
+                                    .padding(.top, 2)
+                            } else if !isMutualFollow {
+                                Text("Follow each other to message")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundColor(theme.main.text.opacity(0.45))
+                                    .padding(.top, 2)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)

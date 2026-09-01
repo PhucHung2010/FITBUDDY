@@ -32,6 +32,29 @@ struct SupabaseProfile: Codable, Identifiable {
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }
+    
+    init(id: UUID, userId: String, username: String, bio: String = "", avatarUrl: String = "", backgroundUrl: String = "", createdAt: String? = nil, updatedAt: String? = nil) {
+        self.id = id
+        self.userId = userId
+        self.username = username
+        self.bio = bio
+        self.avatarUrl = avatarUrl
+        self.backgroundUrl = backgroundUrl
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(UUID.self, forKey: .id)
+        self.userId = try container.decodeIfPresent(String.self, forKey: .userId) ?? ""
+        self.username = try container.decodeIfPresent(String.self, forKey: .username) ?? ""
+        self.bio = try container.decodeIfPresent(String.self, forKey: .bio) ?? ""
+        self.avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl) ?? ""
+        self.backgroundUrl = try container.decodeIfPresent(String.self, forKey: .backgroundUrl) ?? ""
+        self.createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
+        self.updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
+    }
 }
 
 struct ProfileInsert: Codable {

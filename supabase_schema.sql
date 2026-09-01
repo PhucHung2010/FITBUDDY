@@ -130,18 +130,35 @@ CREATE POLICY "Authenticated users can create chat rooms"
     TO authenticated
     WITH CHECK (true);
 
--- Users can see members of rooms they belong to (simplified to avoid infinite recursion)
--- Since chat_rooms are protected by RLS and room IDs are UUIDs, it is safe to allow authenticated users to read chat_members for rooms they know the ID of.
+-- Helper function to break RLS recursion for chat rooms (SECURITY DEFINER bypasses RLS recursion)
+CREATE OR REPLACE FUNCTION public.is_chat_member(p_room_id UUID, p_user_id UUID DEFAULT auth.uid())
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM public.chat_members
+        WHERE room_id = p_room_id AND user_id = p_user_id
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+GRANT EXECUTE ON FUNCTION public.is_chat_member(UUID, UUID) TO authenticated;
+
+-- Users can only see members of rooms they belong to (uses SECURITY DEFINER function to avoid recursion)
 CREATE POLICY "Users can view members of their rooms"
     ON public.chat_members FOR SELECT
     TO authenticated
-    USING (true);
+    USING (public.is_chat_member(room_id, auth.uid()));
 
--- Authenticated users can add members to rooms
-CREATE POLICY "Authenticated users can add chat members"
+-- Users can only add themselves to NEW chat rooms (rooms with < 2 members)
+-- The get_or_create_dm_room RPC uses SECURITY DEFINER to bypass this for both members.
+-- This prevents unauthorized users from joining existing private DM rooms.
+CREATE POLICY "Users can only add themselves to new rooms"
     ON public.chat_members FOR INSERT
     TO authenticated
-    WITH CHECK (true);
+    WITH CHECK (
+        auth.uid() = user_id
+        AND (SELECT COUNT(*) FROM public.chat_members WHERE room_id = chat_members.room_id) < 2
+    );
 
 
 -- ============================================================
@@ -161,13 +178,7 @@ ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view messages in their rooms"
     ON public.messages FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.chat_members
-            WHERE chat_members.room_id = messages.room_id
-            AND chat_members.user_id = auth.uid()
-        )
-    );
+    USING (public.is_chat_member(room_id, auth.uid()));
 
 -- Users can send messages to rooms they belong to
 CREATE POLICY "Users can send messages to their rooms"
@@ -175,11 +186,7 @@ CREATE POLICY "Users can send messages to their rooms"
     TO authenticated
     WITH CHECK (
         auth.uid() = sender_id
-        AND EXISTS (
-            SELECT 1 FROM public.chat_members
-            WHERE chat_members.room_id = messages.room_id
-            AND chat_members.user_id = auth.uid()
-        )
+        AND public.is_chat_member(room_id, auth.uid())
     );
 
 -- Users can delete their own messages
@@ -199,13 +206,28 @@ DECLARE
     new_room_id UUID;
     current_user_id UUID := auth.uid();
 BEGIN
+    -- Safety: can't DM yourself
+    IF current_user_id = other_user_id THEN
+        RAISE EXCEPTION 'Cannot create a chat room with yourself';
+    END IF;
+
+    -- Enforce mutual follow before allowing room creation
+    IF NOT EXISTS (
+        SELECT 1 FROM public.follows 
+        WHERE follower_id = current_user_id AND following_id = other_user_id
+    ) OR NOT EXISTS (
+        SELECT 1 FROM public.follows 
+        WHERE follower_id = other_user_id AND following_id = current_user_id
+    ) THEN
+        RAISE EXCEPTION 'Mutual follow required to start a conversation';
+    END IF;
+
     -- Find existing DM room between the two users
     SELECT cm1.room_id INTO existing_room_id
     FROM public.chat_members cm1
     JOIN public.chat_members cm2 ON cm1.room_id = cm2.room_id
     WHERE cm1.user_id = current_user_id
       AND cm2.user_id = other_user_id
-    -- Ensure it's a 2-person DM room (not a group)
       AND (SELECT COUNT(*) FROM public.chat_members WHERE room_id = cm1.room_id) = 2
     LIMIT 1;
 
@@ -217,7 +239,7 @@ BEGIN
     INSERT INTO public.chat_rooms DEFAULT VALUES
     RETURNING id INTO new_room_id;
 
-    -- Add both users
+    -- Add both users (SECURITY DEFINER bypasses the INSERT policy)
     INSERT INTO public.chat_members (room_id, user_id) VALUES (new_room_id, current_user_id);
     INSERT INTO public.chat_members (room_id, user_id) VALUES (new_room_id, other_user_id);
 
@@ -338,7 +360,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-GRANT EXECUTE ON FUNCTION public.search_profiles(TEXT, UUID, INT) TO authenticated, anon;
+GRANT EXECUTE ON FUNCTION public.search_profiles(TEXT, UUID, INT) TO authenticated;
 
 
 -- ============================================================
@@ -469,4 +491,264 @@ CREATE INDEX IF NOT EXISTS idx_messages_room_id ON public.messages(room_id);
 CREATE INDEX IF NOT EXISTS idx_messages_created_at ON public.messages(room_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_chat_members_composite ON public.chat_members(user_id, room_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON public.profiles(user_id);
+
+
+-- ============================================================
+-- 14. CONTESTS, SUBMISSIONS, LEADERBOARD & RANKINGS
+-- ============================================================
+
+-- Contests Table
+CREATE TABLE IF NOT EXISTS public.contests (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    exercise_name TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    difficulty TEXT DEFAULT 'medium',
+    target_reps INT DEFAULT 20,
+    target_time INT DEFAULT 60,
+    points_reward INT DEFAULT 100,
+    is_active BOOLEAN DEFAULT true,
+    starts_at TIMESTAMPTZ DEFAULT now(),
+    ends_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.contests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Contests are viewable by everyone"
+    ON public.contests FOR SELECT
+    USING (true);
+
+GRANT SELECT ON public.contests TO anon, authenticated;
+
+
+-- Contest Submissions Table
+CREATE TABLE IF NOT EXISTS public.contest_submissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    contest_id UUID NOT NULL REFERENCES public.contests(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    total_correct INT NOT NULL DEFAULT 0,
+    total_incorrect INT NOT NULL DEFAULT 0,
+    accuracy INT NOT NULL DEFAULT 0,
+    total_time INT NOT NULL DEFAULT 0,
+    points_earned INT NOT NULL DEFAULT 0,
+    attempts_count INT NOT NULL DEFAULT 1 CHECK (attempts_count >= 1 AND attempts_count <= 3),
+    submitted_at TIMESTAMPTZ DEFAULT now(),
+    CONSTRAINT unique_contest_user UNIQUE (contest_id, user_id)
+);
+
+ALTER TABLE public.contest_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Contest submissions are viewable by everyone"
+    ON public.contest_submissions FOR SELECT
+    USING (true);
+
+CREATE POLICY "Users can insert their own submissions"
+    ON public.contest_submissions FOR INSERT
+    TO authenticated
+    WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own submissions"
+    ON public.contest_submissions FOR UPDATE
+    TO authenticated
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
+
+GRANT SELECT ON public.contest_submissions TO anon, authenticated;
+GRANT INSERT, UPDATE ON public.contest_submissions TO authenticated;
+
+
+-- Leaderboard View (Rankings per individual contest)
+DROP VIEW IF EXISTS public.contest_leaderboard CASCADE;
+CREATE VIEW public.contest_leaderboard 
+WITH (security_invoker = true)
+AS
+SELECT 
+    cs.contest_id,
+    cs.user_id,
+    p.username,
+    p.avatar_url,
+    cs.total_correct,
+    cs.accuracy,
+    cs.points_earned,
+    cs.total_time,
+    cs.attempts_count,
+    cs.submitted_at,
+    DENSE_RANK() OVER (
+        PARTITION BY cs.contest_id 
+        ORDER BY cs.points_earned DESC, cs.accuracy DESC, cs.total_time ASC
+    ) AS rank
+FROM public.contest_submissions cs
+JOIN public.profiles p ON cs.user_id = p.id;
+
+GRANT SELECT ON public.contest_leaderboard TO anon, authenticated;
+
+
+-- Global Contest Ranking View (Aggregated across all contests)
+DROP VIEW IF EXISTS public.global_contest_ranking CASCADE;
+CREATE VIEW public.global_contest_ranking 
+WITH (security_invoker = true)
+AS
+SELECT 
+    cs.user_id,
+    p.username,
+    p.avatar_url,
+    COALESCE(SUM(cs.points_earned), 0)::INT AS total_points,
+    COUNT(cs.contest_id)::INT AS contests_completed,
+    COALESCE(ROUND(AVG(cs.accuracy)::numeric, 1), 0)::FLOAT8 AS avg_accuracy,
+    DENSE_RANK() OVER (
+        ORDER BY COALESCE(SUM(cs.points_earned), 0) DESC, COALESCE(ROUND(AVG(cs.accuracy)::numeric, 1), 0) DESC
+    ) AS rank
+FROM public.contest_submissions cs
+JOIN public.profiles p ON cs.user_id = p.id
+GROUP BY cs.user_id, p.username, p.avatar_url;
+
+GRANT SELECT ON public.global_contest_ranking TO anon, authenticated;
+
+
+-- RPC: submit_contest_attempt (Enforces max 3 tries, keeps highest score)
+CREATE OR REPLACE FUNCTION public.submit_contest_attempt(
+    p_contest_id UUID,
+    p_total_correct INT,
+    p_total_incorrect INT,
+    p_accuracy INT,
+    p_total_time INT,
+    p_points_earned INT
+)
+RETURNS JSONB AS $$
+DECLARE
+    v_user_id UUID;
+    v_existing public.contest_submissions%ROWTYPE;
+    v_new_attempts INT;
+    v_is_best BOOLEAN := false;
+BEGIN
+    v_user_id := auth.uid();
+    IF v_user_id IS NULL THEN
+        RAISE EXCEPTION 'Not authenticated';
+    END IF;
+
+    -- Check if submission already exists
+    SELECT * INTO v_existing 
+    FROM public.contest_submissions 
+    WHERE contest_id = p_contest_id AND user_id = v_user_id;
+
+    IF NOT FOUND THEN
+        -- Attempt 1
+        INSERT INTO public.contest_submissions (
+            contest_id, user_id, total_correct, total_incorrect,
+            accuracy, total_time, points_earned, attempts_count, submitted_at
+        ) VALUES (
+            p_contest_id, v_user_id, p_total_correct, p_total_incorrect,
+            p_accuracy, p_total_time, p_points_earned, 1, now()
+        );
+        
+        RETURN jsonb_build_object(
+            'success', true,
+            'attempts_used', 1,
+            'attempts_left', 2,
+            'is_best_score', true,
+            'points_earned', p_points_earned
+        );
+    ELSE
+        -- Validate maximum 3 attempts
+        IF v_existing.attempts_count >= 3 THEN
+            RAISE EXCEPTION 'Maximum attempts (3) reached for this contest';
+        END IF;
+
+        v_new_attempts := v_existing.attempts_count + 1;
+        
+        -- Check if new score is better than previous best score
+        IF p_points_earned > v_existing.points_earned OR 
+           (p_points_earned = v_existing.points_earned AND p_accuracy > v_existing.accuracy) THEN
+            v_is_best := true;
+            UPDATE public.contest_submissions
+            SET total_correct = p_total_correct,
+                total_incorrect = p_total_incorrect,
+                accuracy = p_accuracy,
+                total_time = p_total_time,
+                points_earned = p_points_earned,
+                attempts_count = v_new_attempts,
+                submitted_at = now()
+            WHERE contest_id = p_contest_id AND user_id = v_user_id;
+        ELSE
+            -- Increment attempts_count without lowering best score
+            UPDATE public.contest_submissions
+            SET attempts_count = v_new_attempts
+            WHERE contest_id = p_contest_id AND user_id = v_user_id;
+        END IF;
+
+        RETURN jsonb_build_object(
+            'success', true,
+            'attempts_used', v_new_attempts,
+            'attempts_left', GREATEST(0, 3 - v_new_attempts),
+            'is_best_score', v_is_best,
+            'points_earned', GREATEST(v_existing.points_earned, p_points_earned)
+        );
+    END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+GRANT EXECUTE ON FUNCTION public.submit_contest_attempt(UUID, INT, INT, INT, INT, INT) TO authenticated;
+
+
+-- Helper RPC: get_active_contests with submission & attempts state
+DROP FUNCTION IF EXISTS public.get_active_contests(UUID);
+CREATE OR REPLACE FUNCTION public.get_active_contests(p_user_id UUID DEFAULT NULL)
+RETURNS TABLE (
+    id UUID,
+    exercise_name TEXT,
+    title TEXT,
+    description TEXT,
+    difficulty TEXT,
+    target_reps INT,
+    target_time INT,
+    points_reward INT,
+    starts_at TIMESTAMPTZ,
+    ends_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ,
+    participant_count INT,
+    user_submitted BOOLEAN,
+    user_points INT,
+    user_accuracy INT,
+    user_attempts_count INT,
+    attempts_left INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        c.id,
+        c.exercise_name,
+        c.title,
+        c.description,
+        c.difficulty,
+        c.target_reps,
+        c.target_time,
+        c.points_reward,
+        c.starts_at,
+        c.ends_at,
+        c.created_at,
+        (SELECT COUNT(*)::INT FROM public.contest_submissions cs_count WHERE cs_count.contest_id = c.id) AS participant_count,
+        CASE WHEN p_user_id IS NOT NULL THEN
+            EXISTS(SELECT 1 FROM public.contest_submissions cs WHERE cs.contest_id = c.id AND cs.user_id = p_user_id)
+        ELSE false END AS user_submitted,
+        CASE WHEN p_user_id IS NOT NULL THEN
+            (SELECT cs.points_earned FROM public.contest_submissions cs WHERE cs.contest_id = c.id AND cs.user_id = p_user_id LIMIT 1)
+        ELSE NULL END AS user_points,
+        CASE WHEN p_user_id IS NOT NULL THEN
+            (SELECT cs.accuracy FROM public.contest_submissions cs WHERE cs.contest_id = c.id AND cs.user_id = p_user_id LIMIT 1)
+        ELSE NULL END AS user_accuracy,
+        CASE WHEN p_user_id IS NOT NULL THEN
+            COALESCE((SELECT cs.attempts_count FROM public.contest_submissions cs WHERE cs.contest_id = c.id AND cs.user_id = p_user_id LIMIT 1), 0)
+        ELSE 0 END AS user_attempts_count,
+        CASE WHEN p_user_id IS NOT NULL THEN
+            GREATEST(0, 3 - COALESCE((SELECT cs.attempts_count FROM public.contest_submissions cs WHERE cs.contest_id = c.id AND cs.user_id = p_user_id LIMIT 1), 0))
+        ELSE 3 END AS attempts_left
+    FROM public.contests c
+    WHERE c.is_active = true
+    ORDER BY c.created_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+GRANT EXECUTE ON FUNCTION public.get_active_contests(UUID) TO anon, authenticated;
+
 
