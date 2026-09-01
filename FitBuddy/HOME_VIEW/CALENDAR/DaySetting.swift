@@ -42,17 +42,6 @@ extension Date {
         }
         return weekdays.map { $0.capitalized }
     }
-       
-       static var fullMonthNames: [String] {
-           let dateFormatter = DateFormatter()
-           dateFormatter.locale = Locale.current
-
-           return (1...12).compactMap { month in
-               dateFormatter.setLocalizedDateFormatFromTemplate("MMMM")
-               let date = Calendar.current.date(from: DateComponents(year: 2000, month: month, day: 1))
-               return date.map { dateFormatter.string(from: $0) }
-           }
-       }
     
     var startOfMonth: Date {
         Calendar.current.dateInterval(of: .month, for: self)!.start
@@ -145,15 +134,6 @@ extension Date {
     
     var startOfDay: Date {
         Calendar.current.startOfDay(for: self)
-    }
-    
-    // Used to generate the mock data for previews
-    // Computed property courtesy of ChatGPT
-    var randomDateWithinLastThreeMonths: Date {
-        let threeMonthsAgo = Calendar.current.date(byAdding: .month, value: -3, to: self)!
-        let randomTimeInterval = TimeInterval.random(in: 0.0..<self.timeIntervalSince(threeMonthsAgo))
-        let randomDate = threeMonthsAgo.addingTimeInterval(randomTimeInterval)
-        return randomDate
     }
 }
 

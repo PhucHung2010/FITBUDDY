@@ -417,11 +417,3 @@ class UserController: ObservableObject {
         }
     }
 }
-
-// MARK: - Legacy compatibility
-struct UserModel: Codable, Identifiable {
-    let id: String?
-    let name: String?
-    let email: String?
-    let imageURL: String?
-}

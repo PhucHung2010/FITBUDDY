@@ -322,18 +322,6 @@ class FitnessExercisePerformance: PoseDetection {
         target.contains { $0.beingIllegal }
     }
     
-    func updateIllegalFeature(target: MovementTarget, overlayFeatures: inout [QuickPose.Feature]) -> Void {
-        if let arrIndex = overlayFeatures.firstIndex(of: target.feature) {
-            overlayFeatures[arrIndex] = target.feature.restyled(target.currentIllegalStyle ?? target.illegalStyle)
-        }
-    }
-    
-    func updateCorrectionFeature(target: MovementTarget, overlayFeatures: inout [QuickPose.Feature]) -> Void {
-        if let arrIndex = overlayFeatures.firstIndex(of: target.feature) {
-            overlayFeatures[arrIndex] = target.feature.restyled(target.currentCorrectionStyle ?? target.correctionStyle)
-        }
-    }
-
     
     func processMovementTarget(_ target: inout MovementTarget, overlayFeatures: inout [QuickPose.Feature]) {
         func resetFlags() -> Void {

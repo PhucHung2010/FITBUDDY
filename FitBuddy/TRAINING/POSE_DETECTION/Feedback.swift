@@ -25,16 +25,6 @@ class TextSpeech: NSObject, AVSpeechSynthesizerDelegate {
         synthesizer.delegate = self
     }
     
-    var text: String = ""
-    
-    convenience init(text: String) {
-        self.init()
-        self.text = text
-    }
-    
-    func say() {
-        say(text: self.text)
-    }
     
     /// Speaks the feedback text with 0.5s delay.
     /// If synthesizer is currently speaking or within 0.5s cooldown, skips overlapping feedback.
@@ -101,25 +91,6 @@ class Feedback {
         case pull = "pull"
         case push = "push"
         case spread = "spread"
-        
-        var vi: String {
-            switch self {
-            case .move:       return "Di chuyển"
-            case .lean:       return "Nghiêng"
-            case .straighten: return "Duỗi thẳng"
-            case .lower:      return "Hạ"
-            case .place:      return "Đặt"
-            case .bend:       return "Gập"
-            case .rotate:     return "Xoay"
-            case .lift:       return "Nâng"
-            case .raise:      return "Giơ lên"
-            case .stretch:    return "Kéo giãn"
-            case .twist:      return "Vặn"
-            case .pull:       return "Kéo"
-            case .push:       return "Đẩy"
-            case .spread:     return "dãn"
-            }
-        }
     }
 
     // MARK: ‑ Hướng di chuyển
@@ -146,34 +117,7 @@ class Feedback {
         case moreBalanced = "more balanced"
         case moreStable   = "more stable"
         case smoother     = "smoother"
-        
-        var vi: String {
-            switch self {
-            case .up:       return "lên trên"
-            case .down:     return "xuống dưới"
-            case .forward:  return "về phía trước"
-            case .back:     return "ra sau"
-            case .apart:    return "ra ngoài"
-            case .intoView: return "vào khung hình"
-            case .onFloor:  return "xuống sàn"
-                
-            case .higher:   return "cao hơn"
-            case .lower:    return "thấp hơn"
-            case .closer:   return "gần hơn"
-            case .farther:  return "xa hơn"
-            case .wider:    return "rộng hơn"
-            case .narrower: return "hẹp hơn"
-                
-            case .moreEven:     return "đồng đều hơn"
-            case .moreAligned:  return "thẳng hàng hơn"
-            case .moreBalanced: return "cân bằng hơn"
-            case .moreStable:   return "ổn định hơn"
-            case .smoother:     return "mượt"
-            }
-        }
     }
-
-
 
     // MARK: ‑ Bộ phận cơ thể
     @frozen public enum Limb: String {
@@ -189,36 +133,11 @@ class Feedback {
         case ankle = "ankle"
         case wrist = "wrist"
         case hip   = "hip"
-        
-        var vi: String {
-            switch self {
-            case .arm:      return "tay"
-            case .hand:     return "bàn tay"
-            case .leg:      return "chân"
-            case .knee:     return "đầu gối"
-            case .back:     return "lưng"
-            case .torso:    return "thân người"
-            case .head:     return "đầu"
-            case .shoulder: return "vai"
-            case .foot:     return "bàn chân"
-            case .ankle:    return "mắt cá"
-            case .wrist:    return "cổ tay"
-            case .hip:      return "hông"
-            }
-        }
     }
-
     
     @frozen public enum LimbDirection: String {
         case left = "left"
         case right = "right"
-        
-        var vi: String {
-            switch self {
-            case .left: return "trái"
-            case .right: return "phải"
-            }
-        }
     }
 
     

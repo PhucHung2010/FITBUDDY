@@ -212,11 +212,4 @@ class ContestService: ObservableObject {
             return []
         }
     }
-    
-    // MARK: - Invalidate All Caches
-    func invalidateCaches() {
-        contestsCache = nil
-        leaderboardCache.removeAll()
-        globalRankingCache = nil
-    }
 }

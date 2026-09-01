@@ -46,8 +46,6 @@ struct CalendarView: View {
         }
         .onAppear {
             updatePlannedDate()
-//            requestNotificationPermission()
-//            scheduleNotifications(for: plannedDates)
             
             NotificationCenter.default.addObserver(forName: .NSManagedObjectContextObjectsDidChange,
                                                    object: viewContext,

@@ -12,9 +12,6 @@ struct RankingView: View {
     @EnvironmentObject var userController: UserController
     var onBack: (() -> Void)? = nil
     
-    @State private var selectedPeriod = 0
-    let periods = ["All Time", "Contests"]
-    
     @State private var liveRankings: [GlobalRankingEntry] = []
     @State private var isLoading = false
     

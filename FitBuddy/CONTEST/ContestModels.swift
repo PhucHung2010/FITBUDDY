@@ -129,27 +129,6 @@ enum ContestDifficulty: String, Codable {
     }
 }
 
-// MARK: - Submission Insert
-struct ContestSubmissionInsert: Codable {
-    let contestId: UUID
-    let userId: UUID
-    let totalCorrect: Int
-    let totalIncorrect: Int
-    let accuracy: Int
-    let totalTime: Int
-    let pointsEarned: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case contestId = "contest_id"
-        case userId = "user_id"
-        case totalCorrect = "total_correct"
-        case totalIncorrect = "total_incorrect"
-        case accuracy
-        case totalTime = "total_time"
-        case pointsEarned = "points_earned"
-    }
-}
-
 // MARK: - Attempt Result (from submit_contest_attempt RPC)
 struct ContestAttemptResult: Codable {
     let success: Bool?
